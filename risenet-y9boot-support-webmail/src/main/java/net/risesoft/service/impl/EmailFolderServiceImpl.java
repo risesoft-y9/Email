@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.mail.Folder;
-import javax.mail.MessagingException;
+import jakarta.mail.Folder;
+import jakarta.mail.MessagingException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -50,7 +50,7 @@ public class EmailFolderServiceImpl extends MailHelper implements EmailFolderSer
 
         List<EmailFolderDTO> emailFolderDTOList = new ArrayList<>();
         List<DefaultFolder> defaultFolderList = Arrays.stream(DefaultFolder.values())
-            .filter(defaultFolder -> !defaultFolder.isExistSubFolder()).collect(Collectors.toList());
+                .filter(defaultFolder -> !defaultFolder.isExistSubFolder()).collect(Collectors.toList());
         for (DefaultFolder folder : defaultFolderList) {
             Folder mailFolder = session.getFolder(folder.getName());
             try {

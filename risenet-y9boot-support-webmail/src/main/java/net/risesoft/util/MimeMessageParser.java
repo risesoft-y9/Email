@@ -26,20 +26,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
-import javax.mail.internet.MimeUtility;
-import javax.mail.internet.ParseException;
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.Part;
+import jakarta.mail.internet.ContentType;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimePart;
+import jakarta.mail.internet.MimeUtility;
+import jakarta.mail.internet.ParseException;
+import jakarta.mail.util.ByteArrayDataSource;
 
 /**
  * Parses a MimeMessage and stores the individual parts such a plain text, HTML text and attachments.
@@ -123,27 +123,27 @@ public class MimeMessageParser {
      * @return the 'to' recipients of the message
      * @throws Exception determining the recipients failed
      */
-    public List<javax.mail.Address> getTo() throws Exception {
-        final javax.mail.Address[] recipients = this.mimeMessage.getRecipients(Message.RecipientType.TO);
-        return recipients != null ? Arrays.asList(recipients) : new ArrayList<javax.mail.Address>();
+    public List<jakarta.mail.Address> getTo() throws Exception {
+        final jakarta.mail.Address[] recipients = this.mimeMessage.getRecipients(Message.RecipientType.TO);
+        return recipients != null ? Arrays.asList(recipients) : new ArrayList<jakarta.mail.Address>();
     }
 
     /**
      * @return the 'cc' recipients of the message
      * @throws Exception determining the recipients failed
      */
-    public List<javax.mail.Address> getCc() throws Exception {
-        final javax.mail.Address[] recipients = this.mimeMessage.getRecipients(Message.RecipientType.CC);
-        return recipients != null ? Arrays.asList(recipients) : new ArrayList<javax.mail.Address>();
+    public List<jakarta.mail.Address> getCc() throws Exception {
+        final jakarta.mail.Address[] recipients = this.mimeMessage.getRecipients(Message.RecipientType.CC);
+        return recipients != null ? Arrays.asList(recipients) : new ArrayList<jakarta.mail.Address>();
     }
 
     /**
      * @return the 'bcc' recipients of the message
      * @throws Exception determining the recipients failed
      */
-    public List<javax.mail.Address> getBcc() throws Exception {
-        final javax.mail.Address[] recipients = this.mimeMessage.getRecipients(Message.RecipientType.BCC);
-        return recipients != null ? Arrays.asList(recipients) : new ArrayList<javax.mail.Address>();
+    public List<jakarta.mail.Address> getBcc() throws Exception {
+        final jakarta.mail.Address[] recipients = this.mimeMessage.getRecipients(Message.RecipientType.BCC);
+        return recipients != null ? Arrays.asList(recipients) : new ArrayList<jakarta.mail.Address>();
     }
 
     /**
@@ -151,7 +151,7 @@ public class MimeMessageParser {
      * @throws Exception parsing the mime message failed
      */
     public String getFrom() throws Exception {
-        final javax.mail.Address[] addresses = this.mimeMessage.getFrom();
+        final jakarta.mail.Address[] addresses = this.mimeMessage.getFrom();
         if (addresses == null || addresses.length == 0) {
             return null;
         }
@@ -163,7 +163,7 @@ public class MimeMessageParser {
      * @throws Exception parsing the mime message failed
      */
     public String getReplyTo() throws Exception {
-        final javax.mail.Address[] addresses = this.mimeMessage.getReplyTo();
+        final jakarta.mail.Address[] addresses = this.mimeMessage.getReplyTo();
         if (addresses == null || addresses.length == 0) {
             return null;
         }
@@ -188,11 +188,11 @@ public class MimeMessageParser {
      */
     protected void parse(final Multipart parent, final MimePart part) throws MessagingException, IOException {
         if (isMimeType(part, "text/plain") && plainContent == null
-            && !Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
+                && !Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
             plainContent = (String)part.getContent();
         } else {
             if (isMimeType(part, "text/html") && htmlContent == null
-                && !Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
+                    && !Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
                 htmlContent = (String)part.getContent();
             } else {
                 if (isMimeType(part, "multipart/*")) {
@@ -274,7 +274,7 @@ public class MimeMessageParser {
      * @throws IOException creating the DataSource failed
      */
     protected DataSource createDataSource(final Multipart parent, final MimePart part)
-        throws MessagingException, IOException {
+            throws MessagingException, IOException {
         final DataHandler dataHandler = part.getDataHandler();
         final DataSource dataSource = dataHandler.getDataSource();
         final String contentType = getBaseMimeType(dataSource.getContentType());
@@ -442,7 +442,7 @@ public class MimeMessageParser {
      * @throws UnsupportedEncodingException decoding the text failed
      */
     protected String getDataSourceName(final Part part, final DataSource dataSource)
-        throws MessagingException, UnsupportedEncodingException {
+            throws MessagingException, UnsupportedEncodingException {
         String result = dataSource.getName();
 
         if (result == null || result.length() == 0) {

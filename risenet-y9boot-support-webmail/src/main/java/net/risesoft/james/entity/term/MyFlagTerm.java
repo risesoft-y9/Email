@@ -1,9 +1,9 @@
 package net.risesoft.james.entity.term;
 
-import javax.mail.Flags;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.search.SearchTerm;
+import jakarta.mail.Flags;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.search.SearchTerm;
 
 /**
  * description：是否已读搜索
@@ -14,6 +14,7 @@ import javax.mail.search.SearchTerm;
 public final class MyFlagTerm extends SearchTerm {
     private static final long serialVersionUID = -142991500302030647L;
     private final boolean set;
+
     /**
      * Flags object containing the flags to test.
      *

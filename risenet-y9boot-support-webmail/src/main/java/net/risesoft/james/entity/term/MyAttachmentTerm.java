@@ -1,7 +1,7 @@
 package net.risesoft.james.entity.term;
 
-import javax.mail.Message;
-import javax.mail.search.StringTerm;
+import jakarta.mail.Message;
+import jakarta.mail.search.StringTerm;
 
 import lombok.extern.slf4j.Slf4j;
 

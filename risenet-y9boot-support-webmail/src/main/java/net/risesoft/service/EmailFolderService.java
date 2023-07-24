@@ -2,7 +2,7 @@ package net.risesoft.service;
 
 import java.util.List;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 import net.risesoft.controller.dto.EmailFolderDTO;
 

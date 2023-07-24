@@ -2,10 +2,10 @@ package net.risesoft.james.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import org.hibernate.annotations.Comment;
 
@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "JAMES_USER")
-@org.hibernate.annotations.Table(comment = "邮件用户", appliesTo = "JAMES_USER")
+@Comment( "邮件用户")
 public class JamesUser implements Serializable {
 
     private static final long serialVersionUID = 7817380951308002778L;

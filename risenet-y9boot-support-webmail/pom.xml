@@ -83,8 +83,8 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -102,6 +102,7 @@
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
         </dependency>
 
         <dependency>
@@ -115,6 +116,13 @@
             <version>1.5.0-b01</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.1</version>
+        </dependency>
+
+        <!-- eml文件解析 -->
         <dependency>
             <groupId>org.apache.james</groupId>
             <artifactId>apache-mime4j-dom</artifactId>
@@ -130,12 +138,7 @@
             <artifactId>apache-mime4j-storage</artifactId>
             <version>0.8.11</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.belerweb</groupId>
-            <artifactId>pinyin4j</artifactId>
-            <version>2.5.1</version>
-        </dependency>
+        <!-- eml文件解析 end -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

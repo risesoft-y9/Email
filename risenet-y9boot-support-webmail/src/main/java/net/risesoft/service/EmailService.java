@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import net.risesoft.controller.dto.EmailContactDTO;
 import net.risesoft.controller.dto.EmailDTO;
@@ -24,7 +24,7 @@ public interface EmailService {
     EmailDetailDTO detail(String folder, long uid) throws Exception;
 
     void exportEml(String folderName, long uid, HttpServletResponse response, HttpServletRequest request)
-        throws IOException, MessagingException;
+            throws IOException, MessagingException;
 
     EmailDTO findByFolderAndUid(String folderName, long uid) throws Exception;
 

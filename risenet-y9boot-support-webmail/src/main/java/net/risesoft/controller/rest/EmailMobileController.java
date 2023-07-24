@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

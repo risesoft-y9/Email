@@ -1,14 +1,13 @@
 package net.risesoft.james.entity.term;
 
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.search.AddressStringTerm;
+import jakarta.mail.Address;
+import jakarta.mail.Message;
+import jakarta.mail.search.AddressStringTerm;
 
 /**
- * description：发件人搜索
- * 
- * @author lzw
- * @date 2023-04-24 9:14
+ * @Description 发件人搜索
+ * @Author lzw
+ * @Date 2023-04-24 9:14
  */
 public final class MyFormTerm extends AddressStringTerm {
 

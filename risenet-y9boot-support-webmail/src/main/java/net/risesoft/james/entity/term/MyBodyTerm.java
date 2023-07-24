@@ -2,11 +2,11 @@ package net.risesoft.james.entity.term;
 
 import java.io.IOException;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.search.StringTerm;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.Part;
+import jakarta.mail.search.StringTerm;
 
 /**
  * description：邮件文本搜索

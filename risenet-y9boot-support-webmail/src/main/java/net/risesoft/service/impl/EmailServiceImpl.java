@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,35 +15,35 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.MimetypesFileTypeMap;
-import javax.mail.Address;
-import javax.mail.BodyPart;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimePart;
-import javax.mail.internet.ParseException;
-import javax.mail.search.AndTerm;
-import javax.mail.search.ComparisonTerm;
-import javax.mail.search.OrTerm;
-import javax.mail.search.ReceivedDateTerm;
-import javax.mail.search.SearchTerm;
-import javax.mail.search.SentDateTerm;
-import javax.mail.util.ByteArrayDataSource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.MimetypesFileTypeMap;
+import jakarta.mail.Address;
+import jakarta.mail.BodyPart;
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.Part;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.ContentType;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimePart;
+import jakarta.mail.internet.ParseException;
+import jakarta.mail.search.AndTerm;
+import jakarta.mail.search.ComparisonTerm;
+import jakarta.mail.search.OrTerm;
+import jakarta.mail.search.ReceivedDateTerm;
+import jakarta.mail.search.SearchTerm;
+import jakarta.mail.search.SentDateTerm;
+import jakarta.mail.util.ByteArrayDataSource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -99,16 +100,72 @@ import jodd.util.Base64;
 public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Autowired
-    PersonApi personApi;
+    private PersonApi personApi;
 
     @Autowired
     private EmailService emailService;
 
     @Autowired
     private Y9FileStoreService y9FileStoreService;
+    @Autowired
+    private OrgUnitApi orgUnitApi;
+    @Autowired
+    private JamesAddressBookService jamesAddressBookService;
+    @Autowired
+    private JamesUserService jamesUserService;
 
     private static void setMailer(MimeMessage mimeMessage) throws MessagingException {
         mimeMessage.setHeader(EmailConst.HEADER_MAILER, "risesoft webmail");
+    }
+
+    private static EmailDTO buildReplyEmail(String folderName, EmailDTO email) {
+        EmailDTO replyEmail = new EmailDTO();
+        replyEmail.setFolder(folderName);
+        replyEmail.setReplyMessageId(email.getMessageId());
+        replyEmail.setRichText(
+                EmailUtil.getReplyHead(email) + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
+        replyEmail.setSubject("回复：" + email.getSubject());
+        return replyEmail;
+    }
+
+    public static boolean isHasAttachment(Message message) throws IOException, MessagingException {
+        boolean hasAttachment = false;
+        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
+            MimeMultipart mmp = (MimeMultipart)message.getContent();
+            int count = mmp.getCount();
+            for (int j = 0; j < count; j++) {
+                BodyPart bodyPart = mmp.getBodyPart(j);
+                String disposition = bodyPart.getDisposition();
+                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
+                    hasAttachment = true;
+                }
+            }
+        }
+        return hasAttachment;
+    }
+
+    private static String getAttachmentSize(Message message) throws IOException, MessagingException {
+        long attachmentSize = 0L;
+        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
+            MimeMultipart mmp = (MimeMultipart)message.getContent();
+            int count = mmp.getCount();
+            for (int j = 0; j < count; j++) {
+                BodyPart bodyPart = mmp.getBodyPart(j);
+                String disposition = bodyPart.getDisposition();
+                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
+                    InputStream inputStream = bodyPart.getInputStream();
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead = -1;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    attachmentSize += outputStream.toByteArray().length;
+                    outputStream.close();
+                }
+            }
+        }
+        return (attachmentSize >> 10) + " KB";
     }
 
     private void addHtml(MimeMultipart mimeMultipart, String richText) throws MessagingException {
@@ -118,7 +175,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     private List<String> addHtmlTextReplaceCID(MimeMultipart alternativeMultipart, String richText)
-        throws MessagingException {
+            throws MessagingException {
         List<String> inlineIdList = new ArrayList<>();
 
         String patternStr = "<img\\s*([^>]*)\\s*src=\\\"(.*?)\\\"\\s*([^>]*)>";
@@ -159,7 +216,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     byte[] bytes = y9FileStoreService.downloadFileToBytes(fileId);
                     Y9FileStore y9FileStore = y9FileStoreService.getById(fileId);
                     DataSource dataSource = new ByteArrayDataSource(bytes,
-                        new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
+                            new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
                     DataHandler dataHandler = new DataHandler(dataSource);
                     mimeBodyPart.setDataHandler(dataHandler);
                     mimeBodyPart.setContentID("<" + fileId + ">");
@@ -232,7 +289,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Override
     public void exportEml(String folderName, long uid, HttpServletResponse response, HttpServletRequest request)
-        throws IOException, MessagingException {
+            throws IOException, MessagingException {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
         receiveMailSession.open();
         IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(folderName);
@@ -275,7 +332,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         Message message = folder.getMessageByUID(uid);
         if (message == null) {
             throw new Y9BusinessException(EmailErrorCodeEnum.EMAIL_NOT_EXIST.getCode(),
-                EmailErrorCodeEnum.EMAIL_NOT_EXIST.getDescription());
+                    EmailErrorCodeEnum.EMAIL_NOT_EXIST.getDescription());
         }
         return message;
     }
@@ -304,7 +361,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         forwardEmail.setFolder(folderName);
         forwardEmail.setForwardMessageId(email.getMessageId());
         forwardEmail.setRichText(
-            EmailUtil.getReplyHead(email) + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
+                EmailUtil.getReplyHead(email) + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
         forwardEmail.setSubject("转发：" + email.getSubject());
         forwardEmail.setEmailAttachmentDTOList(email.getEmailAttachmentDTOList());
         return forwardEmail;
@@ -359,7 +416,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Override
     public Y9Page<EmailListDTO> listByFolder(String folderName, int page, int rows)
-        throws MessagingException, IOException {
+            throws MessagingException, IOException {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
         receiveMailSession.open();
 
@@ -388,16 +445,12 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 for (int i = messages.length - 1; i >= 0; i--) {
                     IMAPMessage imapMessage = (IMAPMessage)messages[i];
                     long uid = folder.getUID(imapMessage);
-                    EmailListDTO eDTO = messageToEmailListDTO(messages[i], uid);
-                    if(eDTO.getCreateTime() == null){
-                        eDTO.setCreateTime(messages[i].getReceivedDate());
-                    }
-                    emailReceiverDTOList.add(eDTO);
+                    emailReceiverDTOList.add(messageToEmailListDTO(messages[i], uid));
                 }
                 // 未读置顶
                 if (!"Sent".equals(folderName)) {
                     emailReceiverDTOList = emailReceiverDTOList.stream().sorted(EmailListDTO.getComparator())
-                        .collect(java.util.stream.Collectors.toList());
+                            .collect(java.util.stream.Collectors.toList());
                 }
             }
         }
@@ -414,7 +467,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         IMAPFolder originFolder = (IMAPFolder)receiveMailSession.getFolder(originFolderName);
         if (!originFolder.exists()) {
             originFolder =
-                (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(originFolderName);
+                    (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(originFolderName);
         }
         IMAPFolder toFolder = (IMAPFolder)receiveMailSession.getFolder(toFolderName);
         if (!toFolder.exists()) {
@@ -460,7 +513,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         EmailDTO email = this.findByFolderAndUid(folderName, uid);
         EmailDTO replyEmail = buildReplyEmail(folderName, email);
 
-        replyEmail.setToEmailAddressList(Arrays.asList(email.getFrom()));
+        replyEmail.setToEmailAddressList(Collections.singletonList(email.getFrom()));
         return replyEmail;
     }
 
@@ -476,16 +529,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         toEmailAddressList.remove(EmailThreadLocalHolder.getEmailAddress());
 
         replyEmail.setToEmailAddressList(toEmailAddressList);
-        return replyEmail;
-    }
-
-    private static EmailDTO buildReplyEmail(String folderName, EmailDTO email) {
-        EmailDTO replyEmail = new EmailDTO();
-        replyEmail.setFolder(folderName);
-        replyEmail.setReplyMessageId(email.getMessageId());
-        replyEmail.setRichText(
-            EmailUtil.getReplyHead(email) + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
-        replyEmail.setSubject("回复：" + email.getSubject());
         return replyEmail;
     }
 
@@ -506,7 +549,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             folder = (IMAPFolder)receiveMailSession.getFolder(email.getFolder());
             if (!folder.exists()) {
                 folder = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName())
-                    .getFolder(email.getFolder());
+                        .getFolder(email.getFolder());
             }
             folder.open(Folder.READ_WRITE);
 
@@ -519,7 +562,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             folder = (IMAPFolder)receiveMailSession.getFolder(email.getFolder());
             if (!folder.exists()) {
                 folder = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName())
-                    .getFolder(email.getFolder());
+                        .getFolder(email.getFolder());
             }
             folder.open(Folder.READ_WRITE);
 
@@ -559,7 +602,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         setSubject(mimeMessage, email.getSubject());
         setFrom(mimeMessage);
         setRecipients(mimeMessage, email.getToEmailAddressList(), email.getCcEmailAddressList(),
-            email.getBccEmailAddressList());
+                email.getBccEmailAddressList());
 
         mimeMessage.saveChanges();
 
@@ -576,7 +619,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Override
     public Y9Page<EmailListDTO> search(EmailSearchDTO searchDTO, int page, int size)
-        throws MessagingException, IOException {
+            throws MessagingException, IOException {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
         receiveMailSession.open();
         List<EmailListDTO> emailListDTOList = new ArrayList<>();
@@ -592,11 +635,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 Message[] messages = folder.search(searchTerm);
                 for (Message message : messages) {
                     long uid = folder.getUID(message);
-                    EmailListDTO eDTO = messageToEmailListDTO(message, uid);
-                    if(eDTO.getCreateTime() == null){
-                        eDTO.setCreateTime(message.getReceivedDate());
-                    }
-                    emailListDTOList.add(eDTO);
+                    emailListDTOList.add(messageToEmailListDTO(message, uid));
                 }
                 getPersonData(folder, emailListDTOList);
                 folder.close(true);
@@ -610,11 +649,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     Message[] messages = folder.search(searchTerm);
                     for (Message message : messages) {
                         long uid = folder.getUID(message);
-                        EmailListDTO eDTO = messageToEmailListDTO(message, uid);
-                        if(eDTO.getCreateTime() == null){
-                            eDTO.setCreateTime(message.getReceivedDate());
-                        }
-                        emailListDTOList.add(eDTO);
+                        emailListDTOList.add(messageToEmailListDTO(message, uid));
                     }
                     getPersonData(folder, emailListDTOList);
                     folder.close(true);
@@ -689,16 +724,16 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         // 发送/接收时间搜索（开始时间）
         if (searchDTO.getStartDate() != null) {
             OrTerm startDateTerm =
-                new OrTerm(new SearchTerm[] {new SentDateTerm(ComparisonTerm.GE, searchDTO.getStartDate()),
-                    new ReceivedDateTerm(ComparisonTerm.GE, searchDTO.getStartDate())});
+                    new OrTerm(new SearchTerm[] {new SentDateTerm(ComparisonTerm.GE, searchDTO.getStartDate()),
+                            new ReceivedDateTerm(ComparisonTerm.GE, searchDTO.getStartDate())});
             searchTermList.add(startDateTerm);
         }
 
         // 发送/接收时间搜索（结束时间）
         if (searchDTO.getEndDate() != null) {
             OrTerm endDateTerm =
-                new OrTerm(new SearchTerm[] {new SentDateTerm(ComparisonTerm.LE, searchDTO.getEndDate()),
-                    new ReceivedDateTerm(ComparisonTerm.LE, searchDTO.getEndDate())});
+                    new OrTerm(new SearchTerm[] {new SentDateTerm(ComparisonTerm.LE, searchDTO.getEndDate()),
+                            new ReceivedDateTerm(ComparisonTerm.LE, searchDTO.getEndDate())});
             searchTermList.add(endDateTerm);
         }
 
@@ -769,7 +804,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         if (folderSent.exists()) {
             folderSent.open(Folder.READ_ONLY);
             Message[] messagesSent =
-                folderSent.getMessages(1, folderSent.getMessageCount() <= 20 ? folderSent.getMessageCount() : 20);
+                    folderSent.getMessages(1, folderSent.getMessageCount() <= 20 ? folderSent.getMessageCount() : 20);
             if (messagesSent != null && messagesSent.length > 0) {
                 for (int i = messagesSent.length - 1; i >= 0; i--) {
                     IMAPMessage imapMessage = (IMAPMessage)messagesSent[i];
@@ -784,11 +819,11 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         IMAPFolder folderINBOX = (IMAPFolder)receiveMailSession.getFolder("INBOX");
         if (!folderINBOX.exists())
             folderINBOX =
-                (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("INBOX");
+                    (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("INBOX");
         if (folderINBOX.exists()) {
             folderINBOX.open(Folder.READ_ONLY);
             Message[] messagesINBOX =
-                folderINBOX.getMessages(1, folderINBOX.getMessageCount() <= 20 ? folderINBOX.getMessageCount() : 20);
+                    folderINBOX.getMessages(1, folderINBOX.getMessageCount() <= 20 ? folderINBOX.getMessageCount() : 20);
             if (messagesINBOX != null && messagesINBOX.length > 0) {
                 for (int i = messagesINBOX.length - 1; i >= 0; i--) {
                     IMAPMessage imapMessage = (IMAPMessage)messagesINBOX[i];
@@ -817,22 +852,13 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         emailListDTO.setAttachment(isHasAttachment(message));
         emailListDTO.setAttachmentSize(getAttachmentSize(message));
         emailListDTO.setToPersonNames(getToString(message.getAllRecipients()));
-        try {
-            MimeMessage mm = (MimeMessage)message;
-            MimeMessageParser parser = null;
-            parser = new MimeMessageParser(mm).parse();
-            if (parser != null)
-                emailListDTO.setText(parser.getPlainContent());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         return emailListDTO;
     }
 
     private String getFolderString(Message message) {
         String folder = message.getFolder().getName();
         return "INBOX".equals(folder) ? "收件箱"
-            : "Sent".equals(folder) ? "已发送" : "Trash".equals(folder) ? "回收站" : "Drafts".equals(folder) ? "草稿箱" : folder;
+                : "Sent".equals(folder) ? "已发送" : "Trash".equals(folder) ? "回收站" : "Drafts".equals(folder) ? "草稿箱" : folder;
     }
 
     private String getFromString(Message message) throws MessagingException {
@@ -840,51 +866,11 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         return internetAddress.getAddress().split("@")[0];
     }
 
-    public static boolean isHasAttachment(Message message) throws IOException, MessagingException {
-        boolean hasAttachment = false;
-        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
-            MimeMultipart mmp = (MimeMultipart)message.getContent();
-            int count = mmp.getCount();
-            for (int j = 0; j < count; j++) {
-                BodyPart bodyPart = mmp.getBodyPart(j);
-                String disposition = bodyPart.getDisposition();
-                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
-                    hasAttachment = true;
-                }
-            }
-        }
-        return hasAttachment;
-    }
-
-    private static String getAttachmentSize(Message message) throws IOException, MessagingException {
-        long attachmentSize = 0L;
-        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
-            MimeMultipart mmp = (MimeMultipart)message.getContent();
-            int count = mmp.getCount();
-            for (int j = 0; j < count; j++) {
-                BodyPart bodyPart = mmp.getBodyPart(j);
-                String disposition = bodyPart.getDisposition();
-                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
-                    InputStream inputStream = bodyPart.getInputStream();
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[4096];
-                    int bytesRead = -1;
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-                    attachmentSize += outputStream.toByteArray().length;
-                    outputStream.close();
-                }
-            }
-        }
-        return (attachmentSize >> 10) + " KB";
-    }
-
     private String getToString(Address[] to) {
         String toPerson = "";
         if (null != to) {
             toPerson = Arrays.stream(to).map(address -> ((InternetAddress)address).getAddress().split("@")[0])
-                .collect(Collectors.joining(";"));
+                    .collect(Collectors.joining(";"));
         }
         return toPerson;
     }
@@ -899,6 +885,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         email.setSendTime(mimeMessage.getSentDate());
         email.setRichText(getRichText(parser));
         email.setEmailAttachmentDTOList(parseEmailAttachmentList(parser.getAttachmentList()));
+
         email.setToEmailAddressList(getEmailAddressList(parser, Message.RecipientType.TO));
         email.setCcEmailAddressList(getEmailAddressList(parser, Message.RecipientType.CC));
         email.setBccEmailAddressList(getEmailAddressList(parser, Message.RecipientType.BCC));
@@ -920,16 +907,16 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     private List<String> getEmailAddressList(MimeMessageParser parser, Message.RecipientType recipientType)
-        throws Exception {
+            throws Exception {
         if (recipientType == Message.RecipientType.TO) {
             return parser.getTo().stream().map(address -> ((InternetAddress)address).getAddress())
-                .collect(Collectors.toList());
+                    .collect(Collectors.toList());
         } else if (recipientType == Message.RecipientType.CC) {
             return parser.getCc().stream().map(address -> ((InternetAddress)address).getAddress())
-                .collect(Collectors.toList());
+                    .collect(Collectors.toList());
         } else {
             return parser.getBcc().stream().map(address -> ((InternetAddress)address).getAddress())
-                .collect(Collectors.toList());
+                    .collect(Collectors.toList());
         }
     }
 
@@ -953,7 +940,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     private void setAlternativeContent(final MimePart part, String text, String html)
-        throws MessagingException, IOException {
+            throws MessagingException, IOException {
         if (isMimeType(part, "text/plain") && !Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
             part.setContent(text, "text/plain;charset=UTF-8");
         } else {
@@ -1034,14 +1021,14 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     private void setRecipients(MimeMessage mimeMessage, List<String> toPersonIdList, List<String> ccPersonIdList,
-        List<String> bccPersonIdList) throws MessagingException {
+                               List<String> bccPersonIdList) throws MessagingException {
         setRecipients(mimeMessage, toPersonIdList, Message.RecipientType.TO);
         setRecipients(mimeMessage, ccPersonIdList, Message.RecipientType.CC);
         setRecipients(mimeMessage, bccPersonIdList, Message.RecipientType.BCC);
     }
 
     private void setRecipients(MimeMessage mimeMessage, List<String> toPersonIdList,
-        Message.RecipientType recipientType) throws MessagingException {
+                               Message.RecipientType recipientType) throws MessagingException {
         if (toPersonIdList != null) {
             int toSize = toPersonIdList.size();
             Address[] toAddress = new Address[toSize];
@@ -1055,15 +1042,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     private void setSubject(MimeMessage mimeMessage, String subject) throws MessagingException {
         mimeMessage.setSubject(subject);
     }
-
-    @Autowired
-    private OrgUnitApi orgUnitApi;
-
-    @Autowired
-    private JamesAddressBookService jamesAddressBookService;
-
-    @Autowired
-    private JamesUserService jamesUserService;
 
     @Override
     public Map<String, Object> addressRelevancy(String search) {
@@ -1094,7 +1072,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             List<EmailContactDTO> emailContactDTOs = new ArrayList<EmailContactDTO>();
             for (EmailContactDTO ec : emailContactDTOList) {
                 if ((StringUtils.isNotBlank(ec.getContactPerson()) && ec.getContactPerson().indexOf(search) != -1)
-                    || (StringUtils.isNotBlank(ec.getContactPersonName())
+                        || (StringUtils.isNotBlank(ec.getContactPersonName())
                         && ec.getContactPersonName().indexOf(search) != -1)) {
                     emailContactDTOs.add(ec);
                 }

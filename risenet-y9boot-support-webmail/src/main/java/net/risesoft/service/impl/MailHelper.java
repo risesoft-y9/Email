@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.activation.DataSource;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.activation.DataSource;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -63,10 +63,10 @@ public class MailHelper {
         // todo 密码
         Y9WebmailProperties emailProperties = properties.getApp().getWebmail();
         ImapServer imapServer = MailServer.create().host(emailProperties.getImapHost())
-            // 3.7.x james 无 authorizationid 时用户密码存在@符号会有问题
-            // 具体可跟踪源码 org.apache.james.imap.processor.AuthenticateProcessor#parseDelegationAttempt
-            .property("mail.imap.sasl.authorizationid", email).port(emailProperties.getImapPort())
-            .auth(email, plainText).buildImapMailServer();
+                // 3.7.x james 无 authorizationid 时用户密码存在@符号会有问题
+                // 具体可跟踪源码 org.apache.james.imap.processor.AuthenticateProcessor#parseDelegationAttempt
+                .property("mail.imap.sasl.authorizationid", email).port(emailProperties.getImapPort())
+                .auth(email, plainText).buildImapMailServer();
         return imapServer.createSession();
     }
 
@@ -77,7 +77,7 @@ public class MailHelper {
 
         Y9WebmailProperties emailProperties = properties.getApp().getWebmail();
         SmtpServer smtpServer = MailServer.create().host(emailProperties.getSmtpHost())
-            .port(emailProperties.getSmtpPort()).auth(email, plainText).buildSmtpMailServer();
+                .port(emailProperties.getSmtpPort()).auth(email, plainText).buildSmtpMailServer();
         return smtpServer.createSession();
     }
 
@@ -119,7 +119,7 @@ public class MailHelper {
                     continue;
                 MimeMessageParser parser = new MimeMessageParser((MimeMessage)message).parse();
                 List<String> emailAddressList = parser.getTo().stream()
-                    .map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
+                        .map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
                 if (emailAddressList != null && emailAddressList.size() != 0) {
                     List<ToDTO> toDTOList = new ArrayList<ToDTO>();
                     for (String emailAddress : emailAddressList) {
@@ -130,7 +130,7 @@ public class MailHelper {
                         JamesUser = jamesUserService.findByEmailAddress(emailAddress);
                         if (JamesUser != null) {
                             person =
-                                personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
+                                    personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                             toDTO.setToName(person.getName());
                             toDTO.setToAvator(person.getAvator());
                         }
@@ -154,7 +154,7 @@ public class MailHelper {
     }
 
     public void getEmailContactDTOList(IMAPFolder folder, List<EmailListDTO> emailReceiverDTOList,
-        List<EmailContactDTO> contactDTOList) {
+                                       List<EmailContactDTO> contactDTOList) {
         JamesUser JamesUser = null;
         Person person = null;
         try {
@@ -165,14 +165,14 @@ public class MailHelper {
                     continue;
                 MimeMessageParser parser = new MimeMessageParser((MimeMessage)message).parse();
                 List<String> emailAddressList = parser.getTo().stream()
-                    .map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
+                        .map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
                 if (emailAddressList != null && emailAddressList.size() != 0) {
                     for (String emailAddress : emailAddressList) {
                         if (emailAddress.equals(email))
                             continue;
                         boolean exists =
-                            contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
-                                && ((String)param.getContactPerson()).equalsIgnoreCase(emailAddress));
+                                contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
+                                        && ((String)param.getContactPerson()).equalsIgnoreCase(emailAddress));
                         if (exists)
                             continue;
                         EmailContactDTO contactDTO = new EmailContactDTO();
@@ -181,7 +181,7 @@ public class MailHelper {
                             JamesUser = jamesUserService.findByEmailAddress(emailAddress);
                             if (JamesUser != null) {
                                 person = personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId())
-                                    .getData();
+                                        .getData();
                                 contactDTO.setContactPersonId(person.getId());
                                 contactDTO.setContactPersonName(person.getName());
                                 contactDTO.setContactPersonAvator(person.getAvator());
@@ -193,8 +193,8 @@ public class MailHelper {
                 String from = parser.getFrom();
                 if (StringUtils.isNotBlank(from) && !from.equals(email)) {
                     boolean exists =
-                        contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
-                            && ((String)param.getContactPerson()).equalsIgnoreCase(from));
+                            contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
+                                    && ((String)param.getContactPerson()).equalsIgnoreCase(from));
                     if (exists)
                         continue;
                     EmailContactDTO contactDTO = new EmailContactDTO();
@@ -203,7 +203,7 @@ public class MailHelper {
                         JamesUser = jamesUserService.findByEmailAddress(parser.getFrom());
                         if (JamesUser != null) {
                             person =
-                                personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
+                                    personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                             contactDTO.setContactPersonId(person.getId());
                             contactDTO.setContactPersonName(person.getName());
                             contactDTO.setContactPersonAvator(person.getAvator());

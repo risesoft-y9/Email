@@ -1,8 +1,8 @@
 package net.risesoft.james.entity.term;
 
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.search.AddressStringTerm;
+import jakarta.mail.Address;
+import jakarta.mail.Message;
+import jakarta.mail.search.AddressStringTerm;
 
 /**
  * description：收件人搜索

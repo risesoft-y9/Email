@@ -2,11 +2,11 @@ package net.risesoft.james.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 
 import org.hibernate.annotations.Comment;
 
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "JAMES_IMPORT_EML")
-@org.hibernate.annotations.Table(comment = "历史邮件详细信息", appliesTo = "JAMES_IMPORT_EML")
+@Comment("历史邮件详细信息" )
 public class ImportEml implements Serializable {
 
     private static final long serialVersionUID = -3212100925052119103L;

@@ -2,18 +2,18 @@ package net.risesoft.service.impl;
 
 import java.util.List;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.MimetypesFileTypeMap;
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.MimetypesFileTypeMap;
+import jakarta.mail.Address;
+import jakarta.mail.Message;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.util.ByteArrayDataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,13 +35,13 @@ public class EmailMessageServiceImpl extends MailHelper implements EmailMessageS
 
     @Override
     public void send(Integer messageNumber, String subject, String richText, List<String> emailAddressList,
-        List<String> ccEmailAddressList, List<String> bccEmailAddressList, List<String> attachmentIdList)
-        throws Exception {
+                     List<String> ccEmailAddressList, List<String> bccEmailAddressList, List<String> attachmentIdList)
+            throws Exception {
         SendMailSession sendMailSession = createSendMailSession();
         sendMailSession.open();
         Session session = sendMailSession.getSession();
         MimeMessage mimeMessage = createEmail(session, emailAddressList, ccEmailAddressList, bccEmailAddressList,
-            subject, richText, attachmentIdList);
+                subject, richText, attachmentIdList);
         Transport transport = sendMailSession.getService();
         // transport.connect(emailHost, loginName + "@" + emailHost, plainText);
 
@@ -50,7 +50,7 @@ public class EmailMessageServiceImpl extends MailHelper implements EmailMessageS
     }
 
     public MimeMessage createEmail(Session session, List<String> toJamesUserIds, List<String> ccJamesUserIds,
-        List<String> bccJamesUserIds, String title, String body, List<String> attachmentIdList) throws Exception {
+                                   List<String> bccJamesUserIds, String title, String body, List<String> attachmentIdList) throws Exception {
         UserInfo userInfo = Y9LoginUserHolder.getUserInfo();
         MimeMessage message = new MimeMessage(session);
         /** 发件人 **/
@@ -97,7 +97,7 @@ public class EmailMessageServiceImpl extends MailHelper implements EmailMessageS
                 byte[] bytes = y9FileStoreService.downloadFileToBytes(attachmentId);
                 Y9FileStore y9FileStore = y9FileStoreService.getById(attachmentId);
                 DataSource dataSource = new ByteArrayDataSource(bytes,
-                    new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
+                        new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
                 DataHandler dataHandler = new DataHandler(dataSource);
                 mimeBodyPart.setDataHandler(dataHandler);
                 mimeBodyPart.setFileName(y9FileStore.getFileName());

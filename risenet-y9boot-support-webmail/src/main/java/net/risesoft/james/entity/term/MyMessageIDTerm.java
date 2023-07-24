@@ -1,8 +1,8 @@
 package net.risesoft.james.entity.term;
 
-import javax.mail.Message;
-import javax.mail.search.MessageIDTerm;
-import javax.mail.search.StringTerm;
+import jakarta.mail.Message;
+import jakarta.mail.search.MessageIDTerm;
+import jakarta.mail.search.StringTerm;
 
 public final class MyMessageIDTerm extends StringTerm {
 

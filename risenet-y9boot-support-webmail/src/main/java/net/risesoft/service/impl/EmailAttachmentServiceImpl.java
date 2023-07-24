@@ -13,20 +13,20 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.activation.DataHandler;
-import javax.activation.MimetypesFileTypeMap;
-import javax.mail.BodyPart;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.activation.DataHandler;
+import jakarta.activation.MimetypesFileTypeMap;
+import jakarta.mail.BodyPart;
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.util.ByteArrayDataSource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +47,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
     @Override
     public void download(String folderName, String messageId, String name, HttpServletResponse response,
-        HttpServletRequest request) throws IOException, MessagingException {
+                         HttpServletRequest request) throws IOException, MessagingException {
         InputStream inputStream = null;
         String filename = name;
         if (request.getHeader("User-Agent").toLowerCase().indexOf("firefox") > 0) {
@@ -76,7 +76,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
             BodyPart bodyPart = mimeMultipart.getBodyPart(i);
             String disposition = bodyPart.getDisposition();
             if (StringUtils.isNotBlank(disposition) && disposition.equals(Part.ATTACHMENT)
-                && name.equals(bodyPart.getFileName())) {
+                    && name.equals(bodyPart.getFileName())) {
                 inputStream = bodyPart.getInputStream();
                 int len = 0;
                 byte[] buffer = new byte[1024];
@@ -94,7 +94,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
     @Override
     public void batchDownload(String folderName, String messageId, HttpServletRequest request,
-        HttpServletResponse response) {
+                              HttpServletResponse response) {
         DataOutputStream dataOutputStream = null;
         ZipOutputStream zipOutputStream = null;
         OutputStream outputStream = null;
@@ -179,7 +179,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
     @Override
     public EmailAttachmentDTO addAttachment(String folder, String messageId, MultipartFile file)
-        throws MessagingException, IOException {
+            throws MessagingException, IOException {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
         receiveMailSession.open();
 
@@ -201,7 +201,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         ByteArrayDataSource dataSource =
-            new ByteArrayDataSource(file.getBytes(), new MimetypesFileTypeMap().getContentType(fileName));
+                new ByteArrayDataSource(file.getBytes(), new MimetypesFileTypeMap().getContentType(fileName));
         dataSource.setName(fileName);
         DataHandler dataHandler = new DataHandler(dataSource);
         mimeBodyPart.setDataHandler(dataHandler);
@@ -221,7 +221,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
     @Override
     public void removeAttachment(String folder, String messageId, String fileName)
-        throws MessagingException, IOException {
+            throws MessagingException, IOException {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
         receiveMailSession.open();
 
@@ -241,7 +241,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
         for (int i = 0; i < originMimeMultipart.getCount(); i++) {
             BodyPart bodyPart = originMimeMultipart.getBodyPart(i);
             if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())
-                && Objects.equals(fileName, bodyPart.getFileName())) {
+                    && Objects.equals(fileName, bodyPart.getFileName())) {
                 originMimeMultipart.removeBodyPart(i);
             }
         }
