@@ -1,46 +1,42 @@
 package net.risesoft.service.impl;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.activation.DataSource;
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import cn.hutool.core.lang.hash.Hash;
-import net.risesoft.controller.dto.*;
+import com.sun.mail.imap.IMAPFolder;
+import jodd.mail.ImapServer;
+import jodd.mail.MailServer;
+import jodd.mail.ReceiveMailSession;
+import jodd.mail.SendMailSession;
+import jodd.mail.SmtpServer;
+import net.risesoft.controller.dto.EmailAttachmentDTO;
+import net.risesoft.controller.dto.EmailContactDTO;
+import net.risesoft.controller.dto.EmailListDTO;
+import net.risesoft.controller.dto.ToDTO;
 import net.risesoft.james.entity.JamesUser;
+import net.risesoft.james.entity.term.MyMessageIDTerm;
+import net.risesoft.james.service.JamesUserService;
 import net.risesoft.model.platform.Person;
-import net.risesoft.support.EmailErrorCodeEnum;
+import net.risesoft.support.EmailThreadLocalHolder;
 import net.risesoft.util.MimeMessageParser;
-import net.risesoft.y9.exception.Y9BusinessException;
+import net.risesoft.y9.Y9LoginUserHolder;
+import net.risesoft.y9.configuration.Y9Properties;
+import net.risesoft.y9.configuration.app.y9webmail.Y9WebmailProperties;
+import net.risesoft.y9.util.signing.Y9MessageDigest;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import y9.client.rest.platform.org.PersonApiClient;
 
-import com.sun.mail.imap.IMAPFolder;
-
-import net.risesoft.james.entity.term.MyMessageIDTerm;
-import net.risesoft.james.service.JamesUserService;
-import net.risesoft.support.EmailThreadLocalHolder;
-import net.risesoft.y9.Y9LoginUserHolder;
-import net.risesoft.y9.configuration.Y9Properties;
-import net.risesoft.y9.configuration.app.y9webmail.Y9WebmailProperties;
-import net.risesoft.y9.util.signing.Y9MessageDigest;
-
-import jodd.mail.ImapServer;
-import jodd.mail.MailServer;
-import jodd.mail.ReceiveMailSession;
-import jodd.mail.SendMailSession;
-import jodd.mail.SmtpServer;
-import y9.client.platform.org.PersonApiClient;
+import javax.activation.DataSource;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MailHelper {

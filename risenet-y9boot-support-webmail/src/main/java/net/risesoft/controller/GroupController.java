@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.risesoft.api.customgroup.CustomGroupApi;
-import net.risesoft.api.org.PersonApi;
+import net.risesoft.api.platform.customgroup.CustomGroupApi;
+import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.model.platform.CustomGroup;
 import net.risesoft.model.platform.CustomGroupMember;

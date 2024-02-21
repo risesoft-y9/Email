@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import net.risesoft.api.customgroup.CustomGroupApi;
-import net.risesoft.api.org.DepartmentApi;
+import net.risesoft.api.platform.customgroup.CustomGroupApi;
+import net.risesoft.api.platform.org.DepartmentApi;
 import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.james.entity.JamesUser;
 import net.risesoft.james.repository.JamesUserRepository;

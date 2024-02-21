@@ -1,7 +1,6 @@
 package net.risesoft.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,12 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.risesoft.controller.dto.*;
-import net.risesoft.model.platform.Person;
-import net.risesoft.support.EmailThreadLocalHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import net.risesoft.api.org.PersonApi;
+import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.pojo.Y9Page;
 import net.risesoft.pojo.Y9Result;
 import net.risesoft.service.EmailService;
@@ -102,8 +99,10 @@ public class EmailController {
     public Y9Result<Object> flag(@RequestParam(value = "uids") long[] uids, @RequestParam String folder,
         boolean flagged) throws Exception {
         emailService.flag(folder, uids, flagged);
-        if(flagged) return Y9Result.successMsg("标星成功");
-        else return Y9Result.successMsg("取消标星成功");
+        if (flagged)
+            return Y9Result.successMsg("标星成功");
+        else
+            return Y9Result.successMsg("取消标星成功");
     }
 
     /**
@@ -267,14 +266,14 @@ public class EmailController {
      */
     @ResponseBody
     @RequestMapping(value = "/contact")
-    public Y9Result<Object> contactPerson() throws MessagingException, IOException{
+    public Y9Result<Object> contactPerson() throws MessagingException, IOException {
         List<EmailContactDTO> contactPerson = emailService.contactPerson();
         return Y9Result.success(contactPerson);
     }
 
     /**
-     * 邮件地址/姓名 关联
-     * search 邮件地址/姓名
+     * 邮件地址/姓名 关联 search 邮件地址/姓名
+     * 
      * @return
      */
     @GetMapping(value = "/addressRelevancy")

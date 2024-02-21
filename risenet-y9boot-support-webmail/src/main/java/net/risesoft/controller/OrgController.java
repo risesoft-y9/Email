@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.risesoft.api.org.OrgUnitApi;
-import net.risesoft.api.org.OrganizationApi;
+import net.risesoft.api.platform.org.OrgUnitApi;
+import net.risesoft.api.platform.org.OrganizationApi;
 import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.enums.platform.OrgTreeTypeEnum;
 import net.risesoft.james.service.JamesUserService;

@@ -39,7 +39,7 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.risesoft.api.org.OrgUnitApi;
+import net.risesoft.api.platform.org.OrgUnitApi;
 import net.risesoft.controller.dto.*;
 import net.risesoft.enums.platform.OrgTreeTypeEnum;
 import net.risesoft.enums.platform.OrgTypeEnum;
@@ -58,7 +58,7 @@ import org.springframework.stereotype.Service;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPMessage;
 
-import net.risesoft.api.org.PersonApi;
+import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.id.Y9IdGenerator;
 import net.risesoft.james.entity.term.MyAttachmentTerm;
 import net.risesoft.james.entity.term.MyBodyTerm;
@@ -379,13 +379,13 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     emailReceiverDTOList.add(messageToEmailListDTO(messages[i], uid));
                 }
                 // 未读置顶
-                if(!"Sent".equals(folderName)){
+                if (!"Sent".equals(folderName)) {
                     emailReceiverDTOList = emailReceiverDTOList.stream().sorted(EmailListDTO.getComparator())
-                            .collect(java.util.stream.Collectors.toList());
+                        .collect(java.util.stream.Collectors.toList());
                 }
             }
         }
-        getPersonData(folder,emailReceiverDTOList);
+        getPersonData(folder, emailReceiverDTOList);
         folder.close(true);
         receiveMailSession.close();
         return Y9Page.success(page, totalPage, totalCount, emailReceiverDTOList);
@@ -578,7 +578,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     long uid = folder.getUID(message);
                     emailListDTOList.add(messageToEmailListDTO(message, uid));
                 }
-                getPersonData(folder,emailListDTOList);
+                getPersonData(folder, emailListDTOList);
                 folder.close(true);
             }
 
@@ -592,7 +592,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                         long uid = folder.getUID(message);
                         emailListDTOList.add(messageToEmailListDTO(message, uid));
                     }
-                    getPersonData(folder,emailListDTOList);
+                    getPersonData(folder, emailListDTOList);
                     folder.close(true);
                 }
             }
@@ -717,10 +717,12 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         List<EmailListDTO> emailReceiverDTOList = new ArrayList<>();
 
         IMAPFolder folderSent = (IMAPFolder)receiveMailSession.getFolder("Sent");
-        if (!folderSent.exists()) folderSent = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("Sent");
+        if (!folderSent.exists())
+            folderSent = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("Sent");
         if (folderSent.exists()) {
             folderSent.open(Folder.READ_ONLY);
-            Message[] messagesSent = folderSent.getMessages(1, folderSent.getMessageCount()<=20?folderSent.getMessageCount():20);
+            Message[] messagesSent =
+                folderSent.getMessages(1, folderSent.getMessageCount() <= 20 ? folderSent.getMessageCount() : 20);
             if (messagesSent != null && messagesSent.length > 0) {
                 for (int i = messagesSent.length - 1; i >= 0; i--) {
                     IMAPMessage imapMessage = (IMAPMessage)messagesSent[i];
@@ -729,14 +731,17 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 }
             }
         }
-        getEmailContactDTOList(folderSent,emailReceiverDTOList,contactDTOList);
+        getEmailContactDTOList(folderSent, emailReceiverDTOList, contactDTOList);
         folderSent.close(true);
         emailReceiverDTOList = new ArrayList<>();
         IMAPFolder folderINBOX = (IMAPFolder)receiveMailSession.getFolder("INBOX");
-        if (!folderINBOX.exists()) folderINBOX = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("INBOX");
+        if (!folderINBOX.exists())
+            folderINBOX =
+                (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("INBOX");
         if (folderINBOX.exists()) {
             folderINBOX.open(Folder.READ_ONLY);
-            Message[] messagesINBOX = folderINBOX.getMessages(1, folderINBOX.getMessageCount()<=20?folderINBOX.getMessageCount():20);
+            Message[] messagesINBOX =
+                folderINBOX.getMessages(1, folderINBOX.getMessageCount() <= 20 ? folderINBOX.getMessageCount() : 20);
             if (messagesINBOX != null && messagesINBOX.length > 0) {
                 for (int i = messagesINBOX.length - 1; i >= 0; i--) {
                     IMAPMessage imapMessage = (IMAPMessage)messagesINBOX[i];
@@ -745,7 +750,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 }
             }
         }
-        getEmailContactDTOList(folderINBOX,emailReceiverDTOList,contactDTOList);
+        getEmailContactDTOList(folderINBOX, emailReceiverDTOList, contactDTOList);
         folderINBOX.close(true);
         receiveMailSession.close();
         return contactDTOList;
@@ -1006,14 +1011,14 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     private JamesUserService jamesUserService;
 
     @Override
-    public Map<String,Object> addressRelevancy(String search) {
-        Map<String,Object> map = new HashMap<String,Object>();
+    public Map<String, Object> addressRelevancy(String search) {
+        Map<String, Object> map = new HashMap<String, Object>();
         String tenantId = Y9LoginUserHolder.getTenantId();
-        //从组织架构获取
+        // 从组织架构获取
         List<OrgUnit> orgUnitList = orgUnitApi.treeSearch(tenantId, search, OrgTreeTypeEnum.TREE_TYPE_PERSON).getData();
         List<OrgUnit> orgUnits = new ArrayList<OrgUnit>();
-        for(OrgUnit ou : orgUnitList){
-            if(OrgTypeEnum.PERSON.getEnName().equals(ou.getOrgType().getEnName())){
+        for (OrgUnit ou : orgUnitList) {
+            if (OrgTypeEnum.PERSON.getEnName().equals(ou.getOrgType().getEnName())) {
                 Person person = (Person)ou;
                 String email = jamesUserService.getEmailAddressByPersonId(ou.getId());
                 if (StringUtils.isEmpty(email)) {
@@ -1024,20 +1029,22 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 orgUnits.add(person);
             }
         }
-        map.put("business",orgUnits);
-        //从个人通讯录获取
-        List<JamesAddressBook> jamesAddressBookList= jamesAddressBookService.findSearch(search);
-        map.put("personal",jamesAddressBookList);
-        //从最近联系人获取
+        map.put("business", orgUnits);
+        // 从个人通讯录获取
+        List<JamesAddressBook> jamesAddressBookList = jamesAddressBookService.findSearch(search);
+        map.put("personal", jamesAddressBookList);
+        // 从最近联系人获取
         try {
             List<EmailContactDTO> emailContactDTOList = this.contactPerson();
             List<EmailContactDTO> emailContactDTOs = new ArrayList<EmailContactDTO>();
-            for(EmailContactDTO ec : emailContactDTOList){
-                if((StringUtils.isNotBlank(ec.getContactPerson()) && ec.getContactPerson().indexOf(search) != -1) || (StringUtils.isNotBlank(ec.getContactPersonName()) && ec.getContactPersonName().indexOf(search) != -1)){
+            for (EmailContactDTO ec : emailContactDTOList) {
+                if ((StringUtils.isNotBlank(ec.getContactPerson()) && ec.getContactPerson().indexOf(search) != -1)
+                    || (StringUtils.isNotBlank(ec.getContactPersonName())
+                        && ec.getContactPersonName().indexOf(search) != -1)) {
                     emailContactDTOs.add(ec);
                 }
             }
-            map.put("recently",emailContactDTOs);
+            map.put("recently", emailContactDTOs);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
