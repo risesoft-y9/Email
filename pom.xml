@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.risesoft</groupId>
+    <artifactId>y9-module-webmail</artifactId>
+    <packaging>pom</packaging>
+    <version>v9.6.4-SNAPSHOT</version>
+
+    <parent>
+        <groupId>net.risesoft</groupId>
+        <artifactId>y9-email</artifactId>
+        <version>v9.6.4-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modules>
+        <module>risenet-y9boot-support-webmail</module>
+        <module>risenet-y9boot-webapp-webmail</module>
+    </modules>
+
+</project>
