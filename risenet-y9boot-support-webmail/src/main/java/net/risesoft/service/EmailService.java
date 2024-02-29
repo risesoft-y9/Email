@@ -32,6 +32,8 @@ public interface EmailService {
 
     Map<String, Object> getTodoCount(String personId) throws MessagingException;
 
+    Map<String, Object> getUnReadCount(String personId) throws MessagingException;
+
     Y9Page<EmailListDTO> listByFolder(String folderName, int page, int rows) throws MessagingException, IOException;
 
     void move(long[] uids, String originFolderName, String toFolderName) throws MessagingException;
@@ -53,4 +55,5 @@ public interface EmailService {
     List<EmailContactDTO> contactPerson() throws MessagingException, IOException;
 
     Map<String,Object> addressRelevancy(String search);
+
 }

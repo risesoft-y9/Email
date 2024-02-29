@@ -809,4 +809,25 @@ public class EmailMobileController {
         return Y9Result.success(emailService.addressRelevancy(search));
     }
 
+   /**
+    * 收件箱邮件未读消息数
+    * @author SGX
+    * @date 2024/2/27 10:31
+    * @param tenantId 租户id
+    * @param userId 用户id search 邮件地址/姓名
+    * @return
+    */
+    @GetMapping(value = "/unread")
+    public Y9Result<Object> unread(@RequestHeader(value = "auth-tenantId") String tenantId,
+                                 @RequestHeader(value = "auth-userId") String userId) throws Exception {
+        Y9LoginUserHolder.setTenantId(tenantId);
+        Person person = personApi.getPerson(tenantId, userId).getData();
+        Y9LoginUserHolder.setUserInfo(person.toUserInfo());
+        String personId = Y9LoginUserHolder.getUserInfo().getPersonId();
+        String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
+        EmailThreadLocalHolder.setEmailAddress(emailAddress);
+        Map<String, Object> todoList = emailService.getUnReadCount(personId);
+        return Y9Result.success(todoList);
+    }
+
 }

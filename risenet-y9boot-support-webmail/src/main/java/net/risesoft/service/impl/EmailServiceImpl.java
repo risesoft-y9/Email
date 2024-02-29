@@ -93,6 +93,9 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     PersonApi personApi;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private Y9FileStoreService y9FileStoreService;
 
     private static void setMailer(MimeMessage mimeMessage) throws MessagingException {
@@ -342,6 +345,20 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         if (0 != deletedCount) {
             data.put(DefaultFolder.TRASH.getName(), deletedCount);
         }
+        return data;
+    }
+
+    @Override
+    public Map<String, Object> getUnReadCount(String personId) throws MessagingException {
+        Map<String, Object> data = new HashMap<>();
+        //收件箱未读计数
+        int receivedCount = getCountByFolder(DefaultFolder.INBOX.getName(), true);
+        if (0 != receivedCount) {
+            data.put(DefaultFolder.INBOX.getName(), receivedCount);
+        }else{
+            data.put(DefaultFolder.INBOX.getName(),0);
+        }
+
         return data;
     }
 
@@ -612,6 +629,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
         return Y9Page.success(page, totalPage, totalCount, emailListDTOList);
     }
+
 
     private SearchTerm buildSearchTerm(EmailSearchDTO searchDTO) {
         List<SearchTerm> searchTermList = new ArrayList<>();
