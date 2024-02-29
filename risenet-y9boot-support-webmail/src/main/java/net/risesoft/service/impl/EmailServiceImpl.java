@@ -349,20 +349,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     @Override
-    public Map<String, Object> getUnReadCount(String personId) throws MessagingException {
-        Map<String, Object> data = new HashMap<>();
-        //收件箱未读计数
-        int receivedCount = getCountByFolder(DefaultFolder.INBOX.getName(), true);
-        if (0 != receivedCount) {
-            data.put(DefaultFolder.INBOX.getName(), receivedCount);
-        }else{
-            data.put(DefaultFolder.INBOX.getName(),0);
-        }
-
-        return data;
-    }
-
-    @Override
     public Y9Page<EmailListDTO> listByFolder(String folderName, int page, int rows)
         throws MessagingException, IOException {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
@@ -628,6 +614,29 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         receiveMailSession.close();
 
         return Y9Page.success(page, totalPage, totalCount, emailListDTOList);
+    }
+
+    @Override
+    public int todoCount(String folder) {
+        ReceiveMailSession receiveMailSession = createReceiveMailSession();
+        receiveMailSession.open();
+        IMAPFolder folder1 = (IMAPFolder) receiveMailSession.getFolder(folder);
+        List<EmailListDTO> emailListDTOList = new ArrayList<>();
+        EmailSearchDTO searchDTO = new EmailSearchDTO();
+        searchDTO.setRead(false);
+        searchDTO.setFolder(folder);
+        SearchTerm searchTerm = buildSearchTerm(searchDTO);
+        try {
+            if (folder1.exists()) {
+                folder1.open(Folder.READ_WRITE);
+                Message[] messages = folder1.search(searchTerm);
+                    return messages.length;
+            }
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return 0;
     }
 
 

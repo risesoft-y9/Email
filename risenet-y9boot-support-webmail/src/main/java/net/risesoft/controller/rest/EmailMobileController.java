@@ -793,7 +793,7 @@ public class EmailMobileController {
 
     /**
      * 邮件地址关联
-     * 
+     *
      * @param tenantId 租户id
      * @param userId 用户id search 邮件地址/姓名
      * @return
@@ -826,8 +826,8 @@ public class EmailMobileController {
         String personId = Y9LoginUserHolder.getUserInfo().getPersonId();
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
-        Map<String, Object> todoList = emailService.getUnReadCount(personId);
-        return Y9Result.success(todoList);
+        int conunt = emailService.todoCount("INBOX");
+        return Y9Result.success(conunt);
     }
 
 }
