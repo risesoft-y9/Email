@@ -40,23 +40,6 @@ spring:
             - optional:nacos:webmail.yml
             #- optional:nacos:test01.yml?group=group_02
             #- optional:nacos:test02.yml?group=group_03&refreshEnabled=false
-    boot:
-        admin:
-            client:
-                enabled: false
-                instance:
-                    service-base-url: http://localhost:7055
-                password: '83204585'
-                url: http://localhost:8888/bootAdmin
-                username: y9admin
-    data:
-        mongodb:
-            database: y9database
-            authenticationDatabase: admin
-            host: localhost
-            password: '83204585'
-            port: 27017
-            username: y9admin
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         name: y9PublicDS
@@ -183,27 +166,13 @@ y9:
         org:
             directUrl: http://localhost:7055
     common:
-        idEnabled: 0
-        tomcatPassword: tomcat
-        tomcatUserName: tomcat
-        itemAdminBaseUrl: http://127.0.0.1:7057/itemAdmin
-        logBaseUrl: http://127.0.0.1:7055/log
+        default-password: 111111
+        kafkaEnabled: true
         orgBaseUrl: http://127.0.0.1:7055/platform
-        processAdminBaseUrl: http://127.0.0.1:7057/processAdmin
         emailBaseUrl: http://127.0.0.1:7056/email
         webmailBaseUrl: http://127.0.0.1:7056/webmail
-        soaBaseUrl: http://127.0.0.1:7055/soa
-        todoBaseUrl: http://127.0.0.1:7055/todo
-        smsBaseUrl: http://127.0.0.1:7055/sms
-        cmsBaseUrl: http://127.0.0.1:7055/cms
-        userOnlineBaseUrl: http://127.0.0.1:7055/userOnline
-        y9homeBaseUrl: http://127.0.0.1:7056/y9home
         jodconverterBaseUrl: http://newoa.nanhai.gov.cn/jodconverter
-        y9DigitalBaseUrl: http://localhost:7055/y9DigitalBase
-        default-password: 111111
     feature:
-        cache:
-            enabled: true
         file:
             rest:
                 fileManagerUrl: http://127.0.0.1:7055/fileManager
@@ -239,28 +208,12 @@ y9:
             packagesToScanRepositoryPublic: net.risesoft.y9public.repository
             packagesToScanRepositoryTenant: net.risesoft.repository
             packagesToScanRepositoryDedicated: net.risesoft.james.repository
-        mongo:
-            packagesToScanEntityPublic: net.risesoft.y9public.entity
-            packagesToScanRepositoryPublic: net.risesoft.y9public.repository
-            packagesToScanEntityTenant: net.risesoft.entity
-            packagesToScanRepositoryTenant: net.risesoft.repository
         listener:
-            redis:
-                enabled: false
             kafka:
                 enabled: true
         log:
             enabled: true
-        publish:
-            redis:
-                enabled: false
-            kafka:
-                enabled: true
         session:
-            mongo:
-                collection-name: y9sessions
-                enabled: false
-                maxInactiveIntervalInSeconds: 3600
             redis:
                 enabled: true
                 maxInactiveIntervalInSeconds: 3600
