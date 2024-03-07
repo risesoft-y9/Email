@@ -37,19 +37,7 @@
             <artifactId>risenet-y9boot-starter-jpa-dedicated</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>net.risesoft</groupId>
-            <artifactId>risenet-y9boot-starter-publish-kafka</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.risesoft</groupId>
-            <artifactId>risenet-y9boot-starter-cache-redis</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
+ 
         <dependency>
             <groupId>net.risesoft</groupId>
             <artifactId>risenet-y9boot-starter-log</artifactId>
@@ -148,7 +136,7 @@
                     <version>1.0.0</version>
                     <configuration>
                         <lifecycleMappingMetadata>
-                            <pluginExecutions> 
+                            <pluginExecutions>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>
