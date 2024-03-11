@@ -10,9 +10,6 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.risesoft.james.entity.JamesAddressBook;
-import net.risesoft.james.service.JamesAddressBookService;
-import net.risesoft.support.EmailThreadLocalHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -35,8 +32,10 @@ import net.risesoft.controller.dto.EmailDetailDTO;
 import net.risesoft.controller.dto.EmailFolderDTO;
 import net.risesoft.controller.dto.EmailListDTO;
 import net.risesoft.controller.dto.EmailSearchDTO;
-import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.enums.platform.OrgTreeTypeEnum;
+import net.risesoft.enums.platform.OrgTypeEnum;
+import net.risesoft.james.entity.JamesAddressBook;
+import net.risesoft.james.service.JamesAddressBookService;
 import net.risesoft.james.service.JamesUserService;
 import net.risesoft.model.platform.OrgUnit;
 import net.risesoft.model.platform.Organization;
@@ -46,6 +45,7 @@ import net.risesoft.pojo.Y9Result;
 import net.risesoft.service.EmailAttachmentService;
 import net.risesoft.service.EmailFolderService;
 import net.risesoft.service.EmailService;
+import net.risesoft.support.EmailThreadLocalHolder;
 import net.risesoft.y9.Y9LoginUserHolder;
 
 /**
@@ -809,17 +809,18 @@ public class EmailMobileController {
         return Y9Result.success(emailService.addressRelevancy(search));
     }
 
-   /**
-    * 收件箱邮件未读消息数
-    * @author SGX
-    * @date 2024/2/27 10:31
-    * @param tenantId 租户id
-    * @param userId 用户id search 邮件地址/姓名
-    * @return
-    */
+    /**
+     * 收件箱邮件未读消息数
+     * 
+     * @author SGX
+     * @date 2024/2/27 10:31
+     * @param tenantId 租户id
+     * @param userId 用户id search 邮件地址/姓名
+     * @return
+     */
     @GetMapping(value = "/unread")
     public Y9Result<Object> unread(@RequestHeader(value = "auth-tenantId") String tenantId,
-                                 @RequestHeader(value = "auth-userId") String userId) throws Exception {
+        @RequestHeader(value = "auth-userId") String userId) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
         Person person = personApi.getPerson(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());

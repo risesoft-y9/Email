@@ -1,11 +1,25 @@
 package net.risesoft.service.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.activation.DataSource;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.sun.mail.imap.IMAPFolder;
-import jodd.mail.ImapServer;
-import jodd.mail.MailServer;
-import jodd.mail.ReceiveMailSession;
-import jodd.mail.SendMailSession;
-import jodd.mail.SmtpServer;
+
 import net.risesoft.controller.dto.EmailAttachmentDTO;
 import net.risesoft.controller.dto.EmailContactDTO;
 import net.risesoft.controller.dto.EmailListDTO;
@@ -20,23 +34,14 @@ import net.risesoft.y9.Y9LoginUserHolder;
 import net.risesoft.y9.configuration.Y9Properties;
 import net.risesoft.y9.configuration.app.y9webmail.Y9WebmailProperties;
 import net.risesoft.y9.util.signing.Y9MessageDigest;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 import y9.client.rest.platform.org.PersonApiClient;
 
-import javax.activation.DataSource;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import jodd.mail.ImapServer;
+import jodd.mail.MailServer;
+import jodd.mail.ReceiveMailSession;
+import jodd.mail.SendMailSession;
+import jodd.mail.SmtpServer;
 
 @Service
 public class MailHelper {
@@ -104,24 +109,28 @@ public class MailHelper {
         return emailAttachmentDTO;
     }
 
-    public void getPersonData( IMAPFolder folder, List<EmailListDTO> emailReceiverDTOList) {
+    public void getPersonData(IMAPFolder folder, List<EmailListDTO> emailReceiverDTOList) {
         JamesUser JamesUser = null;
         Person person = null;
         try {
-            for(EmailListDTO emailListDTO : emailReceiverDTOList){
+            for (EmailListDTO emailListDTO : emailReceiverDTOList) {
                 Message message = folder.getMessageByUID(emailListDTO.getUid());
-                if(message == null) continue;
+                if (message == null)
+                    continue;
                 MimeMessageParser parser = new MimeMessageParser((MimeMessage)message).parse();
-                List<String> emailAddressList = parser.getTo().stream().map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
-                if(emailAddressList != null && emailAddressList.size() != 0 ){
+                List<String> emailAddressList = parser.getTo().stream()
+                    .map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
+                if (emailAddressList != null && emailAddressList.size() != 0) {
                     List<ToDTO> toDTOList = new ArrayList<ToDTO>();
-                    for(String emailAddress : emailAddressList){
-                        if(emailAddress.indexOf("@youshengyun.com") == -1) break;
+                    for (String emailAddress : emailAddressList) {
+                        if (emailAddress.indexOf("@youshengyun.com") == -1)
+                            break;
                         ToDTO toDTO = new ToDTO();
                         toDTO.setTo(emailAddress);
                         JamesUser = jamesUserService.findByEmailAddress(emailAddress);
-                        if(JamesUser != null) {
-                            person = personManager.getPerson(Y9LoginUserHolder.getTenantId(),JamesUser.getPersonId()).getData();
+                        if (JamesUser != null) {
+                            person = personManager.getPerson(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId())
+                                .getData();
                             toDTO.setToName(person.getName());
                             toDTO.setToAvator(person.getAvator());
                         }
@@ -129,11 +138,12 @@ public class MailHelper {
                     }
                     emailListDTO.setToDTOList(toDTOList);
                 }
-                if(parser.getFrom().indexOf("@youshengyun.com") != -1) {
+                if (parser.getFrom().indexOf("@youshengyun.com") != -1) {
                     emailListDTO.setFrom(parser.getFrom());
                     JamesUser = jamesUserService.findByEmailAddress(emailListDTO.getFrom());
-                    if(JamesUser != null) {
-                        person = personManager.getPerson(Y9LoginUserHolder.getTenantId(),JamesUser.getPersonId()).getData();
+                    if (JamesUser != null) {
+                        person =
+                            personManager.getPerson(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                         emailListDTO.setFromName(person.getName());
                         emailListDTO.setFromAvator(person.getAvator());
                     }
@@ -144,27 +154,35 @@ public class MailHelper {
         }
     }
 
-    public  void getEmailContactDTOList(IMAPFolder folder, List<EmailListDTO> emailReceiverDTOList, List<EmailContactDTO> contactDTOList){
+    public void getEmailContactDTOList(IMAPFolder folder, List<EmailListDTO> emailReceiverDTOList,
+        List<EmailContactDTO> contactDTOList) {
         JamesUser JamesUser = null;
         Person person = null;
         try {
             String email = jamesUserService.getEmailAddressByPersonId(Y9LoginUserHolder.getPersonId());
-            for(EmailListDTO emailListDTO : emailReceiverDTOList){
+            for (EmailListDTO emailListDTO : emailReceiverDTOList) {
                 Message message = folder.getMessageByUID(emailListDTO.getUid());
-                if(message == null) continue;
+                if (message == null)
+                    continue;
                 MimeMessageParser parser = new MimeMessageParser((MimeMessage)message).parse();
-                List<String> emailAddressList = parser.getTo().stream().map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
-                if(emailAddressList != null && emailAddressList.size() != 0 ){
-                    for(String emailAddress : emailAddressList){
-                        if(emailAddress.equals(email)) continue;
-                        boolean exists = contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String && ((String) param.getContactPerson()).equalsIgnoreCase(emailAddress));
-                        if(exists) continue;
+                List<String> emailAddressList = parser.getTo().stream()
+                    .map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
+                if (emailAddressList != null && emailAddressList.size() != 0) {
+                    for (String emailAddress : emailAddressList) {
+                        if (emailAddress.equals(email))
+                            continue;
+                        boolean exists =
+                            contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
+                                && ((String)param.getContactPerson()).equalsIgnoreCase(emailAddress));
+                        if (exists)
+                            continue;
                         EmailContactDTO contactDTO = new EmailContactDTO();
                         contactDTO.setContactPerson(emailAddress);
-                        if(emailAddress.indexOf("@youshengyun.com") != -1) {
+                        if (emailAddress.indexOf("@youshengyun.com") != -1) {
                             JamesUser = jamesUserService.findByEmailAddress(emailAddress);
-                            if(JamesUser != null) {
-                                person = personManager.getPerson(Y9LoginUserHolder.getTenantId(),JamesUser.getPersonId()).getData();
+                            if (JamesUser != null) {
+                                person = personManager
+                                    .getPerson(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                                 contactDTO.setContactPersonId(person.getId());
                                 contactDTO.setContactPersonName(person.getName());
                                 contactDTO.setContactPersonAvator(person.getAvator());
@@ -174,15 +192,19 @@ public class MailHelper {
                     }
                 }
                 String from = parser.getFrom();
-                if(StringUtils.isNotBlank(from) && !from.equals(email)) {
-                    boolean exists = contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String && ((String) param.getContactPerson()).equalsIgnoreCase(from));
-                    if(exists) continue;
+                if (StringUtils.isNotBlank(from) && !from.equals(email)) {
+                    boolean exists =
+                        contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
+                            && ((String)param.getContactPerson()).equalsIgnoreCase(from));
+                    if (exists)
+                        continue;
                     EmailContactDTO contactDTO = new EmailContactDTO();
                     contactDTO.setContactPerson(parser.getFrom());
-                    if(parser.getFrom().indexOf("@youshengyun.com") != -1) {
+                    if (parser.getFrom().indexOf("@youshengyun.com") != -1) {
                         JamesUser = jamesUserService.findByEmailAddress(parser.getFrom());
-                        if(JamesUser != null) {
-                            person = personManager.getPerson(Y9LoginUserHolder.getTenantId(),JamesUser.getPersonId()).getData();
+                        if (JamesUser != null) {
+                            person = personManager.getPerson(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId())
+                                .getData();
                             contactDTO.setContactPersonId(person.getId());
                             contactDTO.setContactPersonName(person.getName());
                             contactDTO.setContactPersonAvator(person.getAvator());

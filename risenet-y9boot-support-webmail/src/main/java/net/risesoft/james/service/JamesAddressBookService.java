@@ -1,8 +1,8 @@
 package net.risesoft.james.service;
 
-import net.risesoft.james.entity.JamesAddressBook;
-
 import java.util.List;
+
+import net.risesoft.james.entity.JamesAddressBook;
 
 public interface JamesAddressBookService {
 

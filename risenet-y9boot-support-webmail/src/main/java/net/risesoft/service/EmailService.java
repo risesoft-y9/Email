@@ -54,6 +54,6 @@ public interface EmailService {
 
     List<EmailContactDTO> contactPerson() throws MessagingException, IOException;
 
-    Map<String,Object> addressRelevancy(String search);
+    Map<String, Object> addressRelevancy(String search);
 
 }

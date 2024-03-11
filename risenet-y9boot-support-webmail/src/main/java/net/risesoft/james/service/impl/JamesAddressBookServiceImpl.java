@@ -1,14 +1,15 @@
 package net.risesoft.james.service.impl;
 
-import net.risesoft.james.entity.JamesAddressBook;
-import net.risesoft.james.repository.JamesAddressBookRepository;
-import net.risesoft.james.service.JamesAddressBookService;
-import net.risesoft.y9.Y9LoginUserHolder;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import net.risesoft.james.entity.JamesAddressBook;
+import net.risesoft.james.repository.JamesAddressBookRepository;
+import net.risesoft.james.service.JamesAddressBookService;
+import net.risesoft.y9.Y9LoginUserHolder;
 
 @Service(value = "jamesAddressBookService")
 public class JamesAddressBookServiceImpl implements JamesAddressBookService {
@@ -18,8 +19,9 @@ public class JamesAddressBookServiceImpl implements JamesAddressBookService {
 
     @Override
     public JamesAddressBook saveOrUpdate(JamesAddressBook jamesAddressBook) {
-        if(StringUtils.isBlank(jamesAddressBook.getId())){
-            jamesAddressBook.setId(Y9LoginUserHolder.getUserInfo().getPersonId() + "-" + jamesAddressBook.getEmailAddress());
+        if (StringUtils.isBlank(jamesAddressBook.getId())) {
+            jamesAddressBook
+                .setId(Y9LoginUserHolder.getUserInfo().getPersonId() + "-" + jamesAddressBook.getEmailAddress());
         }
         jamesAddressBook.setPersonId(Y9LoginUserHolder.getUserInfo().getPersonId());
         return jamesAddressBookRepository.save(jamesAddressBook);
@@ -27,7 +29,8 @@ public class JamesAddressBookServiceImpl implements JamesAddressBookService {
 
     @Override
     public void delete(String id) {
-        if(jamesAddressBookRepository.findById(id).orElse(null) != null) jamesAddressBookRepository.deleteById(id);
+        if (jamesAddressBookRepository.findById(id).orElse(null) != null)
+            jamesAddressBookRepository.deleteById(id);
     }
 
     @Override
@@ -37,8 +40,9 @@ public class JamesAddressBookServiceImpl implements JamesAddressBookService {
 
     @Override
     public List<JamesAddressBook> findSearch(String search) {
-        //return jamesAddressBookRepository.findSearch(Y9LoginUserHolder.getUserInfo().getPersonId(),"%"+search+"%");
-        return jamesAddressBookRepository.findByPersonIdAndEmailAddressLikeOrNameLikeOrderByNameAsc(Y9LoginUserHolder.getUserInfo().getPersonId(),"%"+search+"%","%"+search+"%");
+        // return jamesAddressBookRepository.findSearch(Y9LoginUserHolder.getUserInfo().getPersonId(),"%"+search+"%");
+        return jamesAddressBookRepository.findByPersonIdAndEmailAddressLikeOrNameLikeOrderByNameAsc(
+            Y9LoginUserHolder.getUserInfo().getPersonId(), "%" + search + "%", "%" + search + "%");
     }
 
     @Override

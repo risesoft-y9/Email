@@ -39,15 +39,6 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.risesoft.api.platform.org.OrgUnitApi;
-import net.risesoft.controller.dto.*;
-import net.risesoft.enums.platform.OrgTreeTypeEnum;
-import net.risesoft.enums.platform.OrgTypeEnum;
-import net.risesoft.james.entity.JamesAddressBook;
-import net.risesoft.james.service.JamesAddressBookService;
-import net.risesoft.james.service.JamesUserService;
-import net.risesoft.model.platform.OrgUnit;
-import net.risesoft.model.platform.Person;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -58,14 +49,23 @@ import org.springframework.stereotype.Service;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPMessage;
 
+import net.risesoft.api.platform.org.OrgUnitApi;
 import net.risesoft.api.platform.org.PersonApi;
+import net.risesoft.controller.dto.*;
+import net.risesoft.enums.platform.OrgTreeTypeEnum;
+import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.id.Y9IdGenerator;
+import net.risesoft.james.entity.JamesAddressBook;
 import net.risesoft.james.entity.term.MyAttachmentTerm;
 import net.risesoft.james.entity.term.MyBodyTerm;
 import net.risesoft.james.entity.term.MyFlagTerm;
 import net.risesoft.james.entity.term.MyFormTerm;
 import net.risesoft.james.entity.term.MyReceiverTerm;
 import net.risesoft.james.entity.term.MySubjectTerm;
+import net.risesoft.james.service.JamesAddressBookService;
+import net.risesoft.james.service.JamesUserService;
+import net.risesoft.model.platform.OrgUnit;
+import net.risesoft.model.platform.Person;
 import net.risesoft.model.user.UserInfo;
 import net.risesoft.pojo.Y9Page;
 import net.risesoft.service.EmailService;
@@ -620,7 +620,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     public int todoCount(String folder) {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
         receiveMailSession.open();
-        IMAPFolder folder1 = (IMAPFolder) receiveMailSession.getFolder(folder);
+        IMAPFolder folder1 = (IMAPFolder)receiveMailSession.getFolder(folder);
         List<EmailListDTO> emailListDTOList = new ArrayList<>();
         EmailSearchDTO searchDTO = new EmailSearchDTO();
         searchDTO.setRead(false);
@@ -630,7 +630,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             if (folder1.exists()) {
                 folder1.open(Folder.READ_WRITE);
                 Message[] messages = folder1.search(searchTerm);
-                    return messages.length;
+                return messages.length;
             }
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -638,7 +638,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
         return 0;
     }
-
 
     private SearchTerm buildSearchTerm(EmailSearchDTO searchDTO) {
         List<SearchTerm> searchTermList = new ArrayList<>();

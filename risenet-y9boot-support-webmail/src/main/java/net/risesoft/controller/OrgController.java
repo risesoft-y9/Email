@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.risesoft.api.platform.org.OrgUnitApi;
 import net.risesoft.api.platform.org.OrganizationApi;
-import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.enums.platform.OrgTreeTypeEnum;
+import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.james.service.JamesUserService;
 import net.risesoft.model.platform.OrgUnit;
 import net.risesoft.model.platform.Organization;

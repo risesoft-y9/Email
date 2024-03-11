@@ -1,14 +1,16 @@
 package net.risesoft.james.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Comment;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
+
+import org.hibernate.annotations.Comment;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +21,7 @@ public class JamesAddressBook implements Serializable {
 
     private static final long serialVersionUID = 7817380951308022777L;
 
-    /** id*/
+    /** id */
     @Id
     @Column(name = "ID", length = 100, nullable = false)
     @Comment("id")
@@ -60,22 +62,22 @@ public class JamesAddressBook implements Serializable {
     @Comment("生日")
     private String birthday;
 
-    /** 公司*/
+    /** 公司 */
     @Column(name = "COMPANY", length = 100)
     @Comment("公司")
     private String company;
 
-    /** 部门*/
+    /** 部门 */
     @Column(name = "DEPARTMENT", length = 100)
     @Comment("部门")
     private String department;
 
-    /** 职位*/
+    /** 职位 */
     @Column(name = "POSITION", length = 100)
     @Comment("职位")
     private String position;
 
-    /** 备注*/
+    /** 备注 */
     @Column(name = "REMARK", length = 200)
     @Comment("备注")
     private String remark;

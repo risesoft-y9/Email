@@ -1,23 +1,22 @@
 package net.risesoft.controller.dto;
 
+import java.io.Serializable;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Comment;
-
-import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 public class EmailContactDTO implements Serializable {
     private static final long serialVersionUID = 8222438278258649120L;
 
-    //地址
+    // 地址
     private String contactPerson;
 
-    //接收人id
+    // 接收人id
     private String contactPersonId;
 
-    //接收人姓名
+    // 接收人姓名
     private String contactPersonName;
 
     /**
