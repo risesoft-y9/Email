@@ -48,7 +48,7 @@ public class StandardEmailApiImpl {
         @RequestParam("subject") String subject, @RequestParam("content") String content,
         @RequestParam(value = "fromEmail", required = false) String fromEmail,
         @RequestParam("toEmail") List<String> toEmail, @RequestPart("file") MultipartFile file) throws Exception {
-        Person person = personManager.getPerson(tenantId, userId).getData();
+        Person person = personManager.get(tenantId, userId).getData();
         Y9LoginUserHolder.setPerson(person);
         Y9LoginUserHolder.setTenantId(tenantId);
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());

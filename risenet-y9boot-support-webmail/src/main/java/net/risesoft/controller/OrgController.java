@@ -40,7 +40,7 @@ public class OrgController {
     @GetMapping(value = "/getOrganization")
     public Y9Result<List<Organization>> getOrganization() {
         String tenantId = Y9LoginUserHolder.getTenantId();
-        List<Organization> organizationList = organizationApi.listAllOrganizations(tenantId).getData();
+        List<Organization> organizationList = organizationApi.list(tenantId).getData();
         return Y9Result.success(organizationList);
     }
 
@@ -57,7 +57,7 @@ public class OrgController {
         @RequestParam(required = false) OrgTreeTypeEnum treeType, @RequestParam(required = false) String name) {
         String tenantId = Y9LoginUserHolder.getTenantId();
         if (StringUtils.isBlank(id)) {
-            List<Organization> organizationList = organizationApi.listAllOrganizations(tenantId).getData();
+            List<Organization> organizationList = organizationApi.list(tenantId).getData();
             if (organizationList != null && organizationList.size() > 0) {
                 id = organizationList.get(0).getId();
             }

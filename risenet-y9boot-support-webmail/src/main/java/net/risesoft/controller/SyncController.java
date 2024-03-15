@@ -28,7 +28,7 @@ public class SyncController {
     @RequestMapping(value = "/syncUsers")
     public Y9Result<String> syncUsers() {
         String tenantId = Y9LoginUserHolder.getTenantId();
-        List<Person> personList = personApi.listAllPersons(tenantId).getData();
+        List<Person> personList = personApi.list(tenantId).getData();
         int allcount = personList.size(), disabledcount = 0, deletedcount = 0, successcount = 0, errorcount = 0;
         String errorNames = "";
         for (Person person : personList) {

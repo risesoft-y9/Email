@@ -88,7 +88,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids, String folder)
         throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -111,7 +111,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids, String folder)
         throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -134,7 +134,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable long uid)
         throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -159,7 +159,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, String folder, int uid, HttpServletResponse response,
         HttpServletRequest request) throws MessagingException, IOException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -182,7 +182,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids,
         @RequestParam String folder, boolean flagged) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -205,7 +205,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable long uid)
         throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -229,7 +229,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, int page, @RequestParam int size,
         @RequestParam(required = false) String folder) throws IOException, MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -252,7 +252,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids,
         String originFolder, String toFolder) throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -276,7 +276,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids,
         @RequestParam String folder, @RequestParam Boolean isRead) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -299,7 +299,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable Long uid)
         throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -321,7 +321,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable Long uid,
         @RequestParam String richText) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -344,7 +344,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable Long uid)
         throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -364,7 +364,7 @@ public class EmailMobileController {
     public Y9Result<String> save(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, EmailDTO email) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -387,7 +387,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, EmailSearchDTO searchDTO)
         throws MessagingException, IOException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -407,7 +407,7 @@ public class EmailMobileController {
     public Y9Result<Object> send(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String messageId) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -427,7 +427,7 @@ public class EmailMobileController {
     public Y9Result<Object> todoList(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -451,7 +451,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, String folder, String messageId, MultipartFile file)
         throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -476,7 +476,7 @@ public class EmailMobileController {
         HttpServletResponse response, HttpServletRequest request) {
         try {
             Y9LoginUserHolder.setTenantId(tenantId);
-            Person person = personApi.getPerson(tenantId, userId).getData();
+            Person person = personApi.get(tenantId, userId).getData();
             Y9LoginUserHolder.setUserInfo(person.toUserInfo());
             String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
             EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -501,7 +501,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, String folder, String messageId,
         HttpServletRequest request, HttpServletResponse response) {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -524,7 +524,7 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, String folder, String messageId, String fileName)
         throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -545,7 +545,7 @@ public class EmailMobileController {
     public Y9Result<Object> save(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String originFolderName, String newFolderName) {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -565,7 +565,7 @@ public class EmailMobileController {
     public Y9Result<Object> delete(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String folder) {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -584,7 +584,7 @@ public class EmailMobileController {
     public Y9Result<List<EmailFolderDTO>> customList(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -604,7 +604,7 @@ public class EmailMobileController {
     public Y9Result<Map<String, Object>> list(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -631,12 +631,12 @@ public class EmailMobileController {
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(required = false) String id,
         @RequestParam(required = false) OrgTreeTypeEnum treeType, @RequestParam(required = false) String name) {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
         if (StringUtils.isBlank(id)) {
-            List<Organization> organizationList = organizationApi.listAllOrganizations(tenantId).getData();
+            List<Organization> organizationList = organizationApi.list(tenantId).getData();
             if (organizationList != null && organizationList.size() > 0) {
                 id = organizationList.get(0).getId();
             }
@@ -676,7 +676,7 @@ public class EmailMobileController {
     @GetMapping(value = "/getPersonData", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Map<String, String>> getPersonData(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException {
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         Map<String, String> map = new HashMap<>();
         map.put("name", person.getName());
@@ -689,7 +689,7 @@ public class EmailMobileController {
     public Y9Result<Object> contact(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException, IOException {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -708,7 +708,7 @@ public class EmailMobileController {
     public Y9Result<Object> addressBookSave(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, JamesAddressBook jamesAddressBook) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -727,7 +727,7 @@ public class EmailMobileController {
     public Y9Result<Object> addressBooksearch(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String search) {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -746,7 +746,7 @@ public class EmailMobileController {
     public Y9Result<Object> addressBook(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String id) {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String email = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(email);
@@ -764,7 +764,7 @@ public class EmailMobileController {
     public Y9Result<Object> addressBookList(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
@@ -783,7 +783,7 @@ public class EmailMobileController {
     public Y9Result<Object> addressBookDelete(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String id) {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String email = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(email);
@@ -802,7 +802,7 @@ public class EmailMobileController {
     public Y9Result<Object> addressRelevancy(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String search) {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String email = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(email);
@@ -822,7 +822,7 @@ public class EmailMobileController {
     public Y9Result<Object> unread(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
-        Person person = personApi.getPerson(tenantId, userId).getData();
+        Person person = personApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(person.toUserInfo());
         String personId = Y9LoginUserHolder.getUserInfo().getPersonId();
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);

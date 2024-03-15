@@ -7,8 +7,10 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 import net.risesoft.api.platform.customgroup.CustomGroupApi;
-import net.risesoft.api.platform.org.DepartmentApi;
+import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.james.entity.JamesUser;
 import net.risesoft.james.repository.JamesUserRepository;
@@ -21,20 +23,13 @@ import net.risesoft.y9.configuration.Y9Properties;
 import net.risesoft.y9.util.signing.Y9MessageDigest;
 
 @Service(value = "jamesUserService")
+@RequiredArgsConstructor
 public class JamesUserServiceImpl implements JamesUserService {
 
     private final CustomGroupApi customGroupApi;
-    private final DepartmentApi departmentApi;
+    private final PersonApi personApi;
     private final Y9Properties y9Properties;
     private final JamesUserRepository jamesUserRepository;
-
-    public JamesUserServiceImpl(CustomGroupApi customGroupApi, DepartmentApi departmentApi, Y9Properties y9Properties,
-        JamesUserRepository jamesUserRepository) {
-        this.customGroupApi = customGroupApi;
-        this.departmentApi = departmentApi;
-        this.y9Properties = y9Properties;
-        this.jamesUserRepository = jamesUserRepository;
-    }
 
     @Override
     public void add(String personId, String loginName) {
@@ -100,7 +95,7 @@ public class JamesUserServiceImpl implements JamesUserService {
         String orgUnitId = orgTypeAndOrgUnitIdArr[1];
 
         if (OrgTypeEnum.DEPARTMENT.getEnName().equals(orgType)) {
-            List<Person> personList = departmentApi.listAllPersons(tenantId, orgUnitId).getData();
+            List<Person> personList = personApi.listRecursivelyByParentId(tenantId, orgUnitId).getData();
             for (Person person : personList) {
                 addByPersonId(emailAddressList, person.getId());
             }

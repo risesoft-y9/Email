@@ -77,7 +77,7 @@ public class GroupController {
         }
         for (CustomGroupMember customGroupModel : groupMemberModels) {
             if (customGroupModel.getMemberType().equals(OrgTypeEnum.PERSON)) {
-                Person person = personApi.getPerson(tenantId, customGroupModel.getMemberId()).getData();
+                Person person = personApi.get(tenantId, customGroupModel.getMemberId()).getData();
                 if (person != null) {
                     if (StringUtils.isNotBlank(person.getMobile())) {
                         customGroupModel
