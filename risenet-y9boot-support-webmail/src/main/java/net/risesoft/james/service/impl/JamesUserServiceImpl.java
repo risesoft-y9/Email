@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 import net.risesoft.api.platform.customgroup.CustomGroupApi;
 import net.risesoft.api.platform.org.PersonApi;
+import net.risesoft.enums.platform.ExtendedOrgTypeEnum;
 import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.james.entity.JamesUser;
 import net.risesoft.james.repository.JamesUserRepository;
@@ -101,7 +102,7 @@ public class JamesUserServiceImpl implements JamesUserService {
             }
         } else if (OrgTypeEnum.PERSON.getEnName().equals(orgType)) {
             addByPersonId(emailAddressList, orgUnitId);
-        } else if (OrgTypeEnum.CUSTOM_GROUP.getEnName().equals(orgType)) {
+        } else if (ExtendedOrgTypeEnum.CUSTOM_GROUP.getEnName().equals(orgType)) {
             List<CustomGroupMember> groupMemberList = customGroupApi
                 .listCustomGroupMemberByGroupId(tenantId, Y9LoginUserHolder.getPersonId(), orgUnitId).getData();
             for (CustomGroupMember customGroupMember : groupMemberList) {
