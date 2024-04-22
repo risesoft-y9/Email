@@ -796,6 +796,14 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         emailListDTO.setAttachment(isHasAttachment(message));
         emailListDTO.setAttachmentSize(getAttachmentSize(message));
         emailListDTO.setToPersonNames(getToString(message.getAllRecipients()));
+        try {
+            MimeMessage mm = (MimeMessage) message;
+            MimeMessageParser parser = null;
+            parser = new MimeMessageParser(mm).parse();
+            if(parser != null) emailListDTO.setText(parser.getPlainContent());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return emailListDTO;
     }
 
@@ -869,7 +877,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         email.setSendTime(mimeMessage.getSentDate());
         email.setRichText(getRichText(parser));
         email.setEmailAttachmentDTOList(parseEmailAttachmentList(parser.getAttachmentList()));
-
         email.setToEmailAddressList(getEmailAddressList(parser, Message.RecipientType.TO));
         email.setCcEmailAddressList(getEmailAddressList(parser, Message.RecipientType.CC));
         email.setBccEmailAddressList(getEmailAddressList(parser, Message.RecipientType.BCC));
