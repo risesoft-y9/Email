@@ -1,7 +1,5 @@
 package net.risesoft.controller;
 
-import java.time.LocalDate;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -100,9 +98,7 @@ public class EmailAttachmentController {
     public Y9Result<String> uploadFile(MultipartFile file) throws Exception {
         String originalFilename = file.getOriginalFilename();
         String fileName = FilenameUtils.getName(originalFilename);
-        LocalDate localDate = LocalDate.now();
-        String fullPath = Y9FileStore.buildFullPath(Y9Context.getSystemName(), String.valueOf(localDate.getYear()),
-            String.valueOf(localDate.getMonth().getValue()), String.valueOf(localDate.getDayOfMonth()));
+        String fullPath = Y9FileStore.buildPath(Y9Context.getSystemName());
         Y9FileStore y9FileStore = y9FileStoreService.uploadFile(file, fullPath, fileName);
         String webmailBaseUrl = y9Properties.getCommon().getWebmailBaseUrl();
         return Y9Result.success(webmailBaseUrl + "/s/" + y9FileStore.getRealFileName());
