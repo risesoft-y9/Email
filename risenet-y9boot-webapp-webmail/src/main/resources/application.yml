@@ -172,6 +172,8 @@ y9:
         emailBaseUrl: http://127.0.0.1:7056/email
         webmailBaseUrl: http://127.0.0.1:7056/webmail
         jodconverterBaseUrl: http://newoa.nanhai.gov.cn/jodconverter
+        logBaseUrl: http://localhost:7056/log
+        userOnlineBaseUrl: http://localhost:7056/userOnline
     feature:
         file:
             rest:
@@ -213,6 +215,8 @@ y9:
                 enabled: true
         log:
             enabled: true
+            # kafka, api
+            logSaveTarget: kafka
         session:
             redis:
                 enabled: true
