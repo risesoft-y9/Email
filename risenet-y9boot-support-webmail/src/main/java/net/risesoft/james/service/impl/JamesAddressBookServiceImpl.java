@@ -43,6 +43,7 @@ public class JamesAddressBookServiceImpl implements JamesAddressBookService {
         // return jamesAddressBookRepository.findSearch(Y9LoginUserHolder.getUserInfo().getPersonId(),"%"+search+"%");
         return jamesAddressBookRepository.findByPersonIdAndEmailAddressLikeOrNameLikeOrderByNameAsc(
             Y9LoginUserHolder.getUserInfo().getPersonId(), "%" + search + "%", "%" + search + "%");
+        //return jamesAddressBookRepository.findByPersonIdOrderByNameAsc(search);
     }
 
     @Override
