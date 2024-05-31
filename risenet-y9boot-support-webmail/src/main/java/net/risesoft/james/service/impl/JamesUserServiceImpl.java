@@ -50,7 +50,7 @@ public class JamesUserServiceImpl implements JamesUserService {
             jamesUser.setPasswordHashAlgorithm("MD5");
             jamesUser.setPlainText(password);
             jamesUser.setPersonId(personId);
-            jamesUser.setPassword(Y9MessageDigest.MD5(password));
+            jamesUser.setPassword(Y9MessageDigest.md5(password));
             jamesUserRepository.save(jamesUser);
         }
     }
@@ -137,7 +137,7 @@ public class JamesUserServiceImpl implements JamesUserService {
         JamesUser oldju = this.findById(id);
         Integer version = oldju.getVersion() + 1;
         oldju.setPlainText(plainText);
-        plainText = Y9MessageDigest.MD5(plainText);
+        plainText = Y9MessageDigest.md5(plainText);
         oldju.setPassword(plainText);
         oldju.setVersion(version);
         jamesUserRepository.save(oldju);

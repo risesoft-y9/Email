@@ -101,7 +101,7 @@ public class MailHelper {
         EmailAttachmentDTO emailAttachmentDTO = new EmailAttachmentDTO();
 
         byte[] bytes = IOUtils.toByteArray(dataSource.getInputStream());
-        emailAttachmentDTO.setMd5(Y9MessageDigest.MD5(bytes));
+        emailAttachmentDTO.setMd5(Y9MessageDigest.md5(bytes));
         emailAttachmentDTO.setFileExt(FilenameUtils.getExtension(dataSource.getName()));
         emailAttachmentDTO.setFileName(dataSource.getName());
         emailAttachmentDTO.setDisplaySize(FileUtils.byteCountToDisplaySize(bytes.length));
