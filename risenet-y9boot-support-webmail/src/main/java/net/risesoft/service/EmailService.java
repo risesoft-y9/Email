@@ -8,7 +8,11 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.risesoft.controller.dto.*;
+import net.risesoft.controller.dto.EmailContactDTO;
+import net.risesoft.controller.dto.EmailDTO;
+import net.risesoft.controller.dto.EmailDetailDTO;
+import net.risesoft.controller.dto.EmailListDTO;
+import net.risesoft.controller.dto.EmailSearchDTO;
 import net.risesoft.pojo.Y9Page;
 
 public interface EmailService {

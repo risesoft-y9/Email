@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -51,7 +56,11 @@ import com.sun.mail.imap.IMAPMessage;
 
 import net.risesoft.api.platform.org.OrgUnitApi;
 import net.risesoft.api.platform.org.PersonApi;
-import net.risesoft.controller.dto.*;
+import net.risesoft.controller.dto.EmailContactDTO;
+import net.risesoft.controller.dto.EmailDTO;
+import net.risesoft.controller.dto.EmailDetailDTO;
+import net.risesoft.controller.dto.EmailListDTO;
+import net.risesoft.controller.dto.EmailSearchDTO;
 import net.risesoft.enums.platform.OrgTreeTypeEnum;
 import net.risesoft.enums.platform.OrgTypeEnum;
 import net.risesoft.id.Y9IdGenerator;
@@ -797,10 +806,11 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         emailListDTO.setAttachmentSize(getAttachmentSize(message));
         emailListDTO.setToPersonNames(getToString(message.getAllRecipients()));
         try {
-            MimeMessage mm = (MimeMessage) message;
+            MimeMessage mm = (MimeMessage)message;
             MimeMessageParser parser = null;
             parser = new MimeMessageParser(mm).parse();
-            if(parser != null) emailListDTO.setText(parser.getPlainContent());
+            if (parser != null)
+                emailListDTO.setText(parser.getPlainContent());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

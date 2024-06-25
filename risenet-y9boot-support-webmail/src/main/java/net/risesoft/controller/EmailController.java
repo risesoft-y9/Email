@@ -9,10 +9,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import net.risesoft.api.platform.org.PersonApi;
-import net.risesoft.controller.dto.*;
+import net.risesoft.controller.dto.EmailContactDTO;
+import net.risesoft.controller.dto.EmailDTO;
+import net.risesoft.controller.dto.EmailDetailDTO;
+import net.risesoft.controller.dto.EmailListDTO;
+import net.risesoft.controller.dto.EmailSearchDTO;
 import net.risesoft.pojo.Y9Page;
 import net.risesoft.pojo.Y9Result;
 import net.risesoft.service.EmailService;

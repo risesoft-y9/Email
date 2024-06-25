@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import net.risesoft.james.entity.JamesAddressBook;
-import org.springframework.data.jpa.repository.Query;
 
 public interface JamesAddressBookRepository
     extends JpaRepository<JamesAddressBook, String>, JpaSpecificationExecutor<JamesAddressBook> {

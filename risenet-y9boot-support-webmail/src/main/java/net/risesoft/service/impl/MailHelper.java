@@ -129,8 +129,8 @@ public class MailHelper {
                         toDTO.setTo(emailAddress);
                         JamesUser = jamesUserService.findByEmailAddress(emailAddress);
                         if (JamesUser != null) {
-                            person = personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId())
-                                .getData();
+                            person =
+                                personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                             toDTO.setToName(person.getName());
                             toDTO.setToAvator(person.getAvator());
                         }
@@ -142,8 +142,7 @@ public class MailHelper {
                     emailListDTO.setFrom(parser.getFrom());
                     JamesUser = jamesUserService.findByEmailAddress(emailListDTO.getFrom());
                     if (JamesUser != null) {
-                        person =
-                            personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
+                        person = personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                         emailListDTO.setFromName(person.getName());
                         emailListDTO.setFromAvator(person.getAvator());
                     }
@@ -181,8 +180,8 @@ public class MailHelper {
                         if (emailAddress.indexOf("@youshengyun.com") != -1) {
                             JamesUser = jamesUserService.findByEmailAddress(emailAddress);
                             if (JamesUser != null) {
-                                person = personManager
-                                    .get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
+                                person = personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId())
+                                    .getData();
                                 contactDTO.setContactPersonId(person.getId());
                                 contactDTO.setContactPersonName(person.getName());
                                 contactDTO.setContactPersonAvator(person.getAvator());
@@ -203,8 +202,8 @@ public class MailHelper {
                     if (parser.getFrom().indexOf("@youshengyun.com") != -1) {
                         JamesUser = jamesUserService.findByEmailAddress(parser.getFrom());
                         if (JamesUser != null) {
-                            person = personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId())
-                                .getData();
+                            person =
+                                personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                             contactDTO.setContactPersonId(person.getId());
                             contactDTO.setContactPersonName(person.getName());
                             contactDTO.setContactPersonAvator(person.getAvator());
