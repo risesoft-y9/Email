@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>net.risesoft</groupId>
-        <artifactId>y9-module-webmail</artifactId>
-        <version>v9.6.7-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>y9-email</artifactId>
+        <version>${revision}</version>
     </parent>
     <!-- <groupId>net.risesoft</groupId> -->
     <artifactId>risenet-y9boot-support-webmail</artifactId>
-    <!-- <version>v9.6.7-SNAPSHOT</version> -->
+    <version>${revision}</version>
     <packaging>jar</packaging>
 
 
@@ -68,7 +67,7 @@
 
         <dependency>
             <groupId>net.risesoft</groupId>
-            <artifactId>risenet-y9boot-starter-listener-redis</artifactId>
+            <artifactId>risenet-y9boot-starter-listener-kafka</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -85,10 +84,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -111,9 +116,37 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.5.0-b01</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.james</groupId>
+            <artifactId>apache-mime4j-dom</artifactId>
+            <version>0.8.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.james</groupId>
+            <artifactId>apache-mime4j-mbox-iterator</artifactId>
+            <version>0.8.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.james</groupId>
+            <artifactId>apache-mime4j-storage</artifactId>
+            <version>0.8.11</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
             <version>2.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
