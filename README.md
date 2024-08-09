@@ -23,7 +23,7 @@
 y9-email -- 电子邮件模块
  ├── risenet-y9boot-webapp-webmail -- 电子邮件webapp
 vue -- 前端工程
- ├── y9vue-storage  -- 电子邮件前端工程
+ ├── y9vue-webmail  -- 电子邮件前端工程
 ```
 
 ## 产品特点 ##
