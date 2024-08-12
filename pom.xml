@@ -5,15 +5,62 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>net.risesoft</groupId>
-        <artifactId>y9-email</artifactId>
+        <artifactId>y9-digitalbase</artifactId>
         <version>v9.6.7-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../y9-digitalbase/pom.xml</relativePath>
     </parent>
     <groupId>net.risesoft</groupId>
-    <artifactId>y9-module-webmail</artifactId>
+    <artifactId>y9-email</artifactId>
     <packaging>pom</packaging>
-    <version>v9.6.7-SNAPSHOT</version>
- 
+    <version>${revision}</version>
+    <description>RiseSoft/Email parent pom.xml file</description>
+    <url>https://gitee.com/risesoft-y9/y9-email</url>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPL) version 3.0</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>${gitee.url}</url>
+        <connection>${gitee.connection}</connection>
+        <developerConnection>${gitee.developerConnection}</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>wanghongzhe</name>
+            <email>wanghongzhe@risesoft.net</email>
+            <organization>risesoft</organization>
+            <organizationUrl>https://www.risesoft.net</organizationUrl>
+        </developer>
+
+        <developer>
+            <name>fanzhengyang</name>
+            <email>fanzhengyang@risesoft.net</email>
+            <organization>risesoft</organization>
+            <organizationUrl>https://www.risesoft.net</organizationUrl>
+        </developer>
+
+        <developer>
+            <name>songguoxi</name>
+            <email>songguoxi@risesoft.net</email>
+            <organization>risesoft</organization>
+            <organizationUrl>https://www.risesoft.net</organizationUrl>
+        </developer>
+    </developers>
+
+    <properties>
+        <gitee.url>https://gitee.com/risesoft-y9/y9-email</gitee.url>
+        <gitee.connection>scm:git:https://gitee.com/risesoft-y9/y9-email.git</gitee.connection>
+        <gitee.developerConnection>scm:git:https://gitee.com/risesoft-y9/y9-email.git</gitee.developerConnection>
+
+        <revision>v9.6.7-SNAPSHOT</revision>
+    </properties>
+
     <modules>
         <module>risenet-y9boot-api-feignclient-webmail</module>
         <module>risenet-y9boot-api-interface-webmail</module>
@@ -21,4 +68,18 @@
         <module>risenet-y9boot-webapp-webmail</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>y9-internet-repo</id>
+            <url>https://svn.youshengyun.com:9900/nexus/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <!-- <updatePolicy>always</updatePolicy> -->
+                <!-- always,daily(default),interval:XXX,never -->
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
