@@ -3,7 +3,7 @@
 </p>
 <p align="center">基于SpringBoot+Vue前后端分离的电子邮件</p>
 <p align="center">
- <a href='https://gitee.com/risesoft-y9/y9-flowable/stargazers'><img src='https://gitee.com/risesoft-y9/y9-flowable/badge/star.svg?theme=dark' alt='star'></img></a>
+ <a href='https://gitee.com/risesoft-y9/y9-email/stargazers'><img src='https://gitee.com/risesoft-y9/y9-email/badge/star.svg?theme=dark' alt='star'></img></a>
     <img src="https://img.shields.io/badge/version-v9.6.6-yellow.svg">
     <img src="https://img.shields.io/badge/Spring%20Boot-2.7-blue.svg">
     <img alt="logo" src="https://img.shields.io/badge/Vue-3.3-red.svg">
@@ -161,7 +161,7 @@ vue -- 前端工程
 
 微信号：qq349416828
 
-备注：开源工作流引擎咨询-姓名
+备注：开源咨询-姓名
 <div><img style="width: 40%" src="https://vue.youshengyun.com/files/img/曲经理统一二维码咨询.png"><div/>
 联系人：有生博大-咨询热线
 
