@@ -4,11 +4,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutableTriple;
@@ -35,7 +45,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
@@ -43,14 +55,21 @@ import com.google.common.net.MediaType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import net.risesoft.controller.dto.EmailAttachmentDTO;
+import net.risesoft.controller.dto.EmailDTO;
 import net.risesoft.id.Y9IdGenerator;
 import net.risesoft.james.entity.ImportEml;
+import net.risesoft.james.entity.ImportEmlAttchMents;
 import net.risesoft.james.repository.ImportEmlRepository;
 import net.risesoft.james.service.ImportEmlAttchMentsService;
 import net.risesoft.james.service.ImportEmlService;
 import net.risesoft.pojo.EmlResult;
 import net.risesoft.pojo.Y9PageQuery;
+import net.risesoft.service.EmailService;
+import net.risesoft.util.EmailUtil;
 import net.risesoft.y9.Y9LoginUserHolder;
+import net.risesoft.y9.util.signing.Y9MessageDigest;
+import net.risesoft.y9public.service.Y9FileStoreService;
 
 @Service(value = "importEmlService")
 @Slf4j
@@ -60,6 +79,10 @@ public class ImportEmlServiceImpl implements ImportEmlService {
     private final ImportEmlRepository importEmlRepository;
 
     private final ImportEmlAttchMentsService importEmlAttchMentsService;
+
+    private final Y9FileStoreService y9FileStoreService;
+
+    private final EmailService emailService;
 
     /**
      * 转换邮件联系人至list集合
@@ -117,6 +140,74 @@ public class ImportEmlServiceImpl implements ImportEmlService {
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public void delete(List<String> ids) {
+        if (!ids.isEmpty()) {
+            for (String id : ids) {
+                importEmlRepository.deleteById(id);
+            }
+        }
+    }
+
+    @Override
+    public void forward(String id) throws Exception {
+        Optional<ImportEml> emlOptional = importEmlRepository.findById(id);
+        if (emlOptional.isPresent()) {
+            ImportEml eml = emlOptional.get();
+            EmailDTO email = new EmailDTO();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            email.setFolder("收件箱");
+            // email.setMessageId(eml.getMessageId());
+            email.setSubject(eml.getSubject());
+            email.setFrom(eml.getFrom());
+            email.setSendTime(sdf.parse(eml.getDateTime()));
+            email.setRichText(eml.getHtmlContent());
+            if (Boolean.TRUE.equals(eml.getExistAttchMent())) {
+                List<ImportEmlAttchMents> attchsList = importEmlAttchMentsService.listByImportEmlId(id);
+                List<EmailAttachmentDTO> emailAttachmentDTOList = new ArrayList<>();
+                for (ImportEmlAttchMents attch : attchsList) {
+                    EmailAttachmentDTO emailAttachmentDTO = new EmailAttachmentDTO();
+                    emailAttachmentDTO.setFileExt(attch.getFileExt());
+
+                    byte[] bytes = y9FileStoreService.downloadFileToBytes(attch.getFileStoreId());
+                    emailAttachmentDTO.setMd5(Y9MessageDigest.md5(bytes));
+                    emailAttachmentDTO.setFileName(attch.getFileName());
+                    emailAttachmentDTO.setDisplaySize(FileUtils.byteCountToDisplaySize(bytes.length));
+                    emailAttachmentDTOList.add(emailAttachmentDTO);
+                }
+                email.setEmailAttachmentDTOList(emailAttachmentDTOList);
+            }
+            email.setToEmailAddressList(
+                getEmailAddressList(EmailUtil.buildEmailAddress(Y9LoginUserHolder.getUserInfo().getLoginName())));
+            email.setCcEmailAddressList(getEmailAddressList(eml.getCc()));
+            email.setBccEmailAddressList(getEmailAddressList(eml.getBcc()));
+            emailService.save(email);
+        }
+
+    }
+
+    @Override
+    public ImportEml getById(String id) {
+        return importEmlRepository.findById(id).orElse(null);
+    }
+
+    private List<String> getEmailAddressList(String emailAddressList) {
+        if (StringUtils.isBlank(emailAddressList)) {
+            return Collections.emptyList();
+        }
+        String[] list = emailAddressList.split(",");
+        List<String> addressList = new ArrayList<>();
+        for (String address : list) {
+            if (address.indexOf("<") > -1) {
+                addressList.add(address.substring(address.indexOf("<") + 1, address.indexOf(">")));
+            } else {
+                addressList.add(address);
+            }
+        }
+        return addressList;
+    }
+
+    @Override
     public void importEmailByEml(Message message) throws IOException {
         EmlResult emlDTO = new EmlResult();
         emlDTO.setMessage(message);
@@ -167,15 +258,9 @@ public class ImportEmlServiceImpl implements ImportEmlService {
     }
 
     @Override
-    public ImportEml getById(String id) {
-        return importEmlRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public Page<ImportEml> pageByPersonId(String personId, Y9PageQuery pageQuery) {
-        Pageable pageable =
-            PageRequest.of(pageQuery.getPage4Db(), pageQuery.getSize(), Sort.by(Sort.Direction.DESC, "dateTime"));
-        return importEmlRepository.findByPersonId(personId, pageable);
+    public List<String> listIdsByPersonId(String personId) {
+        List<ImportEml> emlList = importEmlRepository.findByPersonIdOrderByDateTimeDesc(personId);
+        return emlList.stream().map(ImportEml::getId).collect(Collectors.toList());
     }
 
     /**
@@ -260,5 +345,36 @@ public class ImportEmlServiceImpl implements ImportEmlService {
             entry.setHtmlContent(IOUtils.toString(body.getReader()));
         }
         return entry;
+    }
+
+    @Override
+    public Page<ImportEml> pageByPersonId(String personId, Y9PageQuery pageQuery) {
+        Pageable pageable =
+            PageRequest.of(pageQuery.getPage4Db(), pageQuery.getSize(), Sort.by(Sort.Direction.DESC, "dateTime"));
+        return importEmlRepository.findByPersonId(personId, pageable);
+    }
+
+    @Override
+    public Page<ImportEml> pageSearch(String personId, String subject, String htmlContent, Y9PageQuery pageQuery) {
+        PageRequest pageable =
+            PageRequest.of(pageQuery.getPage4Db(), pageQuery.getSize(), Sort.by(Sort.Direction.DESC, "dateTime"));
+        return importEmlRepository.findAll(new Specification<ImportEml>() {
+            private static final long serialVersionUID = -2210269486911993525L;
+
+            @Override
+            public Predicate toPredicate(Root<ImportEml> root, CriteriaQuery<?> query,
+                CriteriaBuilder criteriaBuilder) {
+                Predicate predicate = criteriaBuilder.conjunction();
+                List<Expression<Boolean>> list = predicate.getExpressions();
+                list.add(criteriaBuilder.equal(root.get("personId").as(String.class), personId));
+                if (StringUtils.isNotBlank(subject)) {
+                    list.add(criteriaBuilder.like(root.get("subject").as(String.class), "%" + subject + "%"));
+                }
+                if (StringUtils.isNotBlank(htmlContent)) {
+                    list.add(criteriaBuilder.like(root.get("htmlContent").as(String.class), "%" + htmlContent + "%"));
+                }
+                return predicate;
+            }
+        }, pageable);
     }
 }

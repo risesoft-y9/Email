@@ -33,14 +33,14 @@ public class ImportEmlAttchMents implements Serializable {
     private String importEmlId;
 
     /** 附件名称 */
-    @Column(name = "NAME", length = 800)
+    @Column(name = "FILE_NAME", length = 800)
     @Comment(value = "附件名称")
-    private String name;
+    private String fileName;
 
     /** 文件大小 */
-    @Column(name = "FILE_SIZE", length = 10)
+    @Column(name = "FILE_SIZE", length = 20)
     @Comment(value = "文件大小")
-    private Long fileSize;
+    private String fileSize;
 
     /** 下载路径 */
     @Column(name = "URL", length = 800)
@@ -51,4 +51,8 @@ public class ImportEmlAttchMents implements Serializable {
     @Column(name = "FILESTORE_ID", nullable = false, length = 100)
     @Comment(value = "文件服务器存储路径")
     private String fileStoreId;
+
+    @Column(name = "FILESTORE_EXT", length = 100)
+    @Comment(value = "文件类型")
+    private String fileExt;
 }

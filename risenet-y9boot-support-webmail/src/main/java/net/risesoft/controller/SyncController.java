@@ -32,7 +32,7 @@ public class SyncController {
         int allcount = personList.size(), disabledcount = 0, deletedcount = 0, successcount = 0, errorcount = 0;
         String errorNames = "";
         for (Person person : personList) {
-            if (person.getDisabled()) {
+            if (Boolean.TRUE.equals(person.getDisabled())) {
                 disabledcount++;
                 continue;
             }

@@ -1,5 +1,6 @@
 package net.risesoft.james.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -14,4 +15,6 @@ public interface ImportEmlRepository extends JpaRepository<ImportEml, String>, J
     Optional<ImportEml> findByMessageId(String messageId);
 
     Page<ImportEml> findByPersonId(String personId, Pageable pageable);
+
+    List<ImportEml> findByPersonIdOrderByDateTimeDesc(String personId);
 }

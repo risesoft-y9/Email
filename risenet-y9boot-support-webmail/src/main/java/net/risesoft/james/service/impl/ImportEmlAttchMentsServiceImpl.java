@@ -2,7 +2,9 @@ package net.risesoft.james.service.impl;
 
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,16 @@ public class ImportEmlAttchMentsServiceImpl implements ImportEmlAttchMentsServic
     private final Y9Properties y9conf;
 
     @Override
+    public ImportEmlAttchMents getById(String id) {
+        return importEmlAttchMentsRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<ImportEmlAttchMents> listByImportEmlId(String importEmlId) {
+        return importEmlAttchMentsRepository.findByImportEmlId(importEmlId);
+    }
+
+    @Override
     public void saveAttchMents(String importEmlId, String fileName, Long fileSize, InputStream file) {
         try {
             LocalDate currentDate = LocalDate.now();
@@ -39,10 +51,10 @@ public class ImportEmlAttchMentsServiceImpl implements ImportEmlAttchMentsServic
             ImportEmlAttchMents attch = new ImportEmlAttchMents();
             attch.setId(Y9IdGenerator.genId());
             attch.setImportEmlId(importEmlId);
-            attch.setName(fileName);
-            attch.setFileSize(fileSize);
+            attch.setFileName(fileName);
+            attch.setFileSize(FileUtils.byteCountToDisplaySize(fileSize));
             attch.setFileStoreId(y9FileStore.getId());
-
+            attch.setFileExt(y9FileStore.getFileExt());
             String url =
                 y9conf.getCommon().getWebmailBaseUrl() + "/s/" + y9FileStore.getId() + "." + y9FileStore.getFileExt();
             attch.setUrl(url);

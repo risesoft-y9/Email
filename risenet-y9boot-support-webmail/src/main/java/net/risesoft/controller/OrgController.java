@@ -58,7 +58,7 @@ public class OrgController {
         String tenantId = Y9LoginUserHolder.getTenantId();
         if (StringUtils.isBlank(id)) {
             List<Organization> organizationList = organizationApi.list(tenantId).getData();
-            if (organizationList != null && organizationList.size() > 0) {
+            if (organizationList != null && !organizationList.isEmpty()) {
                 id = organizationList.get(0).getId();
             }
         }

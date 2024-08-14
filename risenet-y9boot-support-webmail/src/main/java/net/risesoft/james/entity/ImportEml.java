@@ -74,21 +74,21 @@ public class ImportEml implements Serializable {
     /**
      * 收件人
      */
-    @Column(name = "EMAIL_TO", length = 1000)
+    @Column(name = "EMAIL_TO", length = 2000)
     @Comment("收件人")
     private String to;
 
     /**
      * 抄送人
      */
-    @Column(name = "EMAIL_CC", length = 1000)
+    @Column(name = "EMAIL_CC", length = 1500)
     @Comment("抄送人")
     private String cc;
 
     /**
      * 密送人
      */
-    @Column(name = "EMAIL_BCC", length = 1000)
+    @Column(name = "EMAIL_BCC", length = 1500)
     @Comment("密送人")
     private String bcc;
 
