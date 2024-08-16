@@ -156,7 +156,7 @@ public class ImportEmlServiceImpl implements ImportEmlService {
             ImportEml eml = emlOptional.get();
             EmailDTO email = new EmailDTO();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            email.setFolder("收件箱");
+            email.setFolder("INBOX");
             // email.setMessageId(eml.getMessageId());
             email.setSubject(eml.getSubject());
             email.setFrom(eml.getFrom());

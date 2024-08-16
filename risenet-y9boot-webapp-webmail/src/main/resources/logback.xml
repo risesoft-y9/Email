@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<include resource="org/springframework/boot/logging/logback/base.xml" />
-	<logger name="net.risesoft" level="DEBUG" />
-	<logger name="y9.autoConfiguration" level="DEBUG" />
-	<logger name="org.hibernate" level="WARN" />
-	<logger name="org.apache.catalina.startup.Catalina" level="INFO" />
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="net.risesoft" level="DEBUG"/>
+    <logger name="y9.autoconfiguration" level="DEBUG"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.apache.catalina.startup.Catalina" level="INFO"/>
 
-	<property name="logback.logdir" value="${catalina.base}/logs/webmail"/>
-	<property name="logback.appname" value="webmail"/>
-	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${logback.logdir}/${logback.appname}.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${logback.logdir}/${logback.appname}.%d{yyyy-MM-dd}.log</fileNamePattern>
-		</rollingPolicy>
-		<encoder>
-			<pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n
-			</pattern>
-		</encoder>
-	</appender>
-	<appender name="fileErrorLog"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>Error</level>
-		</filter>
-		<File>${logback.logdir}/${logback.appname}.error.log</File>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>${logback.logdir}/error.${logback.appname}.%d{yyyy-MM-dd}.log
-			</FileNamePattern>
-			<maxHistory>90</maxHistory>
-			<!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志 -->
-			<!--<totalSizeCap>1GB</totalSizeCap> -->
-		</rollingPolicy>
-		<encoder>
-			<pattern>%d [%thread] %-5level %logger{36} %line - %msg%n</pattern>
-		</encoder>
-	</appender>
-	<root level="WARN">
-		<appender-ref ref="CONSOLE" />
-		<appender-ref ref="FILE" />
-		<appender-ref ref="fileErrorLog" />
-	</root>
+    <property name="logback.logdir" value="${catalina.base}/logs/webmail"/>
+    <property name="logback.appname" value="webmail"/>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logback.logdir}/${logback.appname}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logback.logdir}/${logback.appname}.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{36} [%file : %line] %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <appender name="fileErrorLog"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>Error</level>
+        </filter>
+        <File>${logback.logdir}/${logback.appname}.error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logback.logdir}/error.${logback.appname}.%d{yyyy-MM-dd}.log
+            </FileNamePattern>
+            <maxHistory>90</maxHistory>
+            <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志 -->
+            <!--<totalSizeCap>1GB</totalSizeCap> -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} %line - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="fileErrorLog"/>
+    </root>
 </configuration>
