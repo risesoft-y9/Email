@@ -1,53 +1,75 @@
+<!--
+ * @Author:  shidaobang
+ * @Date: 2022-08-02 10:51:50
+ * @LastEditors: mengjuhua
+ * @LastEditTime: 2024-08-19 16:07:54
+ * @Description: 星标邮件
+-->
 <template>
-    <div class="table-style">
-        <y9Table
-            v-model:selectedVal="tableCurrSelectedVal"
-            :config="tableConfig"
-            :filter-config="filterConfig"
-            @on-curr-page-change="handlerPageChange"
-            @on-page-size-change="handlerSizeChange"
-            @row-click="rowClick"
-        >
-            <template #addIcon>
-                <el-dropdown>
-                    <el-button class="global-btn-third margin-left-12" :size="fontSizeObj.buttonSize"
-                               :style="{ fontSize: fontSizeObj.baseFontSize }">
-                        <i class="ri-list-check"></i>{{ $t('查看') }}
-                    </el-button>
-                    <template #dropdown>
-                        <el-dropdown-menu>
-                            <el-dropdown-item @click="read('')">全部</el-dropdown-item>
-                            <el-dropdown-item @click="read('已读')">已读</el-dropdown-item>
-                            <el-dropdown-item @click="read('未读')">未读</el-dropdown-item>
-                            <el-dropdown-item @click="read('星标件')">星标件</el-dropdown-item>
-                            <el-dropdown-item @click="read('有附件')">有附件</el-dropdown-item>
-                            <el-dropdown-item @click="read('无附件')">无附件</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </template>
-                </el-dropdown>
-                <el-button class="global-btn-third margin-left-12" @click="refresh" :size="fontSizeObj.buttonSize"
-                           :style="{ fontSize: fontSizeObj.baseFontSize }">
-                    <i class="ri-refresh-line"></i>
-                    <span>{{ $t('刷新') }}</span>
+    <y9Table
+        v-model:selectedVal="tableCurrSelectedVal"
+        :config="tableConfig"
+        :filter-config="filterConfig"
+        @on-curr-page-change="handlerPageChange"
+        @on-page-size-change="handlerSizeChange"
+        @row-click="rowClick"
+    >
+        <template #addIcon>
+            <el-dropdown>
+                <el-button
+                    :size="fontSizeObj.buttonSize"
+                    :style="{ fontSize: fontSizeObj.baseFontSize }"
+                    class="global-btn-third margin-left-12"
+                >
+                    <i class="ri-list-check"></i>{{ $t('查看') }}
                 </el-button>
-            </template>
-        </y9Table>
-    </div>
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item :style="{ fontSize: fontSizeObj.baseFontSize }" @click="read('')">
+                            全部
+                        </el-dropdown-item>
+                        <el-dropdown-item :style="{ fontSize: fontSizeObj.baseFontSize }" @click="read('已读')">
+                            已读
+                        </el-dropdown-item>
+                        <el-dropdown-item :style="{ fontSize: fontSizeObj.baseFontSize }" @click="read('未读')">
+                            未读
+                        </el-dropdown-item>
+                        <el-dropdown-item :style="{ fontSize: fontSizeObj.baseFontSize }" @click="read('有附件')">
+                            有附件
+                        </el-dropdown-item>
+                        <el-dropdown-item :style="{ fontSize: fontSizeObj.baseFontSize }" @click="read('无附件')">
+                            无附件
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
+            <el-button
+                :size="fontSizeObj.buttonSize"
+                :style="{ fontSize: fontSizeObj.baseFontSize }"
+                class="global-btn-third margin-left-12"
+                @click="refresh"
+            >
+                <i class="ri-refresh-line"></i>
+                <span>{{ $t('刷新') }}</span>
+            </el-button>
+        </template>
+    </y9Table>
 </template>
 
 <script lang="ts" setup>
-    import { onMounted, reactive, ref, toRefs } from 'vue';
+    import { h, inject, onMounted, reactive, ref, toRefs, watch } from 'vue';
     import router from '@/router';
     import { useI18n } from 'vue-i18n';
     import { useSettingStore } from '@/store/modules/settingStore';
     import { flagEmail, searchEmail } from '@/api/email/index';
+    import { ElNotification } from 'element-plus';
     // 注入 字体对象
-    const fontSizeObj: any = inject('sizeObjInfo')||{};
+    const fontSizeObj: any = inject('sizeObjInfo') || {};
     const { t } = useI18n();
 
     const settingStore = useSettingStore();
     const data = reactive({
-        currFilters: {}, //当前选择的过滤数据
+        currFilters: {} as any, //当前选择的过滤数据
         loading: false, // 全局loading
         tableConfig: {
             //表格配置
@@ -88,6 +110,7 @@
                 {
                     title: '发件人',
                     key: 'fromPersonName',
+                    className: 'y9div-pointer',
                     width: 120,
                     render(row) {
                         return h(
@@ -102,6 +125,7 @@
                 {
                     title: '收件人',
                     key: 'toPersonNames',
+                    className: 'y9div-pointer',
                     width: 200,
                     render(row) {
                         return h(
@@ -116,8 +140,9 @@
                 {
                     title: '邮件标题',
                     key: 'subject',
-                    headerAlign: 'center', //表头对齐方式， 若不设置该项，则使用表格的对齐方式	string	left / center / right
-                    align: 'center', //对齐方式	string	left / center / right	默认值为center
+                    className: 'y9div-pointer',
+                    headerAlign: 'left', //表头对齐方式， 若不设置该项，则使用表格的对齐方式	string	left / center / right
+                    align: 'left', //对齐方式	string	left / center / right	默认值为center
                     render(row) {
                         return h(
                             'div',
@@ -131,6 +156,7 @@
                 {
                     title: '附件',
                     key: 'attachment',
+                    className: 'y9div-pointer',
                     width: 60,
                     render(row) {
                         if (row.attachment == '' || row.attachment == null) {
@@ -179,11 +205,12 @@
                 }
             ],
             tableData: [],
+            loading: false,
             pageConfig: {
                 currentPage: 1, //当前页数，支持 v-model 双向绑定
                 pageSize: 15, //每页显示条目个数，支持 v-model 双向绑定
                 total: 0,
-                pageSizeOpts: [5,10,15,20,30,40,1000]
+                pageSizeOpts: [5, 10, 15, 20, 30, 40, 1000]
             }
         },
         filterConfig: {
@@ -206,30 +233,32 @@
             }
         },
         y9FormRef: '',
-        read: '',
-        attachment: ''
+        searchForm: {
+            // attachment: null, //是否有附件
+            // read: null, //是否已读
+            flagged: true //是否星标
+        } as any
     });
+    let { currFilters, tableConfig, filterConfig, searchForm } = toRefs(data);
 
     async function collectList() {
         tableConfig.value.loading = true;
-        debugger;
+        // debugger;
         let collectList = await searchEmail({
             page: tableConfig.value.pageConfig.currentPage,
             size: tableConfig.value.pageConfig.pageSize,
-            flagged: tableConfig.value.flagged,
+            flagged: true,
             subject: currFilters.value.name,
-            read: tableConfig.value.read,
-            attachment: tableConfig.value.attachment
+            read: searchForm.value.read,
+            attachment: searchForm.value.attachment
         });
-
-        console.info(collectList.limit);
         tableConfig.value.tableData = collectList.rows;
         tableConfig.value.pageConfig.total = collectList.total;
-
         tableConfig.value.loading = false;
-        tableConfig.value.read = '';
-        tableConfig.value.attachment = '';
-        tableConfig.value.flagged = '';
+
+        searchForm.value.read = '';
+        searchForm.value.attachment = '';
+        searchForm.value.flagged = '';
     }
 
     //当前页改变时触发
@@ -246,7 +275,6 @@
 
     // 表格选中的数据
     let tableCurrSelectedVal = ref([]);
-    let { loading, currFilters, tableConfig, filterConfig, y9FormRef } = toRefs(data);
 
     //打开邮件详情
     function openEmailDetails(row) {
@@ -298,19 +326,19 @@
     //查看
     function read(type) {
         if (type == '已读') {
-            tableConfig.value.read = true;
+            searchForm.value.read = true;
         }
         if (type == '未读') {
-            tableConfig.value.read = false;
+            searchForm.value.read = false;
         }
         if (type == '星标件') {
-            tableConfig.value.flagged = true;
+            searchForm.value.flagged = true;
         }
         if (type == '有附件') {
-            tableConfig.value.attachment = true;
+            searchForm.value.attachment = true;
         }
         if (type == '无附件') {
-            tableConfig.value.attachment = false;
+            searchForm.value.attachment = false;
         }
         collectList(); //获取收藏夹列表
     }
@@ -325,23 +353,9 @@
         collectList();
     });
 </script>
-<style scoped lang="scss">
-    :deep(.custom-picture-card) {
-        .el-upload-list__item {
-            width: 360px;
-            height: 260px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    }
-
+<style lang="scss" scoped>
     .margin-left-12 {
         margin-left: 12px;
-    }
-
-    :deep(.el-table__cell) {
-        cursor: default;
     }
 
     // 分页的文字样式
@@ -351,20 +365,5 @@
             position: absolute;
             bottom: 14px;
         }
-    }
-    :deep(.y9-table-header){
-      font-size: v-bind('fontSizeObj.baseFontSize');
-    }
-    :deep(.el-table__row){
-      font-size: v-bind('fontSizeObj.baseFontSize');
-    }
-    :deep(.el-input__inner){
-      font-size: v-bind('fontSizeObj.baseFontSize');
-    }
-    :deep(.el-date-editor .el-range-input){
-      font-size: v-bind('fontSizeObj.baseFontSize');
-    }
-    :deep(.el-table__empty-text){
-      font-size: v-bind('fontSizeObj.baseFontSize');
     }
 </style>

@@ -3,12 +3,14 @@
  * @Date: 2022-03-28 09:48:44
  * @LastEditors: hongzhew
  * @LastEditTime: 2022-04-07 17:37:43
- * @Description:
+ * @Description: 
 -->
 <script lang="ts" setup>
+    import { inject } from 'vue';
     import SiderMenu from '@/layouts/components/SiderMenu.vue';
     // 注入 字体变量
     const fontSizeObj: any = inject('sizeObjInfo');
+
     const props = defineProps({
         menuCollapsed: {
             type: Boolean,
@@ -34,11 +36,11 @@
 <template>
     <div id="header-menus">
         <sider-menu
-            :menu-collapsed="menuCollapsed"
-            :belong-top-menu="belongTopMenu"
-            :default-active="defaultActive"
-            :menu-data="menuData"
-            menu-mode="horizontal"
+            :belongTopMenu="belongTopMenu"
+            :defaultActive="defaultActive"
+            :menuCollapsed="menuCollapsed"
+            :menuData="menuData"
+            menuMode="horizontal"
         ></sider-menu>
     </div>
 </template>
@@ -49,6 +51,7 @@
     #header-menus {
         width: 100%;
         overflow: auto;
+        scrollbar-width: none;
         box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 6%);
         z-index: 2;
 
@@ -59,13 +62,13 @@
                 text-decoration: none;
 
                 & > li {
-                    // color: var(--el-text-color-primary);
+                    color: var(--el-text-color-primary);
                     background-color: var(--el-bg-color);
-                    height: 61px;
+                    height: 100%;
 
                     i {
-                        margin-right: 5px;
-                      font-size: v-bind('fontSizeObj.largeFontSize');
+                        margin-right: 10px;
+                        font-size: v-bind('fontSizeObj.largeFontSize');
                     }
 
                     &.is-active {
@@ -79,6 +82,18 @@
                 }
             }
         }
+    }
+
+    :deep(.y9-el-sub-menu.is-active) {
+        background-color: var(--el-color-primary-light-9);
+    }
+
+    :deep(.y9-el-sub-menu) {
+        background: var(--el-bg-color);
+    }
+
+    .el-menu--horizontal {
+        width: 100%;
     }
 </style>
 

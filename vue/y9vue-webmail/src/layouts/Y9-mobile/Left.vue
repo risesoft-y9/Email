@@ -4,23 +4,23 @@
         :class="{ narrow: menuCollapsed, 'sidebar-separate': layoutSubName === 'sidebar-separate' ? true : false }"
     >
         <div class="indexlayout-left-logo">
-            <router-link to="/" class="logo-url">
+            <router-link class="logo-url" to="/">
                 <img alt="y9-logo" src="@/assets/images/yunLogo.png" />
                 <span v-if="!menuCollapsed" class="logo-title">{{ $t('电子邮件') }}</span>
             </router-link>
         </div>
         <div class="indexlayout-left-menu">
             <sider-menu
-                :menu-collapsed="menuCollapsed"
-                :belong-top-menu="belongTopMenu"
-                :default-active="defaultActive"
-                :menu-data="menuData"
+                :belongTopMenu="belongTopMenu"
+                :defaultActive="defaultActive"
+                :menuCollapsed="menuCollapsed"
+                :menuData="menuData"
             ></sider-menu>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
-    import { defineComponent } from 'vue';
+    import { inject } from 'vue';
     import SiderMenu from '@/layouts/components/SiderMenu.vue';
     // 注入 字体变量
     const fontSizeObj: any = inject('sizeObjInfo');
@@ -82,7 +82,8 @@
             vertical-align: middle;
 
             .logo-url {
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
                 width: 100%;
                 height: 100%;
                 overflow: hidden;
@@ -90,7 +91,7 @@
                 .logo-title {
                     display: inline-block;
                     margin-left: 15px;
-                  font-size: v-bind('fontSizeObj.largeFontSize');
+                    font-size: v-bind('fontSizeObj.largeFontSize');
                     font-family: Roboto, sans-serif;
                     color: var(--el-text-color-primary);
                 }
@@ -122,7 +123,7 @@
 
                         i {
                             margin-right: 10px;
-                          font-size: v-bind('fontSizeObj.largeFontSize');
+                            font-size: v-bind('fontSizeObj.largeFontSize');
                         }
                     }
 

@@ -2,9 +2,11 @@
 html {
   background-color: #eff1f7;
 }
-a{
-  text-decoration:none;
+
+a {
+  text-decoration: none;
 }
+
 @mixin textEllipsis {
   //文本超出一行略号
   overflow: hidden;
@@ -114,6 +116,12 @@ a{
   display: flex;
 }
 
+.index-layout-setting-list {
+  .el-drawer__header {
+    margin-bottom: 18px !important;
+  }
+}
+
 
 .margin-bottom-20 {
   margin-bottom: 20px;
@@ -190,6 +198,10 @@ $hoverBgColor: rgb(231, 236, 237);
   border: solid 1px var(--el-color-primary) !important;
 }
 
+:deep(.el-button--large) {
+  padding: 8px 15px;
+}
+
 :deep(.el-message) {
 
   z-index: 10000 !important;
@@ -263,7 +275,7 @@ $hoverBgColor: rgb(231, 236, 237);
 
 /* 表格多选框 */
 :deep(.el-table__body-wrapper) {
-  .el-table-column--selection > .cell {
+  .el-table-column--selection>.cell {
     justify-content: center;
   }
 
@@ -308,7 +320,7 @@ $hoverBgColor: rgb(231, 236, 237);
 
 /* 表格多选框 */
 :deep(.el-table__body-wrapper) {
-  .el-table-column--selection > .cell {
+  .el-table-column--selection>.cell {
     justify-content: center;
   }
 
@@ -322,6 +334,18 @@ $hoverBgColor: rgb(231, 236, 237);
     margin-left: 10px;
   }
 }
+
+/* 表单的label 字体 */
+:deep(.el-form) {
+  .el-form-item__label {
+    font-size: v-bind('fontSizeObj.baseFontSize');
+  }
+
+  .el-form-item--default .el-form-item__content {
+    line-height: 23px;
+  }
+}
+
 
 //右击菜单样式
 .global-context-menu {
@@ -347,16 +371,46 @@ $hoverBgColor: rgb(231, 236, 237);
   }
 
 }
+
 .el-descriptions__cell {
   min-width: 100px !important;
   font-size: v-bind('fontSizeObj.baseFontSize') !important;
+
   div {
     font-size: v-bind('fontSizeObj.baseFontSize');
   }
+
   .el-form-item__error {
     font-size: 14px;
   }
+
   .el-radio__label {
     font-size: v-bind('fontSizeObj.baseFontSize');
   }
+}
+
+
+/**列表里面的设置*/
+.el-message-box__status.el-message-box-icon--info {
+  --el-messagebox-color: var(--el-color-primary);
+  color: var(--el-color-primary);
+}
+
+.el-message .el-message-icon--info {
+  color: var(--el-color-primary);
+}
+
+.el-message--info {
+  --el-message-bg-color: var(--el-fill-color-blank);
+  --el-message-text-color: var(--el-color-primary);
+  --el-message-border-color: var(--el-fill-color-blank);
+}
+
+.el-message-box__headerbtn .el-message-box__close {
+  color: var(--el-color-primary);
+}
+
+/**列样式*/
+.y9div-pointer {
+  cursor: pointer;
 }

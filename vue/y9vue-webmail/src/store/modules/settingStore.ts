@@ -27,7 +27,7 @@ export const useSettingStore = defineStore('settingStore', {
             fullScreeen: true, // 全屏
             lock: true, // 锁屏功能
             lockScreen: false, // 锁屏状态
-            lockScreenImage: new URL('../../assets/images/menu-bg5.png', import.meta.url).href, // 锁屏背景
+            lockScreenImage: new URL('../../assets/images/menu-bg1.png', import.meta.url).href, // 锁屏背景
             unlockScreenPwd: '123456', // 默认锁屏密码
             pageAnimation: true, // 页面动画
             pcLayout: 'Y9Default', // pc布局   Y9Horizontal, Y9Default, Y9Default sidebar-separate
@@ -60,23 +60,47 @@ export const useSettingStore = defineStore('settingStore', {
         },
         //根据字号大小获取分页高度
         getLineHeight: (state) => {
-            return state.fontSize == 'small' ? '24px' : state.fontSize == 'default' ? '28px' : state.fontSize == 'large' ? '32px' : '28px';
+            return state.fontSize == 'small'
+                ? '24px'
+                : state.fontSize == 'default'
+                ? '28px'
+                : state.fontSize == 'large'
+                ? '32px'
+                : '28px';
         },
         //根据字号获取表格操作列3个按钮宽度（每个按钮2个汉字）
         getThreeBtnWidth: (state) => {
-            return state.fontSize == 'small' ? 180 : state.fontSize == 'default' ? 200 : state.fontSize == 'large' ? 210 : 180;
+            return state.fontSize == 'small'
+                ? 180
+                : state.fontSize == 'default'
+                ? 200
+                : state.fontSize == 'large'
+                ? 210
+                : 180;
         },
         //根据字号获取表格操作列2个按钮宽度（每个按钮2个汉字）
         getTwoBtnWidth: (state) => {
-            return state.fontSize == 'small' ? 130 : state.fontSize == 'default' ? 140 : state.fontSize == 'large' ? 150 : 160;
+            return state.fontSize == 'small'
+                ? 130
+                : state.fontSize == 'default'
+                ? 140
+                : state.fontSize == 'large'
+                ? 150
+                : 160;
         },
         //根据字号获取表格数据列时间戳显示宽度
         getDatetimeSpan: (state) => {
-            return state.fontSize == 'small' ? 140 : state.fontSize == 'default' ? 170 : state.fontSize == 'large' ? 180 : 160;
+            return state.fontSize == 'small'
+                ? 140
+                : state.fontSize == 'default'
+                ? 170
+                : state.fontSize == 'large'
+                ? 180
+                : 160;
         },
         // 根据字号 获取对应的icon宽度大小
         getLogoWidth: (state) => {
-            return state.fontSize == 'small' ? '30px' : state.fontSize === 'default' ? '36px' : '45px'
+            return state.fontSize == 'small' ? '30px' : state.fontSize === 'default' ? '36px' : '45px';
         },
         getThemeName: (state) => {
             return state.themeName;
@@ -95,11 +119,11 @@ export const useSettingStore = defineStore('settingStore', {
             if (state.allPcLayout == 'globalModule') {
                 layout = state.layout;
             } else {
-                const name = import.meta.env.VUE_APP_NAME;
-                const allLayoutList: any = state.allLayoutList;
+                let name = import.meta.env.VUE_APP_NAME;
+                let allLayoutList: any = state.allLayoutList;
                 let found = false;
                 for (let i = 0; i < allLayoutList.length; i++) {
-                    const item = allLayoutList[i];
+                    let item = allLayoutList[i];
                     if (item.name == name) {
                         found = true;
                         layout = item.value;

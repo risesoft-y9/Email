@@ -1,6 +1,6 @@
 <script lang="ts" setup>
     import RightTopUser from '../components/RightTopUser.vue';
-    import { Edit, FullScreen } from '@element-plus/icons';
+    import { inject } from 'vue';
     import { useSettingStore } from '@/store/modules/settingStore';
     // 注入 字体变量
     const fontSizeObj: any = inject('sizeObjInfo');
@@ -58,10 +58,10 @@
                 <i class="ri-refresh-line"></i>
                 <span></span>
             </div>
-            <div v-show="settingStore.getSearch" class="item search" @click="searchFunc">
+            <!-- <div class="item search" @click="searchFunc" v-show="settingStore.getSearch">
                 <i class="ri-search-line"></i>
                 <span></span>
-            </div>
+            </div> -->
             <div v-show="settingStore.getLock" class="item" @click="lockScreenFunc">
                 <i class="ri-lock-2-line"></i>
                 <span></span>
@@ -79,8 +79,8 @@
                 <i class="ri-notification-line"></i>
             </div>
             <div class="item isDark">
-                <i v-if="!isDark" class="ri-moon-line" @click="toggleDark"></i>
-                <i v-else class="ri-sun-line" @click="toggleDark"></i>
+                <i class="ri-moon-line" @click="toggleDark" v-if="!isDark"></i>
+                <i class="ri-sun-line" @click="toggleDark" v-else></i>
             </div> -->
             <div :class="{ item: true, user: true, 'user-mobile': settingStore.getWindowWidth > 425 }">
                 <RightTopUser />
@@ -103,34 +103,36 @@
         .left,
         .right {
             display: flex;
-            height: $headerHeight;
+            // height: $headerHeight;
             line-height: $headerHeight;
-            font-size: var(--el-font-size-extra-large);
 
             & > .item {
                 overflow: hidden;
                 padding: 0 5px;
                 min-width: 25px;
+                display: flex;
+                align-items: center;
 
                 i {
                     position: relative;
-                  font-size: v-bind('fontSizeObj.extraLargeFont');
-                    //top: 4px;
+                    font-size: v-bind('fontSizeObj.extraLargeFont');
+                    // top: 4px;
                 }
 
                 span {
-                  font-size: v-bind('fontSizeObj.baseFontSize');
+                    font-size: v-bind('fontSizeObj.baseFontSize');
                 }
             }
         }
 
         .indexlayout-flexible {
             width: $headerHeight;
-            height: $headerHeight;
+            // height: $headerHeight;
             line-height: $headerHeight;
             text-align: center;
             cursor: pointer;
-          font-size: v-bind('fontSizeObj.extraLargeFont');
+            font-size: v-bind('fontSizeObj.extraLargeFont');
+
             &:hover {
                 background-color: var(--bg-color);
                 color: var(--el-text-color-primary);
@@ -157,13 +159,13 @@
                 padding-right: 10px;
 
                 & > .name {
-                    font-size: var(--el-font-size-base);
+                    // font-size: v-bind(fontSize);
                     display: flex;
                     flex-direction: column;
                     justify-content: end;
 
                     span {
-                        line-height: 20px;
+                        line-height: 60px;
                         text-align: end;
                     }
                 }

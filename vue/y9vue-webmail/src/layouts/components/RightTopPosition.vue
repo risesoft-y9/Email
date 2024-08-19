@@ -1,50 +1,48 @@
 <template>
-    <el-dropdown :hide-on-click="true" class="user-el-dropdown" @command="onMenuClick">
+    <el-dropdown v-if="positionList?.length" :hide-on-click="true" class="user-el-dropdown" @command="onMenuClick">
         <div class="name" @click="(e) => e.preventDefault()">
             <!-- show & if 的vue指令 仅用于适配移动端 -->
             <div>
                 <i class="ri-route-line"></i>
-                <span>选择岗位</span>
-                <el-badge :value="4" class="badge"></el-badge>
+                <span>{{ $t('选择岗位') }}</span>
+                <el-badge :value="totalCount" class="badge"></el-badge>
             </div>
         </div>
         <template #dropdown>
             <el-dropdown-menu>
-                <el-dropdown-item command="position1">
-                    <div class="el-dropdown-item">
-                        <div>
-                            <i class="ri-shield-user-line"></i>{{ $t('岗位1') }}
-                            <el-badge :value="3" class="badge"></el-badge>
+                <div v-for="(item, index) in positionList" :key="index">
+                    <el-dropdown-item :command="item">
+                        <div class="el-dropdown-item">
+                            <div>
+                                <i class="ri-shield-user-line"></i>{{ item.positionName }}
+                                <el-badge :value="item.todoCount" class="badge"></el-badge>
+                            </div>
                         </div>
-                    </div>
-                </el-dropdown-item>
-                <el-divider style="padding-bottom: 12px; margin: 0px; margin-top: 6px"></el-divider>
-                <el-dropdown-item command="position2">
-                    <div class="el-dropdown-item">
-                        <div> <i class="ri-shield-user-line"></i>{{ $t('岗位2') }} </div>
-                    </div>
-                </el-dropdown-item>
-                <el-divider style="padding-bottom: 12px; margin: 0px; margin-top: 6px"></el-divider>
-                <el-dropdown-item command="position3">
-                    <div class="el-dropdown-item">
-                        <div>
-                            <i class="ri-shield-user-line"></i>{{ $t('岗位3') }}
-                            <el-badge :value="1" class="badge"></el-badge>
-                        </div>
-                    </div>
-                </el-dropdown-item>
+                    </el-dropdown-item>
+                    <el-divider
+                        v-if="index !== positionList.length - 1"
+                        style="padding-bottom: 12px; margin: 0px; margin-top: 6px"
+                    ></el-divider>
+                </div>
             </el-dropdown-menu>
         </template>
     </el-dropdown>
+    <div v-else class="user-el-dropdown">
+        <!-- show & if 的vue指令 仅用于适配移动端 -->
+        <div class="name" style="margin-top: 4px; cursor: not-allowed; color: #aaa">
+            <i class="ri-route-line"></i>
+            <span>{{ $t('选择岗位') }}</span>
+        </div>
+    </div>
     <!-- <PersonInfo ref="personInfo"/> -->
 </template>
 <script lang="ts">
-    import { ref, computed, ComputedRef, defineComponent } from 'vue';
+    import { defineComponent } from 'vue';
     import { useRouter } from 'vue-router';
     import { useSettingStore } from '@/store/modules/settingStore';
     import y9_storage from '@/utils/storage';
     import IconSvg from './IconSvg';
-    import { $y9_SSO } from '@/main';
+    import { getLoginInfo } from '@/api/home';
 
     // import PersonInfo from '@/views/personal/personInfo.vue';
     interface RightTopUserSetupData {
@@ -52,7 +50,6 @@
         initInfo: Object;
         departmentMapList: Object;
         onMenuClick: (event: any) => Promise<void>;
-      fontSizeObj: Object;
     }
 
     export default defineComponent({
@@ -63,26 +60,38 @@
         },
         setup(): RightTopUserSetupData {
             const settingStore = useSettingStore();
-          // 注入 字体变量
-          const fontSizeObj: any = inject('sizeObjInfo');
+
             const router = useRouter();
             // const personInfo = ref();
             // 获取当前登录用户信息
-            const userInfo = JSON.parse(sessionStorage.getItem('ssoUserInfo'));
-            const initInfo = y9_storage.getObjectItem('initInfo');
+            const userInfo = y9_storage.getObjectItem('ssoUserInfo');
+            const initInfo = y9_storage.getObjectItem('cmsInitInfo');
             const departmentMapList = y9_storage.getObjectItem('departmentMapList');
+            // 岗位列表
+            const positionList: any = JSON.parse(sessionStorage.getItem('positionList'));
+            // 所有岗位的待办消息
+            let totalCount = 0;
+            positionList?.map((item) => {
+                totalCount += item.todoCount;
+            });
+
             // 点击菜单
             const onMenuClick = async (command: string) => {
-                switch (command) {
-                    case 'position1':
-                        break;
-                    case 'position2':
-                        break;
-                    case 'position3':
-                        break;
-                    default:
-                        break;
-                }
+                // console.log(command, '999');
+                // 设置positionId
+                sessionStorage.setItem('positionId', command?.positionId);
+                // 设置 positionName
+                sessionStorage.setItem('positionName', command?.positionName);
+                // 设置 deptName
+                sessionStorage.setItem('deptName', command?.parentName);
+                let res = await getLoginInfo();
+                sessionStorage.setItem('positionList', JSON.stringify(res.data.positionList));
+                positionList.value = res.data.positionList;
+                // 所有岗位的待办消息
+                positionList?.map((item) => {
+                    totalCount += item.todoCount;
+                });
+                window.location = window.location.origin + window.location.pathname;
             };
             return {
                 settingStore,
@@ -90,7 +99,8 @@
                 initInfo,
                 departmentMapList,
                 onMenuClick,
-              fontSizeObj
+                positionList,
+                totalCount
                 // personInfo
             };
         }
@@ -111,14 +121,15 @@
 
     .name {
         color: var(--el-text-color-primary);
-      font-size: v-bind('fontSizeObj.baseFontSize');
+        font-size: var(--el-font-size-base);
         display: flex;
-        margin-top: 12px;
+        margin-top: 8px;
+        justify-content: center;
+        align-items: center;
 
         & > div {
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: end;
 
             span {
                 line-height: 20px;
@@ -127,7 +138,7 @@
         }
 
         i {
-          font-size: v-bind('fontSizeObj.extraLargeFont');
+            font-size: 20px;
             line-height: 20px;
         }
 

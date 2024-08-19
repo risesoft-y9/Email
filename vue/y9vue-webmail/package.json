@@ -39,8 +39,8 @@
         "vue-router": "^4.0.13",
         "vxe-table": "^4.3.5",
         "xe-utils": "^3.5.7",
-        "y9plugin-components": "^2.1.8",
-        "y9plugin-sso": "^4.1.0",
+        "y9plugin-components": "^2.2.3",
+        "y9plugin-sso": "^4.1.4",
         "y9plugin-watermark": "^1.2.0"
     },
     "devDependencies": {

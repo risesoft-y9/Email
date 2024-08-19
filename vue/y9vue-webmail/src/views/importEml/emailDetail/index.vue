@@ -1,9 +1,9 @@
 <!--
- * @Author: 
+ * @Author: error: git config user.name && git config user.email & please set dead value or install git
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-19 12:19:30
- * @Description: 邮件详情
+ * @LastEditTime: 2024-08-14 15:57:52
+ * @Description: 导入邮件详情
 -->
 <template>
     <div class="mainmail">
@@ -18,25 +18,8 @@
                     <i class="ri-arrow-left-line"></i>
                     <span>&nbsp;{{ $t('返回') }}</span>
                 </el-button>
-                <el-button
-                    :size="fontSizeObj.buttonSize"
-                    :style="{ fontSize: fontSizeObj.baseFontSize }"
-                    class="global-btn-third"
-                    @click="reply"
-                >
-                    <i class="ri-reply-line"></i>
-                    <span>&nbsp;{{ $t('回复') }}</span>
-                </el-button>
-                <el-button
-                    :size="fontSizeObj.buttonSize"
-                    :style="{ fontSize: fontSizeObj.baseFontSize }"
-                    class="global-btn-third"
-                    @click="replyAll"
-                >
-                    <i class="ri-reply-all-line"></i>
-                    <span>&nbsp;{{ $t('全部回复') }}</span>
-                </el-button>
-                <el-button
+
+                <!-- <el-button
                     :size="fontSizeObj.buttonSize"
                     :style="{ fontSize: fontSizeObj.baseFontSize }"
                     class="global-btn-third"
@@ -44,11 +27,7 @@
                 >
                     <i class="ri-send-plane-line"></i>
                     <span>&nbsp;{{ $t('转发') }}</span>
-                </el-button>
-                <!--                <el-button v-if="(flag==-2)" class="global-btn-third" @click="withDraw">
-                                    <i class="ri-arrow-go-back-line"></i>
-                                    <span>&nbsp;{{ $t("撤回") }}</span>
-                                </el-button>-->
+                </el-button> -->
                 <el-button
                     :size="fontSizeObj.buttonSize"
                     :style="{ fontSize: fontSizeObj.baseFontSize }"
@@ -59,29 +38,7 @@
                     <span>&nbsp;{{ $t('删除') }}</span>
                 </el-button>
                 <el-button
-                    :size="fontSizeObj.buttonSize"
-                    :style="{ fontSize: fontSizeObj.baseFontSize }"
-                    class="global-btn-third"
-                    @click="completelyDelete"
-                >
-                    <i class="ri-delete-bin-line"></i>
-                    <span>&nbsp;{{ $t('彻底删除') }}</span>
-                </el-button>
-                <el-button
-                    :size="fontSizeObj.buttonSize"
-                    :style="{ fontSize: fontSizeObj.baseFontSize }"
-                    class="global-btn-third"
-                    @click="exportEmail"
-                >
-                    <i class="ri-mail-download-line"></i>
-                    <span>&nbsp;{{ $t('导出') }}</span>
-                </el-button>
-                <!--                <el-button class="global-btn-third">
-                                    <i class="ri-more-fill"></i>
-                                    <span>&nbsp;{{ $t("更多") }}</span>
-                                </el-button>-->
-                <el-button
-                    v-if="email.nextUid == null"
+                    v-if="email.nextUid == '-1'"
                     :size="fontSizeObj.buttonSize"
                     :style="{ fontSize: fontSizeObj.baseFontSize }"
                     class="global-btn-third tag-right"
@@ -100,7 +57,7 @@
                     <i class="ri-arrow-right-s-line"></i>
                 </el-button>
                 <el-button
-                    v-if="email.previousUid == null"
+                    v-if="email.previousUid == '-1'"
                     :size="fontSizeObj.buttonSize"
                     :style="{ fontSize: fontSizeObj.baseFontSize }"
                     class="global-btn-third tag-right"
@@ -139,46 +96,48 @@
                         <div class="new-mailmess">
                             <span class="contact-name-label"> 收件人：</span>
                             <div class="contact-context">
-                                <div v-for="(to, i) in email.toEmailAddressList" class="contact-div">
+                                <div v-for="(to, i) in toList" class="contact-div">
                                     <span class="contact-name-label-s contact-capsule">
-                                        {{ to }}
+                                        {{ to.substring(0, to.indexOf('<')) }}
                                     </span>
                                     <span class="contact-name-suffix">
-                                        <template v-if="i != email.toEmailAddressList.length - 1"> ; </template>
+                                        {{ to.substring(to.indexOf('<'))
+                                        }}<template v-if="i != toList.length - 1">;</template>
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <div v-if="email.ccEmailAddressList?.length" class="new-mailmess">
+                        <div v-if="email.cc != ''" class="new-mailmess">
                             <span class="contact-name-label"> 抄&nbsp;送：</span>
                             <div class="contact-context">
-                                <div v-for="(cc, j) in email.ccEmailAddressList" class="contact-div">
+                                <div v-for="(cc, j) in ccList" class="contact-div">
                                     <span class="contact-name-label-s contact-capsule">
-                                        {{ cc }}
+                                        {{ cc.substring(0, cc.indexOf('<')) }}
                                     </span>
                                     <span class="contact-name-suffix">
-                                        <template v-if="j != email.ccEmailAddressList.length - 1">;</template>
+                                        {{ cc.substring(cc.indexOf('<'))
+                                        }}<template v-if="j != toList.length - 1">;</template>
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div class="new-mailmess">
-                            <span class="mailmess-time-label">时&nbsp;间：</span>
-                            <span>{{ email.sendTime }}</span>
+                            <span class="mailmess-time-label"> 时&nbsp;间：</span>
+                            <span>{{ email.dateTime }}</span>
                         </div>
                     </div>
                 </div>
             </el-col>
             <el-col :span="24">
-                <div :style="bodyStyle" class="mail-content">
-                    <div v-html="email.richText"></div>
+                <div class="mail-content">
+                    <div v-html="email.htmlContent"></div>
                 </div>
             </el-col>
-            <el-col v-if="email.emailAttachmentDTOList?.length" :span="24" style="padding: 2px">
+            <el-col v-if="email.attchMentsList?.length" :span="24" style="padding: 2px">
                 <div class="email-attachment">
                     <div class="attachment-top attachment-explain">
                         <span class="title"> <i class="ri-attachment-2"></i>附件</span>({{
-                            email.emailAttachmentDTOList?.length
+                            email.attchMentsList?.length
                         }}
                         个)
                         <span style="color: var(--el-color-primary); cursor: pointer">
@@ -189,12 +148,8 @@
                         </span>
                     </div>
                     <div class="attachment-body">
-                        <span v-for="attachment in email.emailAttachmentDTOList">
-                            <div
-                                :title="attachment.fileName"
-                                class="attachment-box"
-                                @click="download(attachment.fileName)"
-                            >
+                        <span v-for="attachment in email.attchMentsList">
+                            <div :title="attachment.fileName" class="attachment-box" @click="download(attachment.id)">
                                 <div class="attachment-left-content">
                                     <img
                                         v-if="attachment.fileExt == 'pdf'"
@@ -246,7 +201,7 @@
                                     />
                                     <div class="attachment-title-box">
                                         <div class="attachment-name">{{ attachment.fileName }}</div>
-                                        <div class="attachment-usage">{{ attachment.displaySize }}</div>
+                                        <div class="attachment-usage">{{ attachment.fileSize }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -254,98 +209,72 @@
                     </div>
                 </div>
             </el-col>
-            <el-col :span="24" class="col-value">
-                <el-card class="fast-reply">
-                    <el-input
-                        v-model="quickReply"
-                        :placeholder="'快捷回复给:' + email.from"
-                        class="fast-reply-input"
-                        clearable
-                    />
-                    <el-button
-                        :size="fontSizeObj.buttonSize"
-                        :style="{ fontSize: fontSizeObj.baseFontSize }"
-                        class="global-btn-second tag-right"
-                        @click="quickEmail"
-                    >
-                        <i class="ri-send-plane-2-line"></i>
-                        <span>&nbsp;{{ $t('回复') }}</span>
-                    </el-button>
-                </el-card>
-            </el-col>
         </el-row>
     </div>
 </template>
 <script lang="ts" setup>
-    import { useRouter } from 'vue-router';
-    import { defineProps, inject, onMounted, reactive, ref, toRefs, watch } from 'vue';
-    import { deleteEmail, deleteForeverEmail, emailDetail, quickReplyEmail, withDrawEmail } from '@/api/email/index';
+    import { inject, onMounted, reactive, toRefs, watch } from 'vue';
     import { useI18n } from 'vue-i18n';
     import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
     import settings from '@/settings';
     import y9_storage from '@/utils/storage';
+    import { deleteEml, emlDetail } from '@/api/importEml/index';
+
+    import { useRoute, useRouter } from 'vue-router';
+
+    const router = useRouter();
+    const currentrRute = useRoute();
+
     // 注入 字体对象
     const fontSizeObj: any = inject('sizeObjInfo') || {};
     const { t } = useI18n();
-    const router = useRouter();
-    const quickReply = ref('');
-    const props = defineProps({
-        folder: { type: String, required: true },
-        uid: { type: Number, required: true }
-    });
 
     // 封装邮件属性
     const data = reactive({
-        attachmentList: [],
+        attachmentList: [] as any,
+        emailId: '',
         email: {
-            folder: props.folder,
-            uid: props.uid,
-            previousUid: -1,
-            nextUid: -1,
+            id: null,
+            previousUid: '-1',
+            nextUid: '-1',
             messageId: '',
-            replyMessageId: '',
-            forwardMessageId: '',
             from: '',
-            sendTime: '',
+            dateTime: '',
             subject: '',
-            richText: '',
-            separate: false,
+            textContent: '',
+            htmlContent: '',
             text: '',
-            toEmailAddressList: [],
-            ccEmailAddressList: [],
-            bccEmailAddressList: [],
-            emailAttachmentDTOList: [] as any
+            to: '',
+            cc: '',
+            bcc: '',
+            existAttchMent: false,
+            attchMentsList: [] as any
         },
-        toEmailOrgUnitList: [],
-        ccEmailOrgUnitList: [],
-        bccEmailOrgUnitList: [],
-        toPersonIds: [],
-        bodyStyle: {
-            borderBottomLeftRadius: 'none',
-            borderBottomRightRadius: 'none'
-        }
+        toList: [] as any,
+        bccList: [] as any,
+        ccList: [] as any
     });
-    let { attachmentList, email, toEmailOrgUnitList, ccEmailOrgUnitList, bccEmailOrgUnitList, toPersonIds, bodyStyle } =
-        toRefs(data);
+    let { email, emailId, toList, bccList, ccList } = toRefs(data);
 
     onMounted(() => {
+        emailId.value = currentrRute.query?.eid;
         getEmailDetail();
     });
 
     watch(
-        () => [props.folder, props.uid],
+        () => currentrRute.query.eid,
         async () => {
-            email.value.folder = props.folder;
-            email.value.uid = props.uid;
+            emailId.value = currentrRute.query?.eid;
             await getEmailDetail();
         }
     );
 
     async function previousEmail() {
-        if (email.value.previousUid && email.value.previousUid !== -1) {
+        console.log('previousUid', email.value.previousUid);
+        if (email.value.previousUid && email.value.previousUid !== '-1') {
             router.push({
-                path: '/emailDetailInfo',
-                query: { folder: email.value.folder, uid: email.value.previousUid }
+                path: '/emlDetail',
+                query: { eid: email.value.previousUid }
             });
         } else {
             ElNotification({
@@ -358,45 +287,12 @@
 
     //下一封
     async function nextEmail() {
-        if (email.value.nextUid && email.value.nextUid !== -1) {
-            router.push({
-                path: '/emailDetailInfo',
-                query: { folder: email.value.folder, uid: email.value.nextUid }
-            });
-            // router.push({path: `/email/${email.value.folder}/${email.value.nextUid}`});
+        console.log('nextUid', email.value.nextUid, email.value.nextUid && email.value.nextUid !== '-1');
+        if (email.value.nextUid && email.value.nextUid !== '-1') {
+            router.push({ path: '/emlDetail', query: { eid: email.value.nextUid } });
         } else {
             ElNotification({
                 title: t('没有更多邮件了'), //result.success ? t('成功') : t('失败'),
-                type: 'error', //result.success ? 'success' : 'error',
-                offset: 80
-            });
-        }
-    }
-
-    //转发
-    function forwardEmail() {
-        let folder = email.value.folder;
-        let uid = email.value.uid;
-        router.push({ path: '/writing/forward', query: { folder: folder, uid: uid } });
-    }
-
-    //撤回
-    async function withDraw() {
-        let emailId = email.value.folder;
-        let result = await withDrawEmail({ emailId: emailId });
-        if (result.success) {
-            ElNotification({
-                title: t('成功'), //result.success ? t('成功') : t('失败'),
-                message: result.msg, //result.msg,
-                type: 'success', //result.success ? 'success' : 'error',
-                duration: 2000,
-                offset: 80
-            });
-            router.push({ path: '/sent' });
-        } else {
-            ElNotification({
-                title: t('失败'), //result.success ? t('成功') : t('失败'),
-                message: result.msg, //result.msg,
                 type: 'error', //result.success ? 'success' : 'error',
                 duration: 2000,
                 offset: 80
@@ -412,9 +308,9 @@
             type: 'info'
         })
             .then(async () => {
-                let ids = [email.value.uid];
+                let ids = [emailId.value];
                 //调用后台接口 let result = await removeOrgUnits(ids.join(','));
-                let result = await deleteEmail(email.value.folder, ids.join(','));
+                let result = await deleteEml(ids.join(','));
                 if (result.success) {
                     ElNotification({
                         title: t('成功'), //result.success ? t('成功') : t('失败'),
@@ -433,108 +329,14 @@
                     offset: 65
                 });
             });
-    }
-
-    //彻底删除
-    function completelyDelete(e) {
-        ElMessageBox.confirm(`${t('是否彻底删除邮件')}?`, t('提示'), {
-            confirmButtonText: t('确定'),
-            cancelButtonText: t('取消'),
-            type: 'info'
-        })
-            .then(async () => {
-                let ids = [email.value.uid];
-                //调用后台接口 let result = await removeOrgUnits(ids.join(','));
-                let result = await deleteForeverEmail(email.value.folder, ids.join(','));
-                if (result.success) {
-                    ElNotification({
-                        title: t('成功'), //result.success ? t('成功') : t('失败'),
-                        message: result.msg, //result.msg,
-                        type: 'success', //result.success ? 'success' : 'error',
-                        duration: 2000,
-                        offset: 80
-                    });
-                }
-                router.go(-1);
-            })
-            .catch(() => {
-                ElMessage({
-                    type: 'info',
-                    message: t('已取消删除'),
-                    offset: 65
-                });
-            });
-    }
-
-    function exportEmail() {
-        let url =
-            import.meta.env.VUE_APP_EMAIL_URL +
-            'api/standard/email/exportEml?uid=' +
-            email.value.uid +
-            '&folder=' +
-            email.value.folder +
-            '&access_token=' +
-            y9_storage.getObjectItem(settings.siteTokenKey, 'access_token');
-        // window.open(url, '_blank');
-        var link = document.createElement('a');
-        link.href = url;
-        link.click();
-    }
-
-    //快捷回复
-    async function quickEmail() {
-        if (quickReply.value == '') {
-            ElMessageBox({ title: '提示', message: '请先输入快捷回复内容' });
-            return;
-        }
-        let folder = email.value.folder;
-        let uid = email.value.uid;
-        let quickResult = await quickReplyEmail(folder, uid, quickReply.value);
-        if (quickResult.success) {
-            ElNotification({
-                title: t('成功'), //result.success ? t('成功') : t('失败'),
-                message: quickResult.msg, //result.msg,
-                type: 'success', //result.success ? 'success' : 'error',
-                duration: 2000,
-                offset: 80
-            });
-            quickReply.value = '';
-            // router.go(-1);
-        } else {
-            ElNotification({
-                title: t('失败'), //result.success ? t('成功') : t('失败'),
-                message: '发送失败', //result.msg,
-                type: 'error', //result.success ? 'success' : 'error',
-                duration: 2000,
-                offset: 80
-            });
-        }
-    }
-
-    //回复
-    async function reply() {
-        let folder = email.value.folder;
-        let uid = email.value.uid;
-        router.push({ path: '/writing/reply', query: { folder: folder, uid: uid } });
-    }
-
-    //全部回复
-    async function replyAll() {
-        let folder = email.value.folder;
-        let uid = email.value.uid;
-        router.push({ path: '/writing/replyAll', query: { folder: folder, uid: uid } });
     }
 
     //下载单个附件
-    function download(fileName) {
+    function download(id) {
         let downloadUrl =
             import.meta.env.VUE_APP_EMAIL_URL +
-            'api/standard/emailAttachment/download?messageId=' +
-            encodeURIComponent(email.value.messageId) +
-            '&folder=' +
-            email.value.folder +
-            '&fileName=' +
-            fileName +
+            'api/rest/importEml/download?attId=' +
+            id +
             '&access_token=' +
             y9_storage.getObjectItem(settings.siteTokenKey, 'access_token');
         // window.open(downloadUrl, '_blank');
@@ -547,10 +349,8 @@
     function batchDownload() {
         let downloadUrl =
             import.meta.env.VUE_APP_EMAIL_URL +
-            'api/standard/emailAttachment/batchDownload?messageId=' +
-            encodeURIComponent(email.value.messageId) +
-            '&folder=' +
-            email.value.folder +
+            'api/rest/importEml/batchDownload?importEmlId=' +
+            email.value.id +
             '&access_token=' +
             y9_storage.getObjectItem(settings.siteTokenKey, 'access_token');
         // window.open(downloadUrl, '_blank');
@@ -561,28 +361,24 @@
 
     //返回按钮,返回列表
     function returnEmailList() {
-        router.go(-1);
+        router.push({ path: '/importEml' });
     }
 
     async function getEmailDetail() {
-        let folder = email.value.folder;
-        let uid = email.value.uid;
-        let emailData = await emailDetail(folder, uid);
+        let emailData = await emlDetail(emailId.value);
         email.value = emailData.data;
-        email.value.richText = emailData.data.richText;
-        if (email.value.emailAttachmentDTOList?.length) {
-            attachmentList.value = email.value.emailAttachmentDTOList;
-            bodyStyle.value = {
-                borderBottomLeftRadius: '0px',
-                borderBottomRightRadius: '0px'
-            };
-        } else {
-            bodyStyle.value = {
-                borderBottomLeftRadius: '5px',
-                borderBottomRightRadius: '5px'
-            };
+        if (email.value.to) {
+            toList.value = email.value.to.split(',');
+        }
+        if (email.value.bcc) {
+            bccList.value = email.value.bcc.split(',');
+        }
+        if (email.value.cc) {
+            ccList.value = email.value.cc.split(',');
         }
     }
+
+    function forwardEmail() {}
 </script>
 <style lang="scss" scoped>
     :deep(.el-card) {
@@ -700,15 +496,12 @@
             width: 58px;
         }
     }
-</style>
 
-<style lang="scss" scoped>
     //邮件主体样式
     .mainmail {
         height: 100%;
         overflow-y: auto;
-        // overflow-x: auto;
-        overflow-x: hidden;
+        overflow-x: auto;
         scrollbar-width: none;
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
@@ -879,8 +672,6 @@
                 padding: 10px 20px;
                 //margin-top:12px;
                 background-color: rgb(255, 255, 255);
-                border-bottom-left-radius: 5px;
-                border-bottom-right-radius: 5px;
 
                 .attachment-box {
                     position: relative;
@@ -919,8 +710,6 @@
                         display: flex;
                         flex: 1;
                         width: 0;
-                        flex-direction: column;
-
                         flex-direction: column;
                     }
 

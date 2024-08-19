@@ -58,7 +58,6 @@ export default {
     getStringItem: function (key) {
         const str = storageType.getItem(key);
         if (!str || str == 'undefined') {
-            console.log(`getStringItem - 没有${key}这个缓存`);
             return false;
         }
         return str;
@@ -73,11 +72,9 @@ export default {
     getObjectItem: function (key, item = '') {
         const object = storageType.getItem(key);
         if (!object) {
-            // console.log(`getObjectItem - 没有${object}这个缓存`);
             return false;
         }
         if (object == 'undefined') {
-            // console.log(`${object} 没有被正确赋值`);
             return false;
         }
         const obj = JSON.parse(object);
@@ -87,7 +84,6 @@ export default {
         if (Object.keys(obj).indexOf(item) > -1) {
             return obj[item]; // 返回对象中对应的item属性值
         } else {
-            console.log(`没有对应的key值-${key}##pro`);
             return false;
         }
     }

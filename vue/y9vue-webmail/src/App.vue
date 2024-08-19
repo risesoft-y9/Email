@@ -13,8 +13,8 @@
     import { getConcreteSize } from '@/utils/index';
     import { ElConfigProvider } from 'element-plus';
 
-    import zhCn from  'element-plus/dist/locale/zh-cn.mjs'
-    import en from 'element-plus/dist/locale/en.mjs'
+    import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
+    import en from 'element-plus/dist/locale/en.mjs';
     import { useSettingStore } from '@/store/modules/settingStore';
     import y9_storage from '@/utils/storage';
 
@@ -70,53 +70,53 @@
     });
 
     // 主题切换
-	const theme = computed(() => settingStore.getThemeName)
-	const toggleColor = (theme) => {
-		if (document.getElementById("head")) {
-			let themeDom = document.getElementById("head")
-			let pathArray = themeDom.href.split('/')
-			pathArray[pathArray.length-1] = theme + '.css'
-			let newPath = pathArray.join('/')
-			themeDom.href = newPath
-		}
-	}
-	toggleColor(theme.value);
+    const theme = computed(() => settingStore.getThemeName);
+    const toggleColor = (theme) => {
+        if (document.getElementById('head')) {
+            let themeDom = document.getElementById('head');
+            let pathArray = themeDom.href.split('/');
+            pathArray[pathArray.length - 1] = theme + '.css';
+            let newPath = pathArray.join('/');
+            themeDom.href = newPath;
+        }
+    };
+    toggleColor(theme.value);
 
     let sizeObjInfo = ref({
-      baseFontSize: getConcreteSize(settingStore.getFontSize, 14) + 'px',
-      mediumFontSize: getConcreteSize(settingStore.getFontSize, 16) + 'px',
-      largeFontSize: getConcreteSize(settingStore.getFontSize, 18) + 'px',
-      largerFontSize: getConcreteSize(settingStore.getFontSize, 19) + 'px',
-      extraLargeFont: getConcreteSize(settingStore.getFontSize, 20) + 'px',
-      extraLargerFont: getConcreteSize(settingStore.getFontSize, 24) + 'px',
-      moreLargeFont: getConcreteSize(settingStore.getFontSize, 26) + 'px',
-      moreLargerFont: getConcreteSize(settingStore.getFontSize, 32) + 'px',
-      biggerFontSize: getConcreteSize(settingStore.getFontSize, 40) + 'px',
-      maximumFontSize: getConcreteSize(settingStore.getFontSize, 48) + 'px',
-      buttonSize: settingStore.getFontSize,
-      lineHeight: settingStore.getLineHeight
-
-    })
+        baseFontSize: getConcreteSize(settingStore.getFontSize, 14) + 'px',
+        mediumFontSize: getConcreteSize(settingStore.getFontSize, 16) + 'px',
+        largeFontSize: getConcreteSize(settingStore.getFontSize, 18) + 'px',
+        largerFontSize: getConcreteSize(settingStore.getFontSize, 19) + 'px',
+        extraLargeFont: getConcreteSize(settingStore.getFontSize, 20) + 'px',
+        extraLargerFont: getConcreteSize(settingStore.getFontSize, 24) + 'px',
+        moreLargeFont: getConcreteSize(settingStore.getFontSize, 26) + 'px',
+        moreLargerFont: getConcreteSize(settingStore.getFontSize, 32) + 'px',
+        biggerFontSize: getConcreteSize(settingStore.getFontSize, 40) + 'px',
+        maximumFontSize: getConcreteSize(settingStore.getFontSize, 48) + 'px',
+        buttonSize: settingStore.getFontSize,
+        lineHeight: settingStore.getLineHeight
+    });
     // 监听 转换font-size值
-    watch(() => settingStore.getFontSize, (newVal) => {
-      sizeObjInfo.value.baseFontSize = getConcreteSize(newVal, 14) + 'px';
-      sizeObjInfo.value.mediumFontSize = getConcreteSize(newVal, 16) + 'px';
-      sizeObjInfo.value.largeFontSize = getConcreteSize(newVal, 18) + 'px';
-      sizeObjInfo.value.largerFontSize = getConcreteSize(newVal, 19) + 'px';
-      sizeObjInfo.value.extraLargeFont = getConcreteSize(newVal, 20) + 'px';
-      sizeObjInfo.value.extraLargerFont = getConcreteSize(newVal, 24) + 'px';
-      sizeObjInfo.value.moreLargeFont = getConcreteSize(newVal, 26) + 'px';
-      sizeObjInfo.value.moreLargerFont = getConcreteSize(newVal, 32) + 'px';
-      sizeObjInfo.value.biggerFontSize = getConcreteSize(newVal, 40) + 'px';
-      sizeObjInfo.value.maximumFontSize = getConcreteSize(newVal, 48) + 'px';
-      sizeObjInfo.value.buttonSize = newVal;
-      sizeObjInfo.value.lineHeight = settingStore.getLineHeight;
-
-    })
+    watch(
+        () => settingStore.getFontSize,
+        (newVal) => {
+            sizeObjInfo.value.baseFontSize = getConcreteSize(newVal, 14) + 'px';
+            sizeObjInfo.value.mediumFontSize = getConcreteSize(newVal, 16) + 'px';
+            sizeObjInfo.value.largeFontSize = getConcreteSize(newVal, 18) + 'px';
+            sizeObjInfo.value.largerFontSize = getConcreteSize(newVal, 19) + 'px';
+            sizeObjInfo.value.extraLargeFont = getConcreteSize(newVal, 20) + 'px';
+            sizeObjInfo.value.extraLargerFont = getConcreteSize(newVal, 24) + 'px';
+            sizeObjInfo.value.moreLargeFont = getConcreteSize(newVal, 26) + 'px';
+            sizeObjInfo.value.moreLargerFont = getConcreteSize(newVal, 32) + 'px';
+            sizeObjInfo.value.biggerFontSize = getConcreteSize(newVal, 40) + 'px';
+            sizeObjInfo.value.maximumFontSize = getConcreteSize(newVal, 48) + 'px';
+            sizeObjInfo.value.buttonSize = newVal;
+            sizeObjInfo.value.lineHeight = settingStore.getLineHeight;
+        }
+    );
 
     // provide提供
     provide('sizeObjInfo', sizeObjInfo.value);
-
 </script>
 
 <template>

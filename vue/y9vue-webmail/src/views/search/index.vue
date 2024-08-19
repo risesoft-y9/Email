@@ -1,61 +1,76 @@
 <!--
  * @Author: your name
  * @Date: 2022-05-05 09:43:05
- * @LastEditTime: 2022-05-05 10:37:02
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-08-19 15:22:49
+ * @LastEditors: mengjuhua
  * @Description: 邮件查询
 -->
 <template>
     <div class="userLog">
-        <y9Table
-            ref="filterRef"
-            :config="tableConfig"
-            border
-            :filter-config="filterLogsConfig"
-            @on-curr-page-change="handlerPageChange"
-            @on-page-size-change="handlerSizeChange"
-            @row-click="rowClick"
-        >
-            <template #slotDate>
-                <el-form>
-                    <el-form-item :label="$t('起止时间')">
-                        <el-date-picker
-                            v-model="selectedDate"
-                            type="datetimerange"
-                            :range-separator="$t('至')"
-                            :shortcuts="shortcuts"
-                            :start-placeholder="$t('开始时间')"
-                            :end-placeholder="$t('结束时间')"
-                            format="YYYY-MM-DD"
-                            value-format="YYYY-MM-DD"
-                            style="width: 100%"
-                            @change="selectdData()"
-                        >
-                        </el-date-picker>
-                    </el-form-item>
-                </el-form>
-            </template>
-            <template #slotSearch>
-                <el-divider content-position="center">
-                    <el-button class="global-btn-main" type="primary" @click="search()" :size="fontSizeObj.buttonSize"
-                               :style="{ fontSize: fontSizeObj.baseFontSize }">{{ $t('查询') }} </el-button>
-                    <el-button class="global-btn-second" @click="reset()" :size="fontSizeObj.buttonSize"
-                               :style="{ fontSize: fontSizeObj.baseFontSize }">{{ $t('重置') }}</el-button>
-                </el-divider>
-            </template>
-        </y9Table>
+        <y9Card :showHeader="false">
+            <y9Table
+                ref="filterRef"
+                :config="tableConfig"
+                :filter-config="filterLogsConfig"
+                border
+                @on-curr-page-change="handlerPageChange"
+                @on-page-size-change="handlerSizeChange"
+                @row-click="rowClick"
+                @window-height-change="windowHeightChange"
+            >
+                <template #slotDate>
+                    <el-form>
+                        <el-form-item :label="$t('起止时间')">
+                            <el-date-picker
+                                v-model="selectedDate"
+                                :end-placeholder="$t('结束时间')"
+                                :range-separator="$t('至')"
+                                :shortcuts="shortcuts"
+                                :start-placeholder="$t('开始时间')"
+                                format="YYYY-MM-DD"
+                                style="width: 100%"
+                                type="datetimerange"
+                                value-format="YYYY-MM-DD"
+                                @change="selectdData()"
+                            >
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form>
+                </template>
+                <template #slotSearch>
+                    <el-divider content-position="center">
+                        <el-button
+                            :size="fontSizeObj.buttonSize"
+                            :style="{ fontSize: fontSizeObj.baseFontSize }"
+                            class="global-btn-main"
+                            type="primary"
+                            @click="search()"
+                            >{{ $t('查询') }}
+                        </el-button>
+                        <el-button
+                            :size="fontSizeObj.buttonSize"
+                            :style="{ fontSize: fontSizeObj.baseFontSize }"
+                            class="global-btn-second"
+                            @click="reset()"
+                            >{{ $t('重置') }}
+                        </el-button>
+                    </el-divider>
+                </template>
+            </y9Table>
+        </y9Card>
     </div>
 </template>
 
 <script lang="ts" setup>
-    import { onMounted, ref } from 'vue';
+    import { h, inject, onMounted, ref } from 'vue';
     import router from '@/router';
     import { useSettingStore } from '@/store/modules/settingStore';
     import { useI18n } from 'vue-i18n';
     import { flagEmail, searchEmail } from '@/api/email';
     import { useFolderStore } from '@/store/modules/folderStore';
+    import { ElNotification } from 'element-plus';
     // 注入 字体对象
-    const fontSizeObj: any = inject('sizeObjInfo')||{};
+    const fontSizeObj: any = inject('sizeObjInfo') || {};
     const { t } = useI18n();
     const settingStore = useSettingStore();
     const filterRef = ref('');
@@ -117,7 +132,7 @@
                 value: '',
                 key: 'subject',
                 label: '邮件主题',
-                labelWith: '82px',
+                labelWidth: '72px',
                 props: {
                     placeholder: '邮件主题'
                 },
@@ -127,7 +142,7 @@
                 type: 'input',
                 value: '',
                 key: 'textBody',
-                labelWith: '82px',
+                labelWidth: '72px',
                 label: '邮件正文',
                 props: {
                     placeholder: '邮件正文'
@@ -139,7 +154,7 @@
                 value: '',
                 key: 'state',
                 label: '状态',
-                labelWith: '82px',
+                labelWidth: '72px',
                 props: {
                     options: [
                         //选项列表
@@ -165,7 +180,7 @@
                 value: '',
                 key: 'accessory',
                 label: '附件',
-                labelWith: '82px',
+                labelWidth: '72px',
                 props: {
                     options: [
                         //选项列表
@@ -191,7 +206,7 @@
                 value: '',
                 key: 'folder',
                 label: '文件夹',
-                labelWith: '82px',
+                labelWidth: '72px',
                 props: {
                     options: [],
                     placeholder: '请选择'
@@ -203,7 +218,7 @@
                 value: '',
                 key: 'addresser',
                 label: '发件人',
-                labelWith: '82px',
+                labelWidth: '72px',
                 props: {
                     placeholder: '发件人'
                 },
@@ -214,7 +229,7 @@
                 value: '',
                 key: 'recipients',
                 label: '收件人',
-                labelWith: '82px',
+                labelWidth: '72px',
                 props: {
                     placeholder: '收件人'
                 },
@@ -232,25 +247,7 @@
             }
         ],
         showBorder: true
-        // borderRadio: '4px'
     });
-
-    const logTimeFormat = (row?, column?, cellValue?) => {
-        var time = Date.parse(row.loginTime);
-        if (time != null) {
-            var logTime = new Date();
-            logTime.setTime(time);
-            var year = logTime.getFullYear();
-            var month = logTime.getMonth() + 1 < 10 ? '0' + (logTime.getMonth() + 1) : logTime.getMonth() + 1;
-            var date = logTime.getDate() < 10 ? '0' + logTime.getDate() : logTime.getDate();
-            var hour = logTime.getHours() < 10 ? '0' + logTime.getHours() : logTime.getHours();
-            var minute = logTime.getMinutes() < 10 ? '0' + logTime.getMinutes() : logTime.getMinutes();
-            var second = logTime.getSeconds() < 10 ? '0' + logTime.getSeconds() : logTime.getSeconds();
-            return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second;
-        } else {
-            return cellValue;
-        }
-    };
 
     function rowClick(row) {
         openEmailDetails(row);
@@ -285,24 +282,25 @@
         }
     }
 
-    // 调整表格高度适应屏幕
-    const tableHeight = ref(useSettingStore().getWindowHeight - 60 - 80 - 188);
-
     window.onresize = () => {
-        return (() => {
-            tableHeight.value = useSettingStore().getWindowHeight - 60 - 80 - 188;
-        })();
+        return (() => {})();
     };
+
+    //窗口变动时触发，获取表格的高度
+    function windowHeightChange(tableHeight) {
+        tableConfig.value.height = tableHeight - 35 - 35 - 2; //35 35 是y9-card-content样式中上padding、下padding的值
+        tableConfig.value.maxHeight = tableHeight - 35 - 35 - 2; //35 35 是y9-card-content样式中上padding、下padding的值
+    }
+
     // 表格 配置
     let tableConfig = ref({
         loading: false,
-        height: tableHeight,
         headerBackground: false,
         columns: [
             {
                 title: '状态',
                 key: 'read',
-                width: 60,
+                width: 70,
                 render(row) {
                     return h('i', {
                         class: row.read == true ? 'ri-mail-open-line' : 'ri-mail-line',
@@ -313,7 +311,7 @@
             {
                 title: '星标',
                 key: 'star',
-                width: 60,
+                width: 70,
                 render(row) {
                     return h('i', {
                         class: row.flagged == true ? 'ri-star-fill' : 'ri-star-line',
@@ -328,6 +326,7 @@
             {
                 title: '发件人',
                 key: 'fromPersonName',
+                className: 'y9div-pointer',
                 width: 120,
                 render(row) {
                     return h(
@@ -342,6 +341,7 @@
             {
                 title: '收件人',
                 key: 'toPersonNames',
+                className: 'y9div-pointer',
                 width: 200,
                 render(row) {
                     return h(
@@ -356,8 +356,9 @@
             {
                 title: '邮件标题',
                 key: 'subject',
-                headerAlign: 'center', //表头对齐方式， 若不设置该项，则使用表格的对齐方式	string	left / center / right
-                align: 'center', //对齐方式	string	left / center / right	默认值为center
+                className: 'y9div-pointer',
+                headerAlign: 'left', //表头对齐方式， 若不设置该项，则使用表格的对齐方式	string	left / center / right
+                align: 'left', //对齐方式	string	left / center / right	默认值为center
                 render(row) {
                     return h(
                         'div',
@@ -379,7 +380,8 @@
             {
                 title: '附件',
                 key: 'attachment',
-                width: 60,
+                className: 'y9div-pointer',
+                width: 70,
                 render(row) {
                     if (row.attachment == '' || row.attachment == null) {
                         return h(
@@ -496,7 +498,7 @@
         currFilters.value.startTime = '';
         currFilters.value.endTime = '';
         filterRef.value.y9FilterRef.onReset();
-        selectedDate.value = '';
+        selectedDate.value = [];
         refreshTable();
         getListEmail();
     };
@@ -585,26 +587,71 @@
         border-top: 1px solid #eee;
     }
 
-    :deep(.el-table__cell) {
-        cursor: default;
-    }
-
     :deep(.y9-filter .y9-filter-item .label) {
         padding: 0 0 0 15px;
     }
-    :deep(.y9-table-header){
-      font-size: v-bind('fontSizeObj.baseFontSize');
+
+    :deep(.el-input__inner) {
+        font-size: v-bind('fontSizeObj.baseFontSize');
     }
-    :deep(.el-table__row){
-      font-size: v-bind('fontSizeObj.baseFontSize');
+
+    :deep(.el-date-editor .el-range-input) {
+        font-size: v-bind('fontSizeObj.baseFontSize');
     }
-    :deep(.el-input__inner){
-      font-size: v-bind('fontSizeObj.baseFontSize');
+
+    .userLog {
+        width: auto;
+        margin: 0 auto;
+
+        .pagination-style {
+            display: flex;
+            justify-content: v-bind("settingStore.device === 'mobile'? 'flex-start':'flex-end'");
+            margin-top: 20px;
+            overflow: auto;
+        }
+
+        :deep(.y9-card-content) {
+            padding: 35px 20px;
+
+            .el-divider--horizontal {
+                margin: 20px 0 30px 0;
+            }
+        }
     }
-    :deep(.el-date-editor .el-range-input){
-      font-size: v-bind('fontSizeObj.baseFontSize');
+
+    :deep(.el-divider__text) {
+        display: flex;
     }
-    :deep(.el-table__empty-text){
-      font-size: v-bind('fontSizeObj.baseFontSize');
+
+    :deep(.el-form-item__label) {
+        width: 90px;
+        display: flex;
+        justify-content: flex-start;
+        font-size: v-bind('fontSizeObj.baseFontSize');
+        align-items: center;
+        line-height: 18px;
+    }
+
+    :deep(.el-date-range-picker__time-header) {
+        display: none;
+    }
+
+    :deep(.el-form-item__content) {
+        align-items: stretch;
+    }
+
+    :deep(.el-form-item) {
+        margin: 0;
+    }
+
+    :deep(.el-date-editor) {
+        i,
+        input {
+            font-size: v-bind('fontSizeObj.baseFontSize');
+        }
+    }
+
+    :deep(.el-select__wrapper) {
+        border-radius: 30px;
     }
 </style>

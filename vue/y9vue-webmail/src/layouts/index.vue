@@ -1,34 +1,24 @@
 <script lang="ts">
-    import {
-        defineComponent,
-        watch,
-        ref,
-        Ref,
-        unref,
-        reactive,
-        nextTick,
-        computed,
-        ComputedRef,
-        toRefs,
-        onMounted
-    } from 'vue';
+    import { computed, ComputedRef, nextTick, onMounted, ref, Ref, unref, watch } from 'vue';
     import { useSettingStore } from '@/store/modules/settingStore';
     import { useRouterStore } from '@/store/modules/routerStore';
     import { useRoute } from 'vue-router';
     import {
-        getSelectLeftMenuPath,
-        getRouteBelongTopMenu,
-        getRouteItem,
-        RoutesDataItem,
+        BreadcrumbType,
         formatRoutePathTheParents,
         getBreadcrumbRoutes,
-        BreadcrumbType
+        getRouteBelongTopMenu,
+        getRouteItem,
+        getSelectLeftMenuPath,
+        RoutesDataItem
     } from '@/utils/routes';
 
     import Y9Default from '@/layouts/Y9-default/index.vue';
     import Y9Horizontal from '@/layouts/Y9-horizontal/index.vue';
     import Y9Mobile from '@/layouts/Y9-mobile/index.vue';
     import { useI18n } from 'vue-i18n';
+
+    const settingStore = useSettingStore();
 
     interface IndexLayoutSetupData {
         menuCollapsed: computed<Boolean>;
@@ -42,7 +32,7 @@
     }
 
     export default {
-        name: 'IndexLayout',
+        name: 'indexLayout',
         components: {
             Y9Default,
             Y9Horizontal,
@@ -138,7 +128,6 @@
             const webLanguage = computed(() => settingStore.getWebLanguage);
             watch(webLanguage, () => {
                 // 修复打包后的国际语言切换和主题切换 的问题
-                // console.log(webLanguage.value)
                 locale.value = webLanguage.value;
             });
 
@@ -160,13 +149,13 @@
         :is="layoutName"
         :key="layoutName"
         ref="indexLayoutRef"
-        :layout-name="layoutName"
-        :layout-sub-name="layoutSubName"
-        :menu-collapsed="menuCollapsed"
-        :belong-top-menu="belongTopMenu"
-        :default-active="defaultActive"
-        :menu-data="menuData"
-        :bread-crumbs="breadCrumbs"
-        :route-item="routeItem"
+        :belongTopMenu="belongTopMenu"
+        :breadCrumbs="breadCrumbs"
+        :defaultActive="defaultActive"
+        :layoutName="layoutName"
+        :layoutSubName="layoutSubName"
+        :menuCollapsed="menuCollapsed"
+        :menuData="menuData"
+        :routeItem="routeItem"
     ></component>
 </template>

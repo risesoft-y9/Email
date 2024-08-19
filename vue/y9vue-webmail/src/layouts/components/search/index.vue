@@ -1,7 +1,7 @@
 <script lang="ts" setup>
     import { Search } from '@element-plus/icons';
     import { useSettingStore } from '@/store/modules/settingStore';
-    import { onMounted } from 'vue-demi';
+    import { onMounted, ref } from 'vue';
 
     const settingStore = useSettingStore();
     const searchVisible = ref(false);
@@ -16,7 +16,7 @@
     // 添加点击搜索按钮事件
     onMounted(() => {
         setTimeout(() => {
-            document.getElementsByClassName('search')[0].addEventListener('click', () => {
+            document.getElementsByClassName('search')[0]?.addEventListener('click', () => {
                 if (!searchVisible.value) {
                     searchVisible.value = true;
                 }
@@ -26,12 +26,12 @@
 </script>
 
 <template>
-    <el-drawer v-model="searchVisible" :z-index="9000" :show-close="false" direction="ttb">
+    <el-drawer v-model="searchVisible" :show-close="false" :z-index="9000" direction="ttb">
         <div :class="{ search: true, 'is-pc': settingStore.getDevice === 'pc' }">
             <el-input
                 v-model="searchKey"
-                placeholder="Please Input"
                 class="input"
+                placeholder="Please Input"
                 @change="(searchVisible = false), searchFunc()"
                 @focus="searchKey = ''"
             >

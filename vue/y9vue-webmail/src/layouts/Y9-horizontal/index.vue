@@ -3,12 +3,12 @@
         <div id="indexlayout-right">
             <RightTop @refresh="refreshFunc" />
             <Navs
-                :menu-collapsed="menuCollapsed"
-                :belong-top-menu="belongTopMenu"
-                :default-active="defaultActive"
-                :menu-data="menuData"
+                :belongTopMenu="belongTopMenu"
+                :defaultActive="defaultActive"
+                :menuCollapsed="menuCollapsed"
+                :menuData="menuData"
             />
-            <BreadCrumbs :list="breadCrumbs" :menu-collapsed="menuCollapsed"></BreadCrumbs>
+            <BreadCrumbs :list="breadCrumbs" :menuCollapsed="menuCollapsed"></BreadCrumbs>
             <div :key="refreshContent" class="indexlayout-right-main">
                 <router-view></router-view>
             </div>
@@ -22,7 +22,6 @@
 </template>
 
 <script lang="ts" setup>
-    import { defineComponent, onMounted } from 'vue';
     import { useSettingStore } from '@/store/modules/settingStore';
 
     import Navs from './Navs.vue';
@@ -79,15 +78,16 @@
         position: relative;
         flex: 1;
         overflow: auto;
+        scrollbar-width: none;
         // background-color: var(--bg-color);
         background-color: var(--el-color-primary-light-9);
 
         & > .indexlayout-right-main {
             flex: 1;
             overflow: auto;
-            min-width: 1200px;
+            scrollbar-width: none;
             background-color: #eff1f7;
-            padding: $main-padding $main-padding 0px;
+            padding: $main-padding;
             padding-top: 0;
             // box-shadow: 2px 3px 4px var(--el-color-primary-light-8);
         }
@@ -127,8 +127,7 @@
                 }
 
                 & > .indexlayout-right-main {
-                    margin-top: calc(#{$headerHeight} + 80px + 55px);
-                    // margin-top: calc(#{$headerHeight} + 55px + #{$headerBreadcrumbHeight});
+                    margin-top: calc(#{$headerHeight} + 55px + #{$headerBreadcrumbHeight});
                 }
             }
         }
