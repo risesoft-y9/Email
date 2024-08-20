@@ -31,8 +31,8 @@
     </div>
 </template>
 <script lang="ts" setup>
-    import { computed, ref, onMounted } from 'vue';
-    import { useRoute, useRouter } from 'vue-router';
+    import { computed } from 'vue';
+    import { useRouter } from 'vue-router';
     import { useRouterStore } from '@/store/modules/routerStore';
     import { useSettingStore } from '@/store/modules/settingStore';
 
@@ -68,12 +68,10 @@
         }
         Timer = setTimeout(() => {
             if (count === 1) {
-                // console.log('单击', event.props.name);
                 routerStore.$patch({
                     activeRoute: event.props.name
                 });
             } else {
-                // console.log('双击', event);
                 removeTab(event.props.name, tabPosition.value);
             }
             count = 0;

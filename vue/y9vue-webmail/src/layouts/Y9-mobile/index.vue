@@ -1,22 +1,22 @@
 <template>
     <div id="indexlayout">
-        <el-drawer v-model="menuDrawer" z-index="2000" :size="size" :direction="direction" @close="toggleCollapsedFunc">
+        <el-drawer v-model="menuDrawer" :direction="direction" :size="size" z-index="2000" @close="toggleCollapsedFunc">
             <template #default>
                 <div style="position: fixed; left: var(--el-dialog-padding-primary); top: 4px">
                     <RightTopUser />
                 </div>
 
                 <Left
-                    :layout-sub-name="layoutSubName"
-                    :menu-collapsed="!menuCollapsed"
-                    :belong-top-menu="belongTopMenu"
-                    :default-active="defaultActive"
-                    :menu-data="menuData"
+                    :belongTopMenu="belongTopMenu"
+                    :defaultActive="defaultActive"
+                    :layoutSubName="layoutSubName"
+                    :menuCollapsed="!menuCollapsed"
+                    :menuData="menuData"
                 />
             </template>
         </el-drawer>
         <div id="indexlayout-right" class="fiexd-header">
-            <RightTop :menu-collapsed="menuCollapsed" style="z-index: 1999" />
+            <RightTop :menuCollapsed="menuCollapsed" style="z-index: 1999" />
             <div
                 :class="{
                     'indexlayout-right-main': true
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-    import { ref, defineComponent, onMounted, computed } from 'vue';
+    import { computed } from 'vue';
     import { useSettingStore } from '@/store/modules/settingStore';
     import Left from './Left.vue';
     import RightTop from './RightTop.vue';
@@ -106,6 +106,7 @@
         position: relative;
         flex: 1;
         overflow: auto;
+        scrollbar-width: none;
         background-color: var(--bg-color);
 
         &.fiexd-header {
@@ -115,7 +116,8 @@
             .indexlayout-right-main {
                 flex: 1;
                 overflow: auto;
-                background-color: var(--el-color-primary-light-9);
+                scrollbar-width: none;
+                background-color: #eef0f7;
                 padding: $mobile-main-padding;
                 padding-top: 0;
 

@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { computed, defineComponent, h, onBeforeMount, onUnmounted, watch } from 'vue-demi';
+    import { computed, defineComponent, h, watch } from 'vue-demi';
     import Content from './pass.vue';
     import { useSettingStore } from '@/store/modules/settingStore';
     import { $y9_SSO } from '@/main';
     // const bgUrl = 'https://v3.cn.vuejs.org/logo.png'
     const settingStore = useSettingStore();
-    // const bgUrl = computed(() => settingStore.getLockScreenImage)
+    const bgUrl = computed(() => settingStore.getLockScreenImage);
     // console.log(bgUrl.value);
 
     // 监听F12手动移除锁屏元素

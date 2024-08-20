@@ -76,10 +76,10 @@ export function $dataType(obj: any): String {
  * @returns
  */
 export function $deepAssignObject(...param: any): any {
-    const result = Object.assign({}, ...param);
+    let result = Object.assign({}, ...param);
 
-    for (const objItem of param) {
-        for (const [key, val] of Object.entries(objItem)) {
+    for (let objItem of param) {
+        for (let [key, val] of Object.entries(objItem)) {
             if (
                 Object.prototype.toString.call(result[key]) == '[object Object]' &&
                 Object.prototype.toString.call(val) == '[object Object]'
@@ -107,10 +107,10 @@ export function $deepAssignObject(...param: any): any {
  * @returns
  */
 export function $deeploneObject<T>(data: T): T {
-    const newData = Array.isArray(data) ? [] : {};
+    let newData = Array.isArray(data) ? [] : {};
 
     if (data && typeof data == 'object') {
-        for (const key in data) {
+        for (let key in data) {
             if (data.hasOwnProperty(key)) {
                 if (data[key] && typeof data[key] == 'object') {
                     newData[key] = $deeploneObject(data[key]);
@@ -227,7 +227,7 @@ export function $formatTime(param) {
     const t2 = [hour, minute].map($formatNumber).join(':');
     const t3 = [hour, minute, second].map($formatNumber).join(':');
 
-    const dateText = (year, month, day) => {
+    let dateText = (year, month, day) => {
         return year + '年 ' + month + '月 ' + day + '日';
     };
 
@@ -250,7 +250,7 @@ export function $formatTime(param) {
  */
 
 export function $objEqual(obj1, obj2) {
-    const isObj = (object) => {
+    let isObj = (object) => {
         // 判断是否为对象类型
         return (
             object &&
@@ -259,22 +259,22 @@ export function $objEqual(obj1, obj2) {
         );
     };
 
-    const isArray = (object) => {
+    let isArray = (object) => {
         // 判断是否为数组
         return object && typeof object === 'object' && object.constructor === Array;
     };
 
-    const getLength = (object) => {
+    let getLength = (object) => {
         // 获取长度
         let count = 0;
-        for (const i in object) count++;
+        for (let i in object) count++;
         return count;
     };
 
-    const compareObj = (obj1, obj2, flag) => {
+    let compareObj = (obj1, obj2, flag) => {
         // 比较对象是否相同
 
-        for (const key in obj1) {
+        for (let key in obj1) {
             if (!flag) break;
 
             if (!obj2.hasOwnProperty(key)) {
@@ -302,7 +302,7 @@ export function $objEqual(obj1, obj2) {
                     break;
                 }
 
-                const OA = obj1[key],
+                let OA = obj1[key],
                     OB = obj2[key];
 
                 if (OA.length !== OB.length) {
@@ -310,7 +310,7 @@ export function $objEqual(obj1, obj2) {
                     break;
                 }
 
-                for (const key in OA) {
+                for (let key in OA) {
                     if (!flag) {
                         break;
                     }
@@ -341,7 +341,7 @@ export function $objEqual(obj1, obj2) {
  */
 
 export function $objValueNotEmpty(_obj) {
-    const isObj = (object) => {
+    let isObj = (object) => {
         // 判断是否为对象类型
         return (
             object &&
@@ -350,15 +350,15 @@ export function $objValueNotEmpty(_obj) {
         );
     };
 
-    const getLength = (object) => {
+    let getLength = (object) => {
         // 获取长度
         let count = 0;
-        for (const i in object) count++;
+        for (let i in object) count++;
         return count;
     };
 
-    const isObjValue = (_obj, flag) => {
-        for (const _key in _obj) {
+    let isObjValue = (_obj, flag) => {
+        for (let _key in _obj) {
             if (!flag) break;
 
             if (isObj(_obj[_key])) {
@@ -396,11 +396,11 @@ export function $tableHandleRender(handle_arr) {
      *
      */
 
-    const new_h = [];
+    let new_h = [];
 
-    const new_handle_arr = handle_arr.filter((item) => item.is_render !== false);
+    let new_handle_arr = handle_arr.filter((item) => item.is_render !== false);
 
-    const text = (item) => {
+    let text = (item) => {
         return h(
             'a',
             {
@@ -421,7 +421,7 @@ export function $tableHandleRender(handle_arr) {
     };
 
     for (let i = 0, len = new_handle_arr.length; i < len; i++) {
-        const item = new_handle_arr[i];
+        let item = new_handle_arr[i];
 
         new_h.push(
             i > 0

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
     import { useSettingStore } from '@/store/modules/settingStore';
-    import { computed, onMounted, ref, watch } from 'vue-demi';
+    import { computed, ref, watch } from 'vue-demi';
     import y9_storage from '@/utils/storage';
 
     const settingStore = useSettingStore();
@@ -82,9 +82,9 @@
             <span :class="{ showErrorText: showError }">{{ $t('密码错误') }}</span>
             <el-input
                 v-model="inputPwd"
-                type="password"
                 placeholder="Please input password"
                 show-password
+                type="password"
                 @change="checkPwdFunc"
                 @focus="showError = false"
             />

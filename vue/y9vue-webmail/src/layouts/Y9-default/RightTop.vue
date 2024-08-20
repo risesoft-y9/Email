@@ -1,13 +1,14 @@
 <script lang="ts" setup>
+    import { inject } from 'vue';
     import RightTopUser from '../components/RightTopUser.vue';
     import { useSettingStore } from '@/store/modules/settingStore';
     import y9_storage from '@/utils/storage';
     import { $y9_SSO } from '@/main';
+    import { ElMessage } from 'element-plus';
     // 个人信息 —— 头像
     const userInfo = y9_storage.getObjectItem('ssoUserInfo');
-    // 注入 字体变量
-    const fontSizeObj: any = inject('sizeObjInfo');
-    // 菜单默认收缩属性
+
+    // 菜单默认属性
     const props = defineProps({
         menuCollapsed: {
             type: Boolean,
@@ -21,6 +22,8 @@
 
     // 菜单收缩功能
     const settingStore = useSettingStore();
+    // 注入 字体变量
+    const fontSizeObj: any = inject('sizeObjInfo');
     const toggleCollapsedFunc = () => {
         settingStore.$patch({
             menuCollapsed: !settingStore.getMenuCollapsed
@@ -52,9 +55,9 @@
     };
 
     const back = () => {
-        if(userInfo.tenantId == '1563572018593402880'){
+        if (userInfo.tenantId == '1563572018593402880') {
             window.location = import.meta.env.VUE_APP_CONTEXT_Y9HOME;
-        }else {
+        } else {
             window.location = import.meta.env.VUE_APP_HOME_INDEX;
         }
     };
@@ -90,10 +93,10 @@
                 <i class="ri-lock-2-line"></i>
                 <span>{{ $t('锁屏') }}</span>
             </div>
-            <div v-show="settingStore.getSearch" class="item search" @click="searchFunc">
+            <!-- <div class="item search" @click="searchFunc" v-show="settingStore.getSearch">
                 <i class="ri-search-line"></i>
-                <span>{{ $t('搜索') }}</span>
-            </div>
+                <span>{{ $t("搜索") }}</span>
+            </div> -->
             <div v-show="settingStore.getRefresh" class="item" @click="refreshFunc">
                 <i class="ri-refresh-line"></i>
                 <span>{{ $t('刷新') }}</span>
@@ -109,19 +112,12 @@
             <!-- <div class="item notify" v-show="settingStore.getNotify">
                 <el-badge :value="3" class="badge"></el-badge>
                 <i class="ri-notification-line"></i>
-            </div>
-            <div class="item isDark">
+            </div> -->
+            <!-- <div class="item isDark">
                 <i class="ri-moon-line" @click="toggleDark" v-if="!isDark"></i>
                 <i class="ri-sun-line" @click="toggleDark" v-else></i>
-            </div>
-            <div class="item user">
-                <RightTopUser />
             </div> -->
-            <div class="item">
-                <!-- <RightTopPosition /> -->
-                <i class="ri-user-line"></i>
-                <span>{{ $t(`${userInfo.name}`) }}</span>
-            </div>
+            <RightTopUser />
             <div class="item user">
                 <!-- 头像测试链接地址：https://www.youshengyun.com/fileManager/files/e6b5d41fd2bd4cdda538139f9b7848c7.jpg -->
                 <el-avatar :src="userInfo.avator ? userInfo.avator : ''"> {{ $t(`${userInfo.loginName}`) }}</el-avatar>
@@ -148,9 +144,8 @@
         justify-content: space-between;
         width: 100%;
         //暂时不变，等dark版本追加
-        border-bottom: 1px solid rgb(0 0 0 / 6%);
+        border-bottom: 1px solid var(--el-border-color-base);
         box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 6%);
-
         z-index: 1;
 
         .left,
@@ -158,7 +153,6 @@
             display: flex;
             height: $headerHeight;
             line-height: $headerHeight;
-            font-size: var(--el-font-size-extra-large);
         }
 
         .indexlayout-flexible {
@@ -167,7 +161,8 @@
             line-height: $headerHeight;
             text-align: center;
             cursor: pointer;
-          font-size: v-bind('fontSizeObj.extraLargeFont');
+            font-size: v-bind('fontSizeObj.extraLargeFont');
+
             &:hover {
                 background-color: var(--bg-color);
                 color: var(--el-text-color-primary);
@@ -184,16 +179,16 @@
                 color: var(--el-menu-text-color);
                 cursor: pointer;
                 display: flex;
-                align-items: center;
+                align-content: center;
 
                 i {
                     position: relative;
-                  font-size: v-bind('fontSizeObj.extraLargeFont');
+                    font-size: v-bind('fontSizeObj.extraLargeFont');
                     // top: 4px;
                 }
 
                 span {
-                  font-size: v-bind('fontSizeObj.baseFontSize');
+                    font-size: v-bind('fontSizeObj.baseFontSize');
                     margin-left: 5px;
                 }
 
@@ -225,20 +220,20 @@
                     }
 
                     & > .name {
-                        font-size: var(--el-font-size-base);
+                        // font-size: v-bind(extraLargeFont);
                         display: flex;
                         flex-direction: column;
                         justify-content: end;
 
                         span {
-                          line-height: v-bind('fontSizeObj.lineHeight');
+                            line-height: v-bind('fontSizeObj.lineHeight');
                             text-align: end;
                         }
                     }
 
                     i {
                         color: var(--el-color-primary);
-                        font-size: 48px;
+                        // font-size: v-bind(extraLargeFont);
                         margin-left: 8px;
                         margin-bottom: 8px;
                     }

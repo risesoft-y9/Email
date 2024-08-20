@@ -4,18 +4,22 @@
             <y9Card>
                 <template #header>
                     <div class="custom-left">
-                        <el-button :size="fontSizeObj.buttonSize"
-                                   :style="{ fontSize: fontSizeObj.baseFontSize }" class="global-btn-second" @click="onRefreshTree">
+                        <el-button
+                            :size="fontSizeObj.buttonSize"
+                            :style="{ fontSize: fontSizeObj.baseFontSize }"
+                            class="global-btn-second"
+                            @click="onRefreshTree"
+                        >
                             <i class="ri-refresh-line"></i>
                             <span>{{ $t('刷新') }}</span>
                         </el-button>
-                        <input type="password" hidden autocomplete="new-password" />
+                        <input autocomplete="new-password" hidden type="password" />
                         <el-input
                             v-if="!hiddenSearch"
                             v-model="apiSearchKey"
-                            type="search"
                             :placeholder="$t('请搜索')"
                             autocomplete
+                            type="search"
                             @input="onSearchChange"
                         >
                             <template #prefix>
@@ -38,13 +42,13 @@
                     @node-expand="onNodeExpand"
                 >
                     <template #title="{ item }">
-                        <slot name="title" :item="item">
+                        <slot :item="item" name="title">
                             <i :class="item.title_icon"></i>
                             <span>{{ item[nodeLabel] }}</span>
                         </slot>
                     </template>
                     <template #actions="{ item }">
-                        <slot name="actions" :item="item">
+                        <slot :item="item" name="actions">
                             <i v-if="item.delete_icon" class="ri-delete-bin-7-line" @click="onRemoveNode(item)"></i>
                         </slot>
                     </template>
@@ -64,7 +68,7 @@
     import { computed, onMounted, watch, inject, ref, defineEmits, defineProps } from 'vue';
     import y9_storage from '@/utils/storage';
     // 注入 字体对象
-    const fontSizeObj: any = inject('sizeObjInfo')||{};
+    const fontSizeObj: any = inject('sizeObjInfo') || {};
     const props = defineProps({
         treeApiObj: {
             //tree接口对象,参数名称请严格按照以下注释进行传参。

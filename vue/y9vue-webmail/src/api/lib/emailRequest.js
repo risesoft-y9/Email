@@ -1,7 +1,7 @@
 /*
- * @Author: fanzhengyang
- * @Date: 2022-11-09 10:16:53
- * @LastEditTime: 2023-07-10 10:37:08
+ * @Author: your name
+ * @Date: 2021-04-15 10:16:53
+ * @LastEditTime: 2024-08-14 10:29:39
  * @LastEditors: mengjuhua
  * @Description: In User Settings Edit
  * @FilePath: \workspace-y9boot-9.5-vuee:\workspace-y9boot-9.6-vue\y9vue-kernel-dcat-style\src\api\lib\request.js
@@ -9,10 +9,9 @@
 import settings from '@/settings';
 import y9_storage from '@/utils/storage';
 import axios from 'axios'; // 考虑CDN
-import { ElMessage } from 'element-plus';
 import i18n from '@/language/index';
-import { isExternal } from '@/utils/validate.ts';
-import { $y9_SSO } from '@/main';
+import {isExternal} from '@/utils/validate.ts';
+import {$y9_SSO} from '@/main';
 
 const { t } = i18n.global;
 
@@ -102,21 +101,27 @@ function emailRequest(baseUrl = '') {
                         break;
                     case 50000:
                         return res;
+                    case 10401:
+                        return res;
                     default:
                         if (!noVerifyBool) {
                             console.error(res.msg);
-                            ElMessage({
-                                message: res.msg,
-                                type: 'error',
-                                duration: 5 * 1000
-                            });
+                            // ElMessage({
+                            //     message: res.msg || 'Errors',
+                            //     type: 'error',
+                            //     duration: 1500,
+                            // });
                         }
-
                         break;
                 }
 
-                // 返回错误 走 catch
-                return Promise.reject(res);
+                if (code === 101000 || code === 10003) {
+                    // 返回错误 走 catch
+                    return Promise.resolve(res);
+                } else {
+                    // 返回错误 走 catch
+                    return res;
+                }
             } else {
                 return res;
             }
@@ -160,6 +165,9 @@ function emailRequest(baseUrl = '') {
                     });
                 } else if (error.response.status === 400) {
                     // 参数、业务上的错误统一返回 http 状态 400，返回原始 body 到请求处自行处理
+                    return data;
+                } else if (error.response.status === 500) {
+                    // 后台代码 上的错误统一返回 http 状态 500，返回原始 body 到请求处自行处理
                     return data;
                 }
             }

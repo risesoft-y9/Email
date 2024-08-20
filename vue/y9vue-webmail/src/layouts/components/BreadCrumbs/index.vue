@@ -1,15 +1,13 @@
 <!--
  * @Author: your name
  * @Date: 2022-01-13 17:31:19
- * @LastEditTime: 2022-04-01 19:07:27
- * @LastEditors: hongzhew
- * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: /sz- team-frontend-9.6.x/y9vue-email/src/layouts/components/BreadCrumbs/index.vue
+ * @LastEditTime: 2024-08-14 17:12:18
+ * @LastEditors: mengjuhua
+ * @Description:   
 -->
 <template>
     <!-- :style="theStyle"  // // beta-0.1(因最初的原型稿而增加的代码) -->
     <div
-        v-if="menuList.indexOf(list[0].path) === -1"
         id="breadcrumbs"
         :class="{
             breadcrumbs: true,
@@ -17,31 +15,30 @@
             'sidebar-separate-menuCollapsed': menuCollapsed && layoutSubName === 'sidebar-separate'
         }"
     >
-        <span class="title"  :style="{ fontSize: fontSizeObj.largerFontSize }">{{ $t(`${list[0].meta?.title || ''}`) }}</span>
+        <span class="title">{{ $t(`${list[0].meta.title}`) }}</span>
         <div style="display: flex; align-items: center; cursor: pointer">
-            <i class="ri-map-pin-line ri-lx" style="color: var(--el-color-primary); margin-right: 5px"></i>
+            <i class="ri-map-pin-line ri-lx" style="color: var(--el-color-primary)"></i>
             <el-breadcrumb>
                 <el-breadcrumb-item v-for="item in list" :key="item.path">
-                    <a-link :to="item.path"  :style="{ fontSize: fontSizeObj.baseFontSize }">{{ $t(`${item.meta?.title || ''}`) }}</a-link>
+                    <a-link :to="item.path" class="title-link">{{ $t(`${item.meta.title}`) }}</a-link>
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
     </div>
 </template>
 <script lang="ts">
-    import { defineComponent, PropType } from 'vue';
+    import { defineComponent, inject, PropType } from 'vue';
     import { BreadcrumbType } from '@/utils/routes';
     import ALink from '../ALink/index.vue';
-    import { useSettingStore } from '@/store/modules/settingStore';
+
     interface SiderMenuItemSetupData {
-      fontSizeObj: Object;
+        fontSizeObj: Object;
     }
+
     export default defineComponent({
         name: 'BreadCrumbs',
         data() {
             return {
-                //menuList: ['/todo', '/subscription', '/work', '/dataservice', '/meeting', '/msgRemind']
-                menuList: []
                 // theStyle: 'width: 1000px;'  // beta-0.1(因最初的原型稿而增加的代码)
             };
         },
@@ -64,14 +61,14 @@
         components: {
             ALink
         },
-      setup(props): SiderMenuItemSetupData {
-        // 注入 字体变量
-        const fontSizeObj: any = inject('sizeObjInfo');
+        setup(props): SiderMenuItemSetupData {
+            // 注入 字体变量
+            const fontSizeObj: any = inject('sizeObjInfo');
 
-        return {
-          fontSizeObj,
-        };
-      },
+            return {
+                fontSizeObj
+            };
+        }
         // // beta-0.1(因最初的原型稿而增加的代码)  begin -->
         // 需要调整breadCrumbs宽度的情况
         // watch: {
@@ -112,7 +109,6 @@
         //     layoutChange(layout) {
         //         const settingStore = useSettingStore()
         //         const isMenuCollapsed = settingStore.getMenuCollapsed
-        //         console.log("===",layout, isMenuCollapsed);
         //         if (layout === "Y9Default" && !isMenuCollapsed) {
         //             this.theStyle = "width: 96%;"
         //         }
@@ -141,26 +137,11 @@
     });
 </script>
 <style lang="scss" scoped>
-.title {
-  font-size: v-bind('fontSizeObj.largerFontSize');
-}
-.title-link {
-  font-size: v-bind('fontSizeObj.baseFontSize');
-}
-    .breadcrumbs {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      // width: $headerBreadcrumbWidth;
-      // margin: 0 auto;
-      height: 80px;
-      //暂时不变，等dark版本追加
-      background-color: #eef0f7;
-      padding: 0 35px;
-      color: var(--el-text-color-primary) !important;
+    .title {
+        font-size: v-bind('fontSizeObj.largerFontSize');
+    }
 
-      :deep(a) {
-        color: var(--el-text-color-primary) !important;
-      }
+    .title-link {
+        font-size: v-bind('fontSizeObj.baseFontSize');
     }
 </style>

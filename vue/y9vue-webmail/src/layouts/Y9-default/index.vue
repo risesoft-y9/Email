@@ -9,21 +9,21 @@
     >
         <div id="indexlayout-left">
             <Left
-                :layout-sub-name="layoutSubName"
-                :menu-collapsed="menuCollapsed"
-                :belong-top-menu="belongTopMenu"
-                :default-active="defaultActive"
-                :menu-data="menuData"
+                :belongTopMenu="belongTopMenu"
+                :defaultActive="defaultActive"
+                :layoutSubName="layoutSubName"
+                :menuCollapsed="menuCollapsed"
+                :menuData="menuData"
             />
         </div>
         <div id="indexlayout-right" class="right">
-            <RightTop :menu-collapsed="menuCollapsed" @refresh="refreshFunc" />
+            <RightTop :menuCollapsed="menuCollapsed" @refresh="refreshFunc" />
             <!-- <component :is="showTab ? Tabs : ''"></component> -->
             <component
                 :is="BreadCrumbs"
-                :layout-sub-name="layoutSubName"
+                :layoutSubName="layoutSubName"
                 :list="breadCrumbs"
-                :menu-collapsed="menuCollapsed"
+                :menuCollapsed="menuCollapsed"
             ></component>
 
             <div
@@ -42,11 +42,11 @@
     </div>
     <component :is="settingPageStyle === 'Admin-plus' ? Settings : ''"></component>
     <Lock v-show="settingStore.getLockScreen" />
-    <Search />
+    <!-- <Search /> -->
 </template>
 
 <script lang="ts" setup>
-    import { computed, defineComponent, onMounted, watch } from 'vue';
+    import { computed, watch } from 'vue';
     import { useSettingStore } from '@/store/modules/settingStore';
     import { useRouterStore } from '@/store/modules/routerStore';
     import Lock from '@/layouts/components/Lock/index.vue';
@@ -56,7 +56,6 @@
     import Settings from '@/layouts/components/SettingsMobile.vue';
     import BreadCrumbs from '@/layouts/components/BreadCrumbs/index.vue';
     // import Tabs from "@/layouts/components/Tabs/index.vue"
-    import Search from '@/layouts/components/search/index.vue';
 
     const settingStore = useSettingStore();
     const routerStore = useRouterStore();
@@ -104,7 +103,6 @@
         const classList = document.getElementById('indexlayout-left').classList;
         const scroll_Y = window.scrollY;
         const listToArray = Array.from(classList).includes('fixed-header-after-scroll');
-        // console.log("执行了...");
 
         if (scroll_Y > 50 && !listToArray) {
             document.getElementById('indexlayout-left').className += ' fixed-header-after-scroll';
@@ -135,8 +133,6 @@
         window.addEventListener('scroll', listener, false);
     }
     watch(layout, (newV, oldV) => {
-        // console.log('11111', newV,oldV);
-
         if (newV.indexOf('sidebar-separate') > 0) {
             // fixed-header-after-scroll
             window.addEventListener('scroll', listener, false);
@@ -160,7 +156,6 @@
     #indexlayout {
         display: flex;
         height: 100vh;
-        min-width: 1200px;
         overflow: hidden;
     }
 
@@ -173,6 +168,7 @@
         position: relative;
         flex: 1;
         overflow: auto;
+        scrollbar-width: none;
         background-color: var(--bg-color);
         // background-color: #ffffff;
         &.right {
@@ -188,6 +184,7 @@
                 padding: $main-padding;
                 padding-top: 0;
                 overflow: auto;
+                scrollbar-width: none;
                 box-shadow: 3px 3px 3px var(--el-color-info-light);
 
                 &.sidebar-separate {

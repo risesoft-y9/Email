@@ -315,10 +315,10 @@
                     <div class="number-value">
                         {{ $t(`${item.name}`) }}
                         <countTo
-                            :start-val="0"
                             :end-val="item.endVal"
-                            duration="3000"
+                            :start-val="0"
                             :suffix="index === 3 ? $t('条') : $t('个')"
+                            duration="3000"
                         ></countTo>
                     </div>
                 </el-card>
@@ -354,8 +354,8 @@
                         <div class="title" style="margin: 0; padding: 0">
                             <span>{{ $t('通知通告') }}</span>
                             <y9Pagination
-                                style="margin-bottom: 10px"
                                 :config="pageConfig"
+                                style="margin-bottom: 10px"
                                 @current-change="(currentPage) => handlerCurrPage(currentPage, 'info')"
                                 @size-change="(pageSize) => handlerPageSize(pageSize, 'info')"
                             >
@@ -389,8 +389,8 @@
                         </div>
                     </div>
                     <y9Pagination
-                        style="margin-bottom: 20px; width: 100%; justify-content: space-around"
                         :config="appPageConfig"
+                        style="margin-bottom: 20px; width: 100%; justify-content: space-around"
                         @current-change="(currentPage) => handlerCurrPage(currentPage, 'app')"
                         @size-change="(pageSize) => handlerPageSize(pageSize, 'app')"
                     >

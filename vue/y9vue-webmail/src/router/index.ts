@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-05-14 09:26:23
- * @LastEditTime: 2022-08-02 11:13:19
- * @LastEditors: error: git config user.name && git config user.email & please set dead value or install git
+ * @LastEditTime: 2024-08-09 15:27:21
+ * @LastEditors: mengjuhua
  * @Description: In User Settings Edit
  * @FilePath: \workspace-y9boot-v9.5.x-vue\y9vue-info\src\router\index.js
  */
@@ -14,6 +14,9 @@ import authRouter from './modules/authRouter';
 import menuRouter from './modules/menuRouter';
 import emailDetailRouter from './modules/emailDetailRouter';
 import dynamicRouter from './modules/dynamicRouter';
+
+import importEmlRouter from './modules/importEmlRouter';
+
 
 //constantRoutes为不需要动态判断权限的路由，如登录、404、500等
 export const constantRoutes: Array<any> = [
@@ -48,6 +51,7 @@ export const asyncRoutes = [
     // 引入其他模块路由
     ...menuRouter,
     emailDetailRouter,
+    ...importEmlRouter,
     dynamicRouter
 ];
 

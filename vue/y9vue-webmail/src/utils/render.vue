@@ -1,6 +1,6 @@
 <script lang="ts">
     export default {
-        name: 'RenderComponent',
+        name: 'renderComponent',
         functional: true,
         props: {
             render: Function,

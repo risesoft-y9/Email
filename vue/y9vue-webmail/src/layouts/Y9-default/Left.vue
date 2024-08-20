@@ -9,23 +9,23 @@
         :style="{ 'background-image': settingStore.getMenuBg ? 'url(' + settingStore.getMenuBg + ')' : '' }"
     >
         <div class="left-logo">
-            <router-link to="/" class="logo-url">
+            <router-link class="logo-url" to="/">
                 <img v-if="menuCollapsed" alt="y9-logo" src="@/assets/images/yun.png" />
                 <span v-if="!menuCollapsed" class="logo-title">{{ $t('电子邮件') }}</span>
             </router-link>
         </div>
         <div class="left-menu">
             <sider-menu
-                :menu-collapsed="menuCollapsed"
-                :belong-top-menu="belongTopMenu"
-                :default-active="defaultActive"
-                :menu-data="menuData"
+                :belongTopMenu="belongTopMenu"
+                :defaultActive="defaultActive"
+                :menuCollapsed="menuCollapsed"
+                :menuData="menuData"
             ></sider-menu>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
-    import { defineComponent } from 'vue';
+    import { inject } from 'vue';
     import SiderMenu from '@/layouts/components/SiderMenu.vue';
     import { useSettingStore } from '@/store/modules/settingStore';
     // 注入 字体变量
@@ -61,7 +61,7 @@
     @import '@/theme/global-vars.scss';
 
     #left .el-menu-item {
-      height: v-bind('fontSizeObj.lineHeight') !important;
+        height: v-bind('fontSizeObj.lineHeight') !important;
     }
 
     $sidebar-separate-margin-top: calc(#{$sidebar-separate-margin-left} + #{$headerHeight});
@@ -103,15 +103,14 @@
 
                 .logo-title {
                     display: inline-block;
-                  font-size: v-bind('fontSizeObj.extraLargeFont');
+                    font-size: v-bind('fontSizeObj.extraLargeFont');
                     font-weight: 500;
-
                     color: var(--el-color-primary);
                 }
             }
 
             img {
-              width: v-bind('fontSizeObj.logoWidth');
+                width: $logoWidth;
                 vertical-align: middle;
             }
         }
@@ -119,6 +118,13 @@
         .left-menu {
             flex: 1;
             overflow: hidden auto;
+            scrollbar-width: none; //设置火狐浏览器不显示滚动条
+            &::-webkit-scrollbar {
+                //设置谷歌浏览器不显示滚动条
+                width: 0;
+                height: 0;
+                background-color: transparent;
+            }
 
             & > ul {
                 border-right: none;
@@ -131,7 +137,12 @@
                         //  font-size: 15px;
                         i {
                             margin-right: 15px;
-                          font-size: v-bind('fontSizeObj.largeFontSize');
+                            font-size: v-bind('fontSizeObj.largeFontSize');
+                        }
+
+                        &.is-active {
+                            color: var(--el-color-primary);
+                            background-color: $background-color;
                         }
                     }
 
@@ -170,12 +181,35 @@
 
                 :deep(a) {
                     text-decoration: none;
-                    // & > li {
-                    //     // color: var(--el-color-white);
-                    // }
-                    & > li:hover {
-                        background-color: var(--el-color-primary-light-2);
-                        color: var(--el-color-white); //
+
+                    & > li {
+                        color: var(--el-color-white);
+
+                        &.is-active {
+                            color: var(--el-color-primary);
+                            background-color: var(--el-color-primary-light-9);
+                        }
+                    }
+
+                    :hover {
+                        color: var(--el-color-primary);
+                        background-color: var(--el-color-primary-light-9);
+                    }
+                }
+
+                :deep(li) {
+                    .el-sub-menu__title {
+                        color: var(--el-color-white);
+                    }
+
+                    div:hover {
+                        color: var(--el-color-primary);
+                        background-color: var(--el-color-primary-light-9);
+                    }
+
+                    ul > a:hover {
+                        color: var(--el-color-primary);
+                        background-color: var(--el-color-primary-light-9);
                     }
                 }
             }

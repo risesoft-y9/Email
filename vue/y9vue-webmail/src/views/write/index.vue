@@ -1,73 +1,80 @@
+<!--
+ * @Author:  
+ * @Date: 2022-08-02 10:51:50
+ * @LastEditors: mengjuhua
+ * @LastEditTime: 2024-08-19 12:19:01
+ * @Description: 写信
+-->
 <template>
     <div id="btnDiv" class="">
         <el-button
-            type="primary"
-            class="global-btn-main"
-            @click="saveOfSend('send')"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="global-btn-main"
+            type="primary"
+            @click="saveOfSend('send')"
         >
             <i class="ri-send-plane-fill" style="vertical-align: middle; font-size: large; margin-right: 4px"></i>
             <span style="vertical-align: middle">{{ $t('发送') }}</span>
         </el-button>
         <el-button
-            class="global-btn-third"
-            @click="saveOfSend('save')"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="global-btn-third"
+            @click="saveOfSend('save')"
         >
             <i class="ri-save-line" style="vertical-align: middle; font-size: large; margin-right: 4px"></i>
             <span style="vertical-align: middle">{{ $t('存草稿') }}</span>
         </el-button>
         <el-button
-            type="primary"
-            class="global-btn-third"
-            @click="cancel()"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="global-btn-third"
+            type="primary"
+            @click="cancel()"
         >
             <i class="ri-close-circle-line" style="vertical-align: middle; font-size: large; margin-right: 4px"></i>
             <span style="vertical-align: middle">{{ $t('关闭') }}</span>
         </el-button>
         <el-button
             v-if="!cmEnable"
-            class="global-btn-third"
-            @click="toggleCC()"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="global-btn-third"
+            @click="toggleCC()"
         >
             <i class="ri-add-line" style="font-size: large; vertical-align: middle; margin-right: 4px"></i>
             <span style="vertical-align: middle">{{ $t('抄送密送') }}</span></el-button
         >
         <el-button
             v-if="cmEnable"
-            class="global-btn-third"
-            @click="toggleCC()"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="global-btn-third"
+            @click="toggleCC()"
         >
             <i class="ri-subtract-line" style="font-size: large; vertical-align: middle; margin-right: 4px"></i>
             <span style="vertical-align: middle">{{ $t('抄送密送') }}</span></el-button
         >
         <el-button
             v-if="recentContactEnable"
-            type="primary"
-            plain
-            class="lineBtn global-btn-third"
-            @click="toLine()"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="lineBtn global-btn-third"
+            plain
+            type="primary"
+            @click="toLine()"
         >
             <i class="ri-menu-fold-line" style="font-size: large"></i>
         </el-button>
         <el-button
             v-if="!recentContactEnable"
-            type="primary"
-            plain
-            class="lineBtn global-btn-third"
-            @click="toLine()"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="lineBtn global-btn-third"
+            plain
+            type="primary"
+            @click="toLine()"
         >
             <i class="ri-menu-unfold-line" style="font-size: large"></i>
         </el-button>
@@ -88,29 +95,29 @@
                 <el-form :inline="true" :model="formInline" class="demo-form-inline">
                     <el-form-item class="item-form">
                         <span
-                            class="select"
-                            title="点击选择收件人"
                             :style="{ fontSize: fontSizeObj.baseFontSize }"
+                            class="select"
                             style="width: 60px; min-width: 60px; text-align: right; margin-right: 16px"
+                            title="点击选择收件人"
                             @click="selectPersonDialog('to')"
                             >收件人</span
                         >
                         <el-select
-                            v-model="emailValue.email.toEmailAddressList"
-                            multiple
-                            filterable
-                            remote
+                            v-model="email.toEmailAddressList"
+                            :loading="loading"
+                            :remote-method="searchMethod"
                             :reserve-keyword="false"
                             allow-create
-                            default-first-option
-                            :remote-method="searchMethod"
-                            :loading="loading"
-                            placeholder="请选择收件人"
-                            loading-text="加载中"
                             class="box-input"
+                            default-first-option
+                            filterable
+                            loading-text="加载中"
+                            multiple
+                            placeholder="请选择收件人"
+                            remote
                             size="large"
-                            @remove-tag="removeTag"
                             @change="changeValue"
+                            @remove-tag="removeTag"
                         >
                             <el-option
                                 v-for="item in options"
@@ -128,36 +135,31 @@
                         >
                             主题
                         </span>
-                        <el-input
-                            v-model="emailValue.email.subject"
-                            class="box-input"
-                            placeholder="请输入主题"
-                            size="large"
-                        />
+                        <el-input v-model="email.subject" class="box-input" placeholder="请输入主题" size="large" />
                     </el-form-item>
 
                     <el-form-item v-if="cmEnable" style="width: 100%">
                         <span
+                            :style="{ fontSize: fontSizeObj.baseFontSize }"
                             class="select"
                             style="width: 60px; min-width: 60px; text-align: right; margin-right: 16px"
                             title="点击选择抄送人"
-                            :style="{ fontSize: fontSizeObj.baseFontSize }"
                             @click="selectPersonDialog('cc')"
                             >抄送人</span
                         >
                         <el-select
-                            v-model="emailValue.email.ccEmailAddressList"
-                            multiple
-                            filterable
-                            remote
-                            :reserve-keyword="false"
-                            placeholder="请选择抄送人"
-                            :remote-method="searchMethod"
+                            v-model="email.ccEmailAddressList"
                             :loading="loading"
-                            size="large"
+                            :remote-method="searchMethod"
+                            :reserve-keyword="false"
                             class="box-input"
-                            @remove-tag="removeCcEmailOrgUnitListTag"
+                            filterable
+                            multiple
+                            placeholder="请选择抄送人"
+                            remote
+                            size="large"
                             @change="changeCcValue"
+                            @remove-tag="removeCcEmailOrgUnitListTag"
                         >
                             <el-option
                                 v-for="item in options"
@@ -170,26 +172,26 @@
 
                     <el-form-item v-if="cmEnable" style="width: 100%">
                         <span
-                            class="select"
-                            title="点击选择密送人"
                             :style="{ fontSize: fontSizeObj.baseFontSize }"
+                            class="select"
                             style="width: 60px; min-width: 60px; text-align: right; margin-right: 16px"
+                            title="点击选择密送人"
                             @click="selectPersonDialog('bcc')"
                             >密送</span
                         >
                         <el-select
-                            v-model="emailValue.email.bccEmailAddressList"
-                            multiple
-                            filterable
-                            remote
-                            :reserve-keyword="false"
-                            placeholder="请选择密送人"
-                            :remote-method="searchMethod"
+                            v-model="email.bccEmailAddressList"
                             :loading="loading"
-                            size="large"
+                            :remote-method="searchMethod"
+                            :reserve-keyword="false"
                             class="box-input"
-                            @remove-tag="removeBccEmailOrgUnitListTag"
+                            filterable
+                            multiple
+                            placeholder="请选择密送人"
+                            remote
+                            size="large"
                             @change="changeBccValue"
+                            @remove-tag="removeBccEmailOrgUnitListTag"
                         >
                             <el-option
                                 v-for="item in options"
@@ -202,76 +204,76 @@
 
                     <div style="margin-bottom: 18px">
                         <el-upload
-                            class="upload-demo"
-                            action=""
-                            :show-file-list="false"
-                            multiple
                             :http-request="uploadAttachment"
-                            content-type="multipart/form-data"
                             :limit="5"
+                            :show-file-list="false"
+                            action=""
+                            class="upload-demo"
+                            content-type="multipart/form-data"
+                            multiple
                         >
                             <span
-                                style="opacity: 0.5; cursor: pointer; font-size: 15px"
                                 :style="{ fontSize: fontSizeObj.baseFontSize }"
+                                style="opacity: 0.5; cursor: pointer; font-size: 15px"
                                 ><i class="ri-attachment-2" style="font-size: 15px"></i>点击上传</span
                             >
                             <el-divider direction="vertical" />
                             <span
-                                style="opacity: 0.5; cursor: pointer; font-size: 15px"
                                 :style="{ fontSize: fontSizeObj.baseFontSize }"
-                                >共计{{ emailValue.emailAttachmentDTOList?.length }}个附件</span
+                                style="opacity: 0.5; cursor: pointer; font-size: 15px"
+                                >共计{{ emailAttachmentDTOList?.length }}个附件</span
                             >
                         </el-upload>
-                        <div v-for="attachment in emailValue.emailAttachmentDTOList" class="attachment-box">
+                        <div v-for="attachment in emailAttachmentDTOList" class="attachment-box">
                             <div :title="attachment.fileName" class="attachment-box">
                                 <div class="attachment-left-content">
                                     <img
                                         v-if="attachment.fileExt == 'pdf'"
-                                        src="@/assets/images/xiangqing/file-pdf-line.png"
                                         alt=""
                                         class="attachment-icon"
+                                        src="@/assets/images/xiangqing/file-pdf-line.png"
                                     />
                                     <img
                                         v-else-if="attachment.fileExt == 'ppt'"
-                                        src="@/assets/images/xiangqing/file-ppt-line.png"
                                         alt=""
                                         class="attachment-icon"
+                                        src="@/assets/images/xiangqing/file-ppt-line.png"
                                     />
                                     <img
                                         v-else-if="attachment.fileExt == 'doc' || attachment.fileExt == 'docx'"
-                                        src="@/assets/images/xiangqing/file-word-line.png"
                                         alt=""
                                         class="attachment-icon"
+                                        src="@/assets/images/xiangqing/file-word-line.png"
                                     />
                                     <img
                                         v-else-if="attachment.fileExt == 'xlsx' || attachment.fileExt == 'xls'"
-                                        src="@/assets/images/xiangqing/file-excel-line.png"
                                         alt=""
                                         class="attachment-icon"
+                                        src="@/assets/images/xiangqing/file-excel-line.png"
                                     />
                                     <img
                                         v-else-if="attachment.fileExt == 'txt'"
-                                        src="@/assets/images/xiangqing/file-text-line.png"
                                         alt=""
                                         class="attachment-icon"
+                                        src="@/assets/images/xiangqing/file-text-line.png"
                                     />
                                     <img
                                         v-else-if="attachment.fileExt == 'jpg' || attachment.fileExt == 'png'"
-                                        src="@/assets/images/xiangqing/image-line.png"
                                         alt=""
                                         class="attachment-icon"
+                                        src="@/assets/images/xiangqing/image-line.png"
                                     />
                                     <img
                                         v-else-if="attachment.fileExt == 'zip' || attachment.fileExt == 'rar'"
-                                        src="@/assets/images/xiangqing/zip.png"
                                         alt=""
                                         class="attachment-icon"
+                                        src="@/assets/images/xiangqing/zip.png"
                                     />
                                     <img
                                         v-else=""
-                                        src="@/assets/images/xiangqing/file-unknow-line.png"
                                         alt=""
                                         class="attachment-icon"
+                                        src="@/assets/images/xiangqing/file-unknow-line.png"
                                     />
                                     <div class="attachment-title-box">
                                         <i
@@ -288,11 +290,11 @@
                     </div>
 
                     <el-form-item style="width: 100%">
-                        <!-- <myEditor ref="RefMyEditor" style="width: 100%" @valueHtml="emailValue.email.richText"></myEditor> -->
+                        <!-- <myEditor ref="RefMyEditor" style="width: 100%" @valueHtml="email.richText"></myEditor> -->
                         <div style="width: 100%">
                             <Editor
                                 ref="editor"
-                                v-model="emailValue.email.richText"
+                                v-model="email.richText"
                                 @getContent="getContent"
                                 @getContentTxt="getContentTxt"
                             />
@@ -320,50 +322,48 @@
 
     <div class="di-bottom">
         <el-button
-            type="primary"
-            class="global-btn-main"
-            @click="saveOfSend('send')"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="global-btn-main"
+            type="primary"
+            @click="saveOfSend('send')"
         >
             <i class="ri-send-plane-fill" style="vertical-align: middle; font-size: large; margin-right: 4px"></i>
             <span style="vertical-align: middle">{{ $t('发送') }}</span>
         </el-button>
         <el-button
-            class="global-btn-third"
-            @click="saveOfSend('save')"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="global-btn-third"
+            @click="saveOfSend('save')"
         >
             <i class="ri-save-line" style="vertical-align: middle; font-size: large; margin-right: 4px"></i>
             <span style="vertical-align: middle">{{ $t('存草稿') }}</span>
         </el-button>
         <el-button
-            type="primary"
-            class="global-btn-third"
-            @click="cancel()"
             :size="fontSizeObj.buttonSize"
             :style="{ fontSize: fontSizeObj.baseFontSize }"
+            class="global-btn-third"
+            type="primary"
+            @click="cancel()"
         >
             <i class="ri-close-circle-line" style="vertical-align: middle; font-size: large; margin-right: 4px"></i>
             <span style="vertical-align: middle">{{ $t('关闭') }}</span>
         </el-button>
     </div>
+    <el-button v-loading.fullscreen.lock="sendLoading" style="display: none"></el-button>
 </template>
 
 <script lang="ts" setup>
-    //固定模块样式
-    // 注入 字体对象
-    const fontSizeObj: any = inject('sizeObjInfo') || {};
     // 在 fiexHeader 变化时 监听滚动事件，改变className
     import { useSettingStore } from '@/store/modules/settingStore';
     import { useI18n } from 'vue-i18n';
-    import { onBeforeUnmount, onMounted, reactive, ref, shallowRef } from 'vue';
+    import { computed, h, inject, onBeforeUnmount, onMounted, reactive, ref, shallowRef, toRefs } from 'vue';
     import Editor from '@/components/Editor/index.vue';
-    import { forwardPageEmail, emailDetail, replyAllEmail, replyEmail, saveEmail, sendEmail } from '@/api/email/index';
+    import { emailDetail, forwardPageEmail, replyAllEmail, replyEmail, saveEmail, sendEmail } from '@/api/email/index';
     import router from '@/router';
     import { getTreeItemById, searchByName, treeInterface } from '@/api/org/index';
-    import { ElMessageBox, ElNotification } from 'element-plus';
+    import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
     import settings from '@/settings';
     import y9_storage from '@/utils/storage';
     import { addAttachment, deleteAttachment } from '@/api/email/attachment';
@@ -372,12 +372,22 @@
     const layout = computed(() => settingStore.getLayout);
     const isFiexHeader = computed(() => settingStore.getFixedHeader);
     const { t } = useI18n();
+    //固定模块样式
+    // 注入 字体对象
+    const fontSizeObj: any = inject('sizeObjInfo') || {};
+
+    //下拉框相关对象
+    interface ListItem {
+        value: string;
+        label: string;
+    }
 
     //数据
     const data = reactive({
         col: '',
         flagst: true,
         loading: false,
+        sendLoading: false,
         treeApiObj: {
             //tree接口对象
             topLevel: treeInterface,
@@ -393,14 +403,9 @@
                 }
             }
         },
-        currTreeNodeInfo: {} //当前tree节点的信息
-    });
-
-    const { treeApiObj } = toRefs(data);
-
-    // 封装邮件属性
-    const emailValue = ref({
-        attachmentList: [],
+        currTreeNodeInfo: {}, //当前tree节点的信息
+        toValue: {} as any,
+        // 封装邮件属性
         email: {
             folder: '',
             messageId: '',
@@ -410,24 +415,53 @@
             richText: '',
             separate: false,
             text: '',
-            toEmailAddressList: [],
-            ccEmailAddressList: [],
-            bccEmailAddressList: []
+            toEmailAddressList: [] as any,
+            ccEmailAddressList: [] as any,
+            bccEmailAddressList: [] as any
         },
-        emailAttachmentDTOList: []
+        //附件列表
+        emailAttachmentDTOList: [] as any,
+        toEnable: true,
+        cmEnable: false,
+        ccEnable: false,
+        bccEnable: false,
+        recentContactEnable: false
     });
+
+    const {
+        treeApiObj,
+        toValue,
+        email,
+        emailAttachmentDTOList,
+        sendLoading,
+        loading,
+        toEnable,
+        cmEnable,
+        ccEnable,
+        bccEnable,
+        recentContactEnable
+    } = toRefs(data);
 
     const editorRef = shallowRef();
 
     const getContent = (v: string) => {
-        emailValue.value.email.richText = v;
+        email.value.richText = v;
     };
 
     const getContentTxt = (v: string) => {
-        emailValue.value.email.text = v;
+        email.value.text = v;
     };
 
     const mode = 'default';
+    const input = ref('');
+
+    const list = ref<ListItem[]>([]);
+    const options = ref<ListItem[]>([]);
+
+    const formInline = reactive({
+        user: '',
+        region: ''
+    });
 
     // 组件销毁时，也及时销毁编辑器
     onBeforeUnmount(() => {
@@ -438,12 +472,12 @@
 
     //删除附件
     async function attachmentDel(fileName) {
-        let result = await deleteAttachment(emailValue.value.email.folder, emailValue.value.email.messageId, fileName);
+        let result = await deleteAttachment(email.value.folder, email.value.messageId, fileName);
         if (result.success) {
-            for (var i = 0; i < emailValue.value.emailAttachmentDTOList.length; i++) {
-                console.log(emailValue.value.emailAttachmentDTOList[i]);
-                if (fileName == emailValue.value.emailAttachmentDTOList[i].fileName) {
-                    emailValue.value.emailAttachmentDTOList.splice(i, 1);
+            for (var i = 0; i < emailAttachmentDTOList.value.length; i++) {
+                console.log(emailAttachmentDTOList.value[i]);
+                if (fileName == emailAttachmentDTOList.value[i].fileName) {
+                    emailAttachmentDTOList.value.splice(i, 1);
                     return;
                 }
             }
@@ -452,22 +486,18 @@
 
     async function uploadAttachment(params) {
         let result;
-        if (emailValue.value.email.messageId) {
-            result = await addAttachment(emailValue.value.email.folder, emailValue.value.email.messageId, params.file);
+        if (email.value.messageId) {
+            result = await addAttachment(email.value.folder, email.value.messageId, params.file);
         } else {
             // 没保存过先保存 主要是为了能拿到 messageId
             if (await saveOfSend('save')) {
-                result = await addAttachment(
-                    emailValue.value.email.folder,
-                    emailValue.value.email.messageId,
-                    params.file
-                );
+                result = await addAttachment(email.value.folder, email.value.messageId, params.file);
             }
         }
         if (result.success) {
-            emailValue.value.emailAttachmentDTOList.push(result.data);
-            if (emailValue.value.email.subject == '') {
-                emailValue.value.email.subject = result.data.fileName;
+            emailAttachmentDTOList.value.push(result.data);
+            if (email.value.subject == '') {
+                email.value.subject = result.data.fileName;
             }
         }
     }
@@ -477,9 +507,9 @@
         let downloadUrl =
             import.meta.env.VUE_APP_EMAIL_URL +
             'api/standard/emailAttachment/download?messageId=' +
-            encodeURIComponent(emailValue.value.email.messageId) +
+            encodeURIComponent(email.value.messageId) +
             '&folder=' +
-            emailValue.value.email.folder +
+            email.value.folder +
             '&fileName=' +
             fileName +
             '&access_token=' +
@@ -495,32 +525,14 @@
     };
 
     const handleChange = (editor) => {
-        emailValue.value.email.richText = editor.getHtml();
-        emailValue.value.email.text = editor.getText();
+        email.value.richText = editor.getHtml();
+        email.value.text = editor.getText();
         console.log('change:', editor.children);
     };
 
-    const input = ref('');
-    const toEnable = ref(true);
-    const cmEnable = ref(false);
-    const ccEnable = ref(false);
-    const bccEnable = ref(false);
-    const recentContactEnable = ref(false);
-
-    //下拉框相关对象
-    interface ListItem {
-        value: string;
-        label: string;
+    function listener() {
+        const scroll_Y = window.scrollY;
     }
-
-    const list = ref<ListItem[]>([]);
-    const options = ref<ListItem[]>([]);
-    const loading = ref(false);
-
-    const formInline = reactive({
-        user: '',
-        region: ''
-    });
 
     onMounted(() => {
         const layout = computed(() => settingStore.getLayout);
@@ -558,37 +570,36 @@
         const paramsStr = window.location.search;
         if (paramsStr != null && paramsStr != '') {
             const params = new URLSearchParams(paramsStr);
-            let email = params.get('email');
-            emailValue.value.email.toEmailAddressList.push(email);
+            let emailParam = params.get('email');
+            email.value.toEmailAddressList.push(emailParam);
         }
     });
 
     //转发
     async function forwardEmail(folder, uid) {
+        sendLoading.value = true;
         let forwardPageData = await forwardPageEmail(folder, uid);
+        sendLoading.value = false;
         console.log(forwardPageData.data.messageId);
 
-        for (const key in emailValue.value.email) {
-            emailValue.value.email[key] = forwardPageData.data[key];
+        for (const key in email.value) {
+            email.value[key] = forwardPageData.data[key];
         }
-        emailValue.value.emailAttachmentDTOList = forwardPageData.data.emailAttachmentDTOList;
+        emailAttachmentDTOList.value = forwardPageData.data.emailAttachmentDTOList;
     }
 
     //打开草稿
     async function draftDetail(folder, uid) {
         let result = await emailDetail(folder, uid);
 
-        // emailValue.value.email = result.data;
-        for (const key in emailValue.value.email) {
-            emailValue.value.email[key] = result.data[key];
+        // email.value = result.data;
+        for (const key in email.value) {
+            email.value[key] = result.data[key];
         }
-        if (
-            emailValue.value.email.ccEmailAddressList.length > 0 ||
-            emailValue.value.email.bccEmailAddressList.length > 0
-        ) {
+        if (email.value.ccEmailAddressList.length > 0 || email.value.bccEmailAddressList.length > 0) {
             cmEnable.value = true;
         }
-        emailValue.value.emailAttachmentDTOList = result.data.emailAttachmentDTOList;
+        emailAttachmentDTOList.value = result.data.emailAttachmentDTOList;
 
         if (result.data.toEmailAddressList != null) {
             for (var i = 0; i < result.data.toEmailAddressList.length; i++) {
@@ -599,9 +610,11 @@
 
     //回复
     async function reply(fodler, uid) {
+        sendLoading.value = true;
         let replyData = await replyEmail(fodler, uid);
-        for (const key in emailValue.value.email) {
-            emailValue.value.email[key] = replyData.data[key];
+        sendLoading.value = false;
+        for (const key in email.value) {
+            email.value[key] = replyData.data[key];
         }
         if (replyData.data.toEmailAddressList != null) {
             for (var i = 0; i < replyData.data.toEmailAddressList.length; i++) {
@@ -612,9 +625,11 @@
 
     //全部回复
     async function replyAll(folder, uid) {
+        sendLoading.value = true;
         let replyAllData = await replyAllEmail(folder, uid);
-        for (const key in emailValue.value.email) {
-            emailValue.value.email[key] = replyAllData.data[key];
+        sendLoading.value = false;
+        for (const key in email.value) {
+            email.value[key] = replyAllData.data[key];
         }
     }
 
@@ -701,7 +716,7 @@
             }
         ],
         rowKey: 'id',
-        tableData: [],
+        tableData: [] as any,
         pageConfig: false,
         border: false
     });
@@ -751,14 +766,14 @@
             return new Promise((resolve, reject) => {
                 for (var i = 0; i < y9TableConfig.value.tableData.length; i++) {
                     let emailAddress = y9TableConfig.value.tableData[i].id;
-                    if (toEnable.value && !emailValue.value.email.toEmailAddressList.includes(emailAddress)) {
-                        emailValue.value.email.toEmailAddressList.push(emailAddress);
+                    if (toEnable.value && !email.value.toEmailAddressList.includes(emailAddress)) {
+                        email.value.toEmailAddressList.push(emailAddress);
                     }
-                    if (ccEnable.value && !emailValue.value.email.ccEmailAddressList.includes(emailAddress)) {
-                        emailValue.value.email.ccEmailAddressList.push(emailAddress);
+                    if (ccEnable.value && !email.value.ccEmailAddressList.includes(emailAddress)) {
+                        email.value.ccEmailAddressList.push(emailAddress);
                     }
-                    if (bccEnable.value && !emailValue.value.email.bccEmailAddressList.includes(emailAddress)) {
-                        emailValue.value.email.bccEmailAddressList.push(emailAddress);
+                    if (bccEnable.value && !email.value.bccEmailAddressList.includes(emailAddress)) {
+                        email.value.bccEmailAddressList.push(emailAddress);
                     }
                 }
                 y9TableConfig.value.tableData = [];
@@ -809,22 +824,24 @@
 
     //存草稿save()
     async function saveOfSend(type) {
-        if (emailValue.value.email.subject == '') {
+        if (email.value.subject == '') {
             ElMessageBox({ title: '提示', message: '请填写主题' });
             return;
         }
-        if (emailValue.value.email.toEmailAddressList.length == 0) {
+        if (email.value.toEmailAddressList.length == 0) {
             ElMessageBox({ title: '提示', message: '请选择收件人' });
             return;
         }
         // debugger;
         let flag = false;
-        let result = await saveEmail(emailValue.value.email);
+        let result = await saveEmail(email.value);
         if (result.success) {
-            emailValue.value.email.messageId = result.data;
+            email.value.messageId = result.data;
             flag = true;
             if (type == 'send') {
-                let sendResult = await sendEmail(emailValue.value.email.messageId);
+                sendLoading.value = true;
+                let sendResult = await sendEmail(email.value.messageId);
+                sendLoading.value = false;
                 if (sendResult.success) {
                     ElNotification({
                         title: t('成功'), //result.success ? t('成功') : t('失败'),
@@ -843,7 +860,7 @@
                     duration: 2000,
                     offset: 80
                 });
-                console.log('结果id为' + emailValue.value.email.messageId);
+                console.log('结果id为' + email.value.messageId);
             }
 
             //
@@ -868,10 +885,10 @@
         })
             .then(async () => {
                 let result = await saveEmail({
-                    richText: emailValue.value.email.richText,
-                    text: emailValue.value.email.text,
+                    richText: email.value.richText,
+                    text: email.value.text,
                     task: true,
-                    subject: emailValue.value.email.subject,
+                    subject: email.value.subject,
                     separate: false
                 });
 
@@ -990,9 +1007,11 @@
     .box-input {
         width: calc(100% - 60px - 16px) !important;
     }
+
     :deep(.el-input__wrapper) {
         font-size: v-bind('fontSizeObj.baseFontSize') !important;
     }
+
     .xiexin-contacts-head {
         height: 50px;
         line-height: 50px;
@@ -1038,9 +1057,11 @@
         width: 100%;
         margin-top: 20px;
     }
+
     :deep(.el-form-item__content .select) {
         font-size: v-bind('fontSizeObj.baseFontSize');
     }
+
     .di-bottom {
         margin-bottom: 0px;
     }
@@ -1149,6 +1170,7 @@
     :deep(.tox-tinymce--toolbar-sticky-off) {
         height: 680px !important;
     }
+
     :deep(.tox .tox-mbtn) {
         font-size: v-bind('fontSizeObj.baseFontSize');
     }

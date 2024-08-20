@@ -37,9 +37,9 @@
                 <sider-menu-item
                     v-for="item2 in item.children"
                     :key="item2.path"
+                    :belong-top-menu="belongTopMenu"
                     :parent-route="item"
                     :route-item="item2"
-                    :belong-top-menu="belongTopMenu"
                 >
                 </sider-menu-item>
             </el-sub-menu>
@@ -69,8 +69,8 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, PropType, toRefs, computed, Ref, ComputedRef } from 'vue';
-    import { RoutesDataItem, getRouteBelongTopMenu, hasChildRoute } from '@/utils/routes';
+    import { computed, ComputedRef, defineComponent, PropType, Ref, toRefs } from 'vue';
+    import { getRouteBelongTopMenu, hasChildRoute, RoutesDataItem } from '@/utils/routes';
     import { useSettingStore } from '@/store/modules/settingStore';
     import ALink from '@/layouts/components/ALink/index.vue';
     import Icon from './Icon.vue';
@@ -84,7 +84,7 @@
         topMenuPath: ComputedRef<string>;
         hasChildRoute: (children: RoutesDataItem[]) => boolean;
         toggleCollapsedFunc: () => void;
-      fontSizeObj: Object;
+        fontSizeObj: Object;
     }
 
     export default defineComponent({
@@ -113,8 +113,8 @@
         },
         setup(props): SiderMenuItemSetupData {
             const { routeItem } = toRefs(props);
-          // 注入 字体变量
-          const fontSizeObj: any = inject('sizeObjInfo');
+            // 注入 字体变量
+            const fontSizeObj: any = inject('sizeObjInfo');
             const topMenuPath = computed<string>(() => getRouteBelongTopMenu(routeItem.value as RoutesDataItem));
 
             const settingStore = useSettingStore();
@@ -328,7 +328,7 @@
                 onEditDynamicRoute,
                 onSaveDynamicRoute,
                 onMouseRightEvent,
-               fontSizeObj
+                fontSizeObj
             };
         },
 
@@ -350,24 +350,28 @@
             text-decoration: none;
 
             i {
-              font-size: v-bind('fontSizeObj.largeFontSize');
+                font-size: v-bind('fontSizeObj.largeFontSize');
                 margin-right: 15px;
             }
-          span {
-            font-size: v-bind('fontSizeObj.baseFontSize');
-          }
+
+            span {
+                font-size: v-bind('fontSizeObj.baseFontSize');
+            }
         }
     }
+
     :deep(.el-menu-item) {
-      font-size: v-bind('fontSizeObj.baseFontSize');
-      .el-icon {
         font-size: v-bind('fontSizeObj.baseFontSize');
-        color: inherit;
-        margin-left: -3px;
-        padding: 0;
-        margin-right: 12px !important;
-      }
+
+        .el-icon {
+            font-size: v-bind('fontSizeObj.baseFontSize');
+            color: inherit;
+            margin-left: -3px;
+            padding: 0;
+            margin-right: 12px !important;
+        }
     }
+
     .el-teleport,
     .el-popper {
         ul.el-menu {
@@ -377,7 +381,7 @@
 
             li.el-menu-item {
                 & > i {
-                  font-size: v-bind('fontSizeObj.largeFontSize');
+                    font-size: v-bind('fontSizeObj.largeFontSize');
                     margin-right: 15px;
                 }
             }
@@ -389,7 +393,7 @@
 
         li.el-menu-item {
             & > i {
-              font-size: v-bind('fontSizeObj.largeFontSize');
+                font-size: v-bind('fontSizeObj.largeFontSize');
                 margin-right: 15px;
             }
         }

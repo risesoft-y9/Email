@@ -1,8 +1,8 @@
 <template>
-    <editor :id="tinymceId" v-model="myValue" :init="init" :disabled="disabled"></editor>
+    <editor :id="tinymceId" v-model="myValue" :disabled="disabled" :init="init"></editor>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
     //JS部分
     //在js中引入所需的主题和组件
     import tinymce from 'tinymce/tinymce';

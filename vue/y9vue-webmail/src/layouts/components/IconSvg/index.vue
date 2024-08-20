@@ -7,7 +7,7 @@
  * @FilePath: /sz- team-frontend-9.6.x/y9vue-email/src/layouts/components/IconSvg/index.vue
 -->
 <template>
-    <svg class="svg-icon" aria-hidden="true">
+    <svg aria-hidden="true" class="svg-icon">
         <use :xlink:href="`#${type}`" />
     </svg>
 </template>

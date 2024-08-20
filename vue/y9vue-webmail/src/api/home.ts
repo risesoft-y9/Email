@@ -1,6 +1,6 @@
 import Request from '@/api/lib/emailRequest';
 
-const homeRequest = Request();
+const homeRequest = Request(import.meta.env.VUE_APP_HOME_API_URL);
 /**
  * 获取待办列表
  * @returns
@@ -39,3 +39,19 @@ export const getInfoList = async (params) => {
         params
     });
 };
+
+
+
+
+/**
+ * 获取登录信息
+ */
+export const getLoginInfo = async () => {
+    return await homeRequest({
+        url: '/api/rest/index/getLoginInfo',
+        method: 'GET',
+        cType: false,
+        params: {}
+    });
+};
+

@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-    import { ref, watch, reactive, onMounted, computed } from 'vue';
+    import { computed, onMounted, reactive, ref, watch } from 'vue';
     import { useSettingStore } from '@/store/modules/settingStore';
-    import IconSvg from './IconSvg';
-    import { useI18n } from 'vue-i18n';
 
-    const { locale } = useI18n();
     // 数据响应
     const settingStore = useSettingStore();
     const webSettingVisible = ref(false);
@@ -27,9 +24,9 @@
         allPcLayout: settingStore.getAllPcLayout,
         pcLayout: settingStore.getLayout,
         webName: settingStore.getWebName,
-      fontSize: settingStore.getFontSize,
         logoSvgName: settingStore.getLogoSvgName,
         webLanguage: settingStore.getWebLanguage,
+        fontSize: settingStore.getFontSize,
         themeName: settingStore.getThemeName,
         menuAnimation: settingStore.menuAnimation,
         menuStyle: settingStore.getMenuStyle,
@@ -62,16 +59,18 @@
         { value: 'Y9Horizontal', label: '上下' },
         { value: 'Y9Default sidebar-separate', label: '浮动' }
     ];
-    // 字号
-    const fontSizeOptions = [
-      { value: '小', label: 'small' },
-      { value: '中', label: 'default' },
-      { value: '大', label: 'large' },
-    ];
+
     // 国际化
     const webLanguageOptions = [
         { value: '简体中文', label: 'zh' },
         { value: 'English', label: 'en' }
+    ];
+
+    // 字号
+    const fontSizeOptions = [
+        { value: '小', label: 'small' },
+        { value: '中', label: 'default' },
+        { value: '大', label: 'large' }
     ];
 
     // 主题
@@ -113,7 +112,12 @@
         { key: 'bg2', src: menuBgs[1] },
         { key: 'bg3', src: menuBgs[2] },
         { key: 'bg4', src: menuBgs[3] },
-        { key: 'bg5', src: menuBgs[4] }
+        { key: 'bg5', src: menuBgs[4] },
+        { key: 'bg6', src: menuBgs[5] },
+        { key: 'bg7', src: menuBgs[6] },
+        { key: 'bg8', src: menuBgs[7] },
+        { key: 'bg9', src: menuBgs[8] },
+        { key: 'bg10', src: menuBgs[9] }
     ];
     const menuBgChange = () => {
         settingStore.$patch({
@@ -231,8 +235,8 @@
             allPcLayout: form.allPcLayout,
             webName: form.webName,
             logoSvgName: form.logoSvgName,
-          fontSize: settingStore.getFontSize,
             webLanguage: form.webLanguage,
+            fontSize: settingStore.getFontSize,
             themeName: form.themeName,
             menuAnimation: form.menuAnimation,
             menuStyle: form.menuStyle,
@@ -270,12 +274,12 @@
 <template>
     <el-drawer
         v-model="webSettingVisible"
-        custom-class="indexlayout-settings"
-        class="index-layout-setting-list"
-        :title="$t('网站设置')"
         :direction="settingPageAnimationdirection"
         :size="device !== 'mobile' ? size : '68%'"
+        :title="$t('网站设置')"
         :z-index="2000"
+        class="index-layout-setting-list"
+        custom-class="indexlayout-settings"
     >
         <el-form id="webSettingForm">
             <el-form-item
@@ -288,8 +292,8 @@
             >
                 <el-select
                     v-model="form.pcLayout"
-                    placeholder="选择"
                     :disabled="device === 'mobile' ? true : false"
+                    placeholder="选择"
                     @change="settingChange('pcLayout')"
                 >
                     <el-option
@@ -307,7 +311,7 @@
             <!--                  :label="item.label"-->
             <!--                  :key="item.label"-->
             <!--                  size="large"-->
-            <!--              >{{ $t(item.value) }}-->
+            <!--              >{{ item.value }}-->
             <!--              </el-radio>-->
             <!--            </el-radio-group>-->
             <!--          </el-form-item>-->
@@ -320,25 +324,25 @@
                 ]"
             >
                 <el-radio-group v-model="form.webLanguage" @change="settingChange('webLanguage')">
-                    <el-radio v-for="item in webLanguageOptions" :label="item.label" size="large"
+                    <el-radio v-for="item in webLanguageOptions" :key="item.label" :label="item.label" size="large"
                         >{{ item.value }}
                     </el-radio>
                 </el-radio-group>
             </el-form-item>
-          <el-form-item
-              :label="$t('字号')"
-              :rules="[
+            <el-form-item
+                :label="$t('字号')"
+                :rules="[
                     {
-                        required: true,
-                    },
+                        required: true
+                    }
                 ]"
-          >
-            <el-radio-group v-model="form.fontSize" @change="settingChange('fontSize')">
-              <el-radio v-for="item in fontSizeOptions" :label="item.label" :key="item.label" size="large">{{
-                  $t(`${item.value}`)
-                }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
+            >
+                <el-radio-group v-model="form.fontSize" @change="settingChange('fontSize')">
+                    <el-radio v-for="item in fontSizeOptions" :key="item.label" :label="item.label" size="large"
+                        >{{ $t(`${item.value}`) }}
+                    </el-radio>
+                </el-radio-group>
+            </el-form-item>
             <el-form-item
                 :label="$t('主题')"
                 :rules="[
@@ -358,7 +362,7 @@
             </el-form-item>
 
             <el-form-item :label="$t('菜单背景')">
-                <template #default>
+                <template v-slot:default>
                     <el-scrollbar>
                         <div class="menu-bg-content" @click="setMenuBackGroundImageFunc">
                             <div
@@ -372,8 +376,8 @@
                             <div
                                 v-for="item in menuBgOptions"
                                 :key="item.key"
-                                :style="{ backgroundImage: 'url(' + item.src + ')', backgroundSize: 'cover' }"
                                 :class="{ item: true, selected: currentMenuBg === item.src }"
+                                :style="{ backgroundImage: 'url(' + item.src + ')', backgroundSize: 'cover' }"
                             ></div>
                         </div>
                     </el-scrollbar>
@@ -461,8 +465,8 @@
             <el-form-item :label="$t('设置宽度')">
                 <el-select
                     v-model="form.settingWidth"
-                    placeholder="选择"
                     :disabled="device === 'mobile' ? true : false"
+                    placeholder="选择"
                     @change="settingChange('settingWidth')"
                 >
                     <el-option
@@ -505,10 +509,10 @@
             <el-form-item :label="$t('锁屏密码')">
                 <el-input
                     v-model="form.unlockScreenPwd"
-                    :style="{ width: '60%' }"
-                    type="password"
-                    show-password
                     :placeholder="form.unlockScreenPwd"
+                    :style="{ width: '60%' }"
+                    show-password
+                    type="password"
                     @change="settingChange('unlockScreenPwd')"
                 ></el-input>
             </el-form-item>
