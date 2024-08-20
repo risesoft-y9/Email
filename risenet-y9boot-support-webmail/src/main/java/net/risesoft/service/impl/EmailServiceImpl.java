@@ -388,7 +388,11 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 for (int i = messages.length - 1; i >= 0; i--) {
                     IMAPMessage imapMessage = (IMAPMessage)messages[i];
                     long uid = folder.getUID(imapMessage);
-                    emailReceiverDTOList.add(messageToEmailListDTO(messages[i], uid));
+                    EmailListDTO eDTO = messageToEmailListDTO(messages[i], uid);
+                    if(eDTO.getCreateTime() == null){
+                        eDTO.setCreateTime(messages[i].getReceivedDate());
+                    }
+                    emailReceiverDTOList.add(eDTO);
                 }
                 // 未读置顶
                 if (!"Sent".equals(folderName)) {
@@ -588,7 +592,11 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 Message[] messages = folder.search(searchTerm);
                 for (Message message : messages) {
                     long uid = folder.getUID(message);
-                    emailListDTOList.add(messageToEmailListDTO(message, uid));
+                    EmailListDTO eDTO = messageToEmailListDTO(message, uid);
+                    if(eDTO.getCreateTime() == null){
+                        eDTO.setCreateTime(message.getReceivedDate());
+                    }
+                    emailListDTOList.add(eDTO);
                 }
                 getPersonData(folder, emailListDTOList);
                 folder.close(true);
@@ -602,7 +610,11 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     Message[] messages = folder.search(searchTerm);
                     for (Message message : messages) {
                         long uid = folder.getUID(message);
-                        emailListDTOList.add(messageToEmailListDTO(message, uid));
+                        EmailListDTO eDTO = messageToEmailListDTO(message, uid);
+                        if(eDTO.getCreateTime() == null){
+                            eDTO.setCreateTime(message.getReceivedDate());
+                        }
+                        emailListDTOList.add(eDTO);
                     }
                     getPersonData(folder, emailListDTOList);
                     folder.close(true);
