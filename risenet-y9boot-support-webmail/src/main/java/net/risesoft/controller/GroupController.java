@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,12 +30,11 @@ public class GroupController {
 
     /**
      * 获取所有群组
-     *
-     * @param name
-     * @return
+     * 
+     * @return {@code Y9Result<List<}{@link CustomGroup}{@code >>}
      */
     @RequestMapping(value = "/getAllGroups")
-    public Y9Result<List<CustomGroup>> getAllGroups(@RequestParam(required = false) String name) {
+    public Y9Result<List<CustomGroup>> getAllGroups() {
         String tenantId = Y9LoginUserHolder.getTenantId();
         String personId = Y9LoginUserHolder.getUserInfo().getPersonId();
         List<CustomGroup> customGroupList = customGroupApi.listCustomGroupByPersonId(tenantId, personId).getData();
@@ -46,8 +44,8 @@ public class GroupController {
     /**
      * 获取群组成员
      *
-     * @param groupId
-     * @return
+     * @param groupId 用户组id
+     * @return {@code Y9Result<List<}{@link CustomGroupMember}{@code >>}
      */
     @ResponseBody
     @RequestMapping(value = "/getGroupMembers4Email")
@@ -64,8 +62,8 @@ public class GroupController {
     /**
      * 获取群组成员
      *
-     * @param groupId
-     * @return
+     * @param groupId 用户组id
+     * @return {@code Y9Result<List<}{@link CustomGroupMember}{@code >>}
      */
     @RequestMapping(value = "/getGroupMembers")
     public Y9Result<List<CustomGroupMember>> getGroupMembers(String groupId) {
@@ -92,7 +90,7 @@ public class GroupController {
     /**
      * 获取邮件相关群组 1
      * 
-     * @return
+     * @return {@code Y9Result<List<}{@link CustomGroup}{@code >>}
      */
     @RequestMapping(value = "/getGroups4Email")
     public Y9Result<List<CustomGroup>> getGroups4Email() {

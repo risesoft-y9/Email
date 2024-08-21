@@ -9,9 +9,10 @@ import javax.mail.Part;
 import javax.mail.search.StringTerm;
 
 /**
- * @Description 邮件文本搜索
- * @Author lzw
- * @Date 2023-04-23 18:14
+ * description：邮件文本搜索
+ * 
+ * @author lzw
+ * @date 2023-04-23 18:14
  */
 
 public final class MyBodyTerm extends StringTerm {

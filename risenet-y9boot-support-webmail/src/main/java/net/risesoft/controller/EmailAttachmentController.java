@@ -59,7 +59,7 @@ public class EmailAttachmentController {
      * @param folder 文件夹
      * @param messageId 消息id
      * @param fileName 文件名称
-     * @return {@link Y9Result}<{@link Object}>
+     * @return {@code Y9Result<Object>}
      * @throws Exception 异常
      */
     @DeleteMapping
@@ -91,7 +91,7 @@ public class EmailAttachmentController {
      * 上传文件
      *
      * @param file 文件
-     * @return {@link Y9Result}<{@link String}>
+     * @return {@code Y9Result<String>}
      * @throws Exception 异常
      */
     @PostMapping("/uploadFile")

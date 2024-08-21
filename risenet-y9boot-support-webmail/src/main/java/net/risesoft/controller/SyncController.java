@@ -25,6 +25,11 @@ public class SyncController {
     @Autowired
     private PersonApi personApi;
 
+    /**
+     * 同步人员信息
+     * 
+     * @return {@code Y9Result<String>}
+     */
     @RequestMapping(value = "/syncUsers")
     public Y9Result<String> syncUsers() {
         String tenantId = Y9LoginUserHolder.getTenantId();

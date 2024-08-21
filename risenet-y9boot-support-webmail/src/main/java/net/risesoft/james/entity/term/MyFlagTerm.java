@@ -6,21 +6,20 @@ import javax.mail.MessagingException;
 import javax.mail.search.SearchTerm;
 
 /**
- * @Description 是否已读搜索
- * @Author lzw
- * @Date 2023-04-24 11:34
+ * description：是否已读搜索
+ * 
+ * @author lzw
+ * @date 2023-04-24 11:34
  */
 public final class MyFlagTerm extends SearchTerm {
+    private static final long serialVersionUID = -142991500302030647L;
     private final boolean set;
-
     /**
      * Flags object containing the flags to test.
      *
      * @serial
      */
     private final Flags flags;
-
-    private static final long serialVersionUID = -142991500302030647L;
 
     /**
      * Constructor.

@@ -29,7 +29,7 @@ public class EmailFolderController {
      *
      * @param originFolderName 原始文件夹名称 （不为空时代表修改）
      * @param newFolderName 新文件夹名称
-     * @return {@link Y9Result}<{@link Object}>
+     * @return {@code Y9Result<Object>}
      */
     @PostMapping
     public Y9Result<Object> save(String originFolderName, String newFolderName) {
@@ -41,7 +41,7 @@ public class EmailFolderController {
      * 删除文件夹
      *
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link Object}>
+     * @return {@code Y9Result<Object>}
      */
     @DeleteMapping
     public Y9Result<Object> delete(String folder) {
@@ -52,7 +52,7 @@ public class EmailFolderController {
     /**
      * 默认文件夹列表
      * 
-     * @return
+     * @return {@code Y9Result<List<}{@link EmailFolderDTO}{@code >>}
      */
     @GetMapping(value = "/defaultList")
     public Y9Result<List<EmailFolderDTO>> defaultList() {
@@ -63,7 +63,8 @@ public class EmailFolderController {
     /**
      * 自定义文件夹列表
      * 
-     * @return
+     * @return {@code Y9Result<List<}{@link EmailFolderDTO}{@code >>}
+     * @throws MessagingException 通讯异常
      */
     @GetMapping(value = "/customList")
     public Y9Result<List<EmailFolderDTO>> customList() throws MessagingException {
@@ -74,7 +75,7 @@ public class EmailFolderController {
     /**
      * 所有文件夹列表，包括默认文件夹和自定义文件夹列表
      *
-     * @return {@link Y9Result}<{@link Map}<{@link String}, {@link Object}>>
+     * @return {@code Y9Result<Map<String, Object>>}
      * @throws MessagingException 通讯异常
      */
     @GetMapping(value = "/allList")

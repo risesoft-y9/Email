@@ -43,8 +43,8 @@ public class EmailController {
      *
      * @param uids 邮件 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws MessagingException
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 通讯异常
      */
     @DeleteMapping
     public Y9Result<Object> delete(@RequestParam(value = "uids") long[] uids, String folder) throws MessagingException {
@@ -57,8 +57,8 @@ public class EmailController {
      *
      * @param uids 邮件 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws MessagingException
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 通讯异常
      */
     @DeleteMapping(value = "/permanently")
     public Y9Result<Object> deletePermanently(@RequestParam(value = "uids") long[] uids, String folder)
@@ -72,8 +72,8 @@ public class EmailController {
      *
      * @param folder 文件夹
      * @param uid 邮件 uid
-     * @return {@link Y9Result}<{@link EmailDetailDTO}>
-     * @throws Exception
+     * @return {@code Y9Result<}{@link EmailDetailDTO}{@code >}
+     * @throws Exception 异常
      */
     @GetMapping(value = "/{folder}/{uid}")
     public Y9Result<EmailDetailDTO> detail(@PathVariable String folder, @PathVariable long uid) throws Exception {
@@ -88,8 +88,8 @@ public class EmailController {
      * @param uid 邮件 uid
      * @param response 响应
      * @param request 请求
-     * @throws MessagingException
-     * @throws IOException
+     * @throws MessagingException 通讯异常
+     * @throws IOException IO异常
      */
     @GetMapping(value = "/exportEml")
     public void exportEml(String folder, int uid, HttpServletResponse response, HttpServletRequest request)
@@ -103,8 +103,8 @@ public class EmailController {
      * @param uids 邮件 uid
      * @param folder 文件夹
      * @param flagged 是否标星
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws Exception
+     * @return {@code Y9Result<Object>}
+     * @throws Exception 异常
      */
     @PostMapping(value = "/flag")
     public Y9Result<Object> flag(@RequestParam(value = "uids") long[] uids, @RequestParam String folder,
@@ -121,8 +121,8 @@ public class EmailController {
      *
      * @param uid 消息 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link EmailDTO}>
-     * @throws Exception
+     * @return {@code Y9Result<}{@link EmailDTO}{@code >}
+     * @throws Exception 异常
      */
     @GetMapping(value = "/forward/{folder}/{uid}")
     public Y9Result<EmailDTO> forward(@PathVariable String folder, @PathVariable long uid) throws Exception {
@@ -135,9 +135,9 @@ public class EmailController {
      * @param page 页数
      * @param size 每页数量
      * @param folder 文件夹
-     * @return {@link Y9Page}<{@link EmailListDTO}>
-     * @throws IOException
-     * @throws MessagingException
+     * @return {@code Y9Page<}{@link EmailListDTO}{@code >}
+     * @throws IOException IO异常
+     * @throws MessagingException 通讯异常
      */
     @GetMapping(value = "/list")
     public Y9Page<EmailListDTO> list(int page, @RequestParam int size, @RequestParam(required = false) String folder)
@@ -151,8 +151,8 @@ public class EmailController {
      * @param uids 邮件 uid
      * @param originFolder 原始文件夹
      * @param toFolder 移动至文件夹
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws MessagingException
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 通讯异常
      */
     @PostMapping(value = "/move")
     public Y9Result<Object> move(@RequestParam(value = "uids") long[] uids, String originFolder, String toFolder)
@@ -167,8 +167,8 @@ public class EmailController {
      * @param uids 邮件 uid
      * @param folder 文件夹
      * @param isRead 是否已读
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws Exception
+     * @return {@code Y9Result<Object>}
+     * @throws Exception 异常信息
      */
     @PostMapping(value = "/read")
     public Y9Result<Object> read(@RequestParam(value = "uids") long[] uids, @RequestParam String folder,
@@ -182,8 +182,8 @@ public class EmailController {
      *
      * @param uid 邮件 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link EmailDTO}>
-     * @throws Exception
+     * @return {@code Y9Result<}{@link EmailDTO}{@code >}
+     * @throws Exception 异常消息
      */
     @GetMapping(value = "/reply/{folder}/{uid}")
     public Y9Result<EmailDTO> reply(@PathVariable String folder, @PathVariable Long uid) throws Exception {
@@ -195,7 +195,8 @@ public class EmailController {
      *
      * @param folder 文件夹
      * @param uid uid
-     * @return {@link Y9Result}<{@link EmailDTO}>
+     * @param richText 回复内容
+     * @return {@code Y9Result<}{@link EmailDTO}{@code >}
      * @throws Exception 异常
      */
     @PostMapping(value = "/quickReply/{folder}/{uid}")
@@ -210,8 +211,9 @@ public class EmailController {
      *
      * @param uid 邮件 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link EmailDTO}>
-     * @throws Exception
+     * @return {@code Y9Result<}{@link EmailDTO}{@code >}
+     * @throws Exception 异常
+     * @see Exception
      */
     @GetMapping(value = "/replyAll/{folder}/{uid}")
     public Y9Result<EmailDTO> replyAll(@PathVariable String folder, @PathVariable Long uid) throws Exception {
@@ -222,8 +224,9 @@ public class EmailController {
      * 保存邮件
      *
      * @param email 邮件
-     * @return {@link Y9Result}<{@link String}>
-     * @throws Exception
+     * @return {@code Y9Result<String>}
+     * @throws Exception 异常
+     * @see Exception
      */
     @PostMapping
     public Y9Result<String> save(EmailDTO email) throws Exception {
@@ -235,9 +238,9 @@ public class EmailController {
      * 搜索邮件
      *
      * @param searchDTO 搜索dto
-     * @return {@link List}<{@link EmailListDTO}>
-     * @throws MessagingException
-     * @throws IOException
+     * @return {@code Y9Page<}{@link EmailListDTO}{@code >}
+     * @throws MessagingException 接收异常
+     * @throws IOException IO异常
      */
     @GetMapping(value = "/search")
     public Y9Page<EmailListDTO> search(EmailSearchDTO searchDTO) throws MessagingException, IOException {
@@ -248,8 +251,8 @@ public class EmailController {
      * 发送邮件
      *
      * @param messageId 消息id
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws Exception
+     * @return {@code Y9Result<Object>}
+     * @throws Exception 异常
      */
     @PostMapping(value = "/send")
     public Y9Result<Object> send(String messageId) throws Exception {
@@ -260,8 +263,8 @@ public class EmailController {
     /**
      * 待办数量列表
      *
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws MessagingException
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 通讯异常
      */
     @GetMapping(value = "/todoList")
     public Y9Result<Object> todoList() throws MessagingException {
@@ -273,7 +276,9 @@ public class EmailController {
     /**
      * 最近联系人列表
      *
-     * @return
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 接收异常
+     * @throws IOException IO异常
      */
     @ResponseBody
     @RequestMapping(value = "/contact")
@@ -283,9 +288,11 @@ public class EmailController {
     }
 
     /**
-     * 邮件地址/姓名 关联 search 邮件地址/姓名
+     * 邮件地址/姓名 关联
      * 
-     * @return
+     * @param search 邮件地址/姓名
+     * 
+     * @return {@code Y9Result<Object>}
      */
     @GetMapping(value = "/addressRelevancy")
     public Y9Result<Object> addressRelevancy(String search) {

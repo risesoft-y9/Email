@@ -5,9 +5,10 @@ import javax.mail.Message;
 import javax.mail.search.AddressStringTerm;
 
 /**
- * @Description 收件人搜索
- * @Author lzw
- * @Date 2023-04-24 9:21
+ * description：收件人搜索
+ * 
+ * @author lzw
+ * @date 2023-04-24 9:21
  */
 public final class MyReceiverTerm extends AddressStringTerm {
 

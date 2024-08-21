@@ -34,8 +34,8 @@ public class OrgController {
 
     /**
      * 获取组织列表
-     *
-     * @return {@link Y9Result}<{@link List}<{@link Organization}>>
+     * 
+     * @return {@code Y9Result<List<}{@link Organization}{@code >>}
      */
     @GetMapping(value = "/getOrganization")
     public Y9Result<List<Organization>> getOrganization() {
@@ -48,9 +48,9 @@ public class OrgController {
      * 获取组织树
      *
      * @param id id
-     * @param treeType 树类型
+     * @param treeType 树类型{@link OrgTreeTypeEnum}
      * @param name 名字
-     * @return {@link Y9Result}<{@link List}<{@link OrgUnit}>>
+     * @return {@code Y9Result<List<}{@link OrgUnit}{@code >>}
      */
     @RequestMapping("/getOrgTree")
     public Y9Result<List<OrgUnit>> getOrgTree(@RequestParam(required = false) String id,

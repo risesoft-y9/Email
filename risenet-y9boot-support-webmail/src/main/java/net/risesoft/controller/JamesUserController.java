@@ -22,7 +22,7 @@ public class JamesUserController {
      * 根据组织架构id获取下面所有人的邮箱地址
      *
      * @param orgUnitIdList 格式 orgType:orgUnitId
-     * @return
+     * @return {@code Y9Result<List<String>>}
      */
     @GetMapping(value = "/addressList")
     public Y9Result<List<String>>
@@ -31,6 +31,13 @@ public class JamesUserController {
         return Y9Result.success(emailAddressList);
     }
 
+    /**
+     * 修改密码
+     * 
+     * @param id 人员id
+     * @param plainText 密码
+     * @return {@code Y9Result<Object>}
+     */
     @RequestMapping(value = "/modifyPassWord")
     public Y9Result<Object> modifyPassWord(String id, String plainText) {
         jamesUserService.modifyPassword(id, plainText);

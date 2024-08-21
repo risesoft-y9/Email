@@ -80,8 +80,8 @@ public class EmailMobileController {
      * @param userId 用户id
      * @param uids 邮件 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws MessagingException
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 通讯异常
      */
     @DeleteMapping(value = "/email", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> delete(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -103,8 +103,8 @@ public class EmailMobileController {
      * @param userId 用户id
      * @param uids 邮件 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws MessagingException
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 通讯异常
      */
     @DeleteMapping(value = "/permanently", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> deletePermanently(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -126,8 +126,8 @@ public class EmailMobileController {
      * @param userId 用户id
      * @param folder 文件夹
      * @param uid 邮件 uid
-     * @return {@link Y9Result}<{@link EmailDetailDTO}>
-     * @throws Exception
+     * @return {@code Y9Result<}{@link EmailDetailDTO}{@code >}
+     * @throws Exception 异常
      */
     @GetMapping(value = "/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<EmailDetailDTO> detail(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -151,8 +151,8 @@ public class EmailMobileController {
      * @param uid 邮件 uid
      * @param response 响应
      * @param request 请求
-     * @throws MessagingException
-     * @throws IOException
+     * @throws MessagingException 通讯异常
+     * @throws IOException IO异常
      */
     @GetMapping(value = "/exportEml", produces = MediaType.APPLICATION_JSON_VALUE)
     public void exportEml(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -174,8 +174,8 @@ public class EmailMobileController {
      * @param uids 邮件 uid
      * @param folder 文件夹
      * @param flagged 是否标星
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws Exception
+     * @return {@code Y9Result<Object>}
+     * @throws Exception 异常
      */
     @PostMapping(value = "/flag", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> flag(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -197,8 +197,8 @@ public class EmailMobileController {
      * @param userId 用户id
      * @param uid 消息 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link EmailDTO}>
-     * @throws Exception
+     * @return {@code Y9Result<}{@link EmailDTO}{@code >}
+     * @throws Exception 异常
      */
     @GetMapping(value = "/forward/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<EmailDTO> forward(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -220,9 +220,9 @@ public class EmailMobileController {
      * @param page 页数
      * @param size 每页数量
      * @param folder 文件夹
-     * @return {@link Y9Page}<{@link EmailListDTO}>
-     * @throws IOException
-     * @throws MessagingException
+     * @return {@code Y9Page<}{@link EmailListDTO}{@code >}
+     * @throws IOException IO异常
+     * @throws MessagingException 通讯异常
      */
     @GetMapping(value = "/list")
     public Y9Page<EmailListDTO> list(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -244,8 +244,8 @@ public class EmailMobileController {
      * @param uids 邮件 uid
      * @param originFolder 原始文件夹
      * @param toFolder 移动至文件夹
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws MessagingException
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 通讯异常
      */
     @PostMapping(value = "/move", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> move(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -268,8 +268,8 @@ public class EmailMobileController {
      * @param uids 邮件 uid
      * @param folder 文件夹
      * @param isRead 是否已读
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws Exception
+     * @return {@code Y9Result<Object>}
+     * @throws Exception 异常
      */
     @PostMapping(value = "/read", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> read(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -291,8 +291,8 @@ public class EmailMobileController {
      * @param userId 用户id
      * @param uid 邮件 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link EmailDTO}>
-     * @throws Exception
+     * @return {@code Y9Result<}{@link EmailDTO}{@code >}
+     * @throws Exception 异常
      */
     @GetMapping(value = "/reply/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<EmailDTO> reply(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -313,7 +313,8 @@ public class EmailMobileController {
      * @param userId 用户id
      * @param folder 文件夹
      * @param uid uid
-     * @return {@link Y9Result}<{@link EmailDTO}>
+     * @param richText 回复内容
+     * @return {@code Y9Result<}{@link EmailDTO}{@code >}
      * @throws Exception 异常
      */
     @PostMapping(value = "/quickReply/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -336,8 +337,8 @@ public class EmailMobileController {
      * @param userId 用户id
      * @param uid 邮件 uid
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link EmailDTO}>
-     * @throws Exception
+     * @return {@code Y9Result<}{@link EmailDTO}{@code >}
+     * @throws Exception 异常
      */
     @GetMapping(value = "/replyAll/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<EmailDTO> replyAll(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -357,8 +358,8 @@ public class EmailMobileController {
      * @param tenantId 租户id
      * @param userId 用户id
      * @param email 邮件
-     * @return {@link Y9Result}<{@link String}>
-     * @throws Exception
+     * @return {@code Y9Result<String>}
+     * @throws Exception 异常
      */
     @PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<String> save(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -378,9 +379,9 @@ public class EmailMobileController {
      * @param tenantId 租户id
      * @param userId 用户id
      * @param searchDTO 搜索dto
-     * @return {@link List}<{@link EmailListDTO}>
-     * @throws MessagingException
-     * @throws IOException
+     * @return {@code Y9Page<}{@link EmailListDTO}{@code >}
+     * @throws MessagingException 通讯异常
+     * @throws IOException IO异常
      */
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Page<EmailListDTO> search(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -400,8 +401,8 @@ public class EmailMobileController {
      * @param tenantId 租户id
      * @param userId 用户id
      * @param messageId 消息id
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws Exception
+     * @return {@code Y9Result<Object>}
+     * @throws Exception 异常
      */
     @PostMapping(value = "/send", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> send(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -420,8 +421,8 @@ public class EmailMobileController {
      * 
      * @param tenantId 租户id
      * @param userId 用户id
-     * @return {@link Y9Result}<{@link Object}>
-     * @throws MessagingException
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 通讯异常
      */
     @GetMapping(value = "/todoList", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> todoList(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -444,7 +445,8 @@ public class EmailMobileController {
      * @param folder 文件夹
      * @param messageId 消息id
      * @param file 文件
-     * @return
+     * @return {@code Y9Result<}{@link EmailAttachmentDTO}{@code >}
+     * @throws Exception 异常
      */
     @PostMapping(value = "/addAttachment", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<EmailAttachmentDTO> addAttachment(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -516,7 +518,7 @@ public class EmailMobileController {
      * @param folder 文件夹
      * @param messageId 消息id
      * @param fileName 文件名称
-     * @return {@link Y9Result}<{@link Object}>
+     * @return {@code Y9Result<Object>}
      * @throws Exception 异常
      */
     @DeleteMapping(value = "/deleteAttachment", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -539,7 +541,7 @@ public class EmailMobileController {
      * @param userId 用户id
      * @param originFolderName 原始文件夹名称 （不为空时代表修改）
      * @param newFolderName 新文件夹名称
-     * @return {@link Y9Result}<{@link Object}>
+     * @return {@code Y9Result<Object>}
      */
     @PostMapping(value = "/folder", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> save(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -559,7 +561,7 @@ public class EmailMobileController {
      * @param tenantId 租户id
      * @param userId 用户id
      * @param folder 文件夹
-     * @return {@link Y9Result}<{@link Object}>
+     * @return {@code Y9Result<Object>}
      */
     @DeleteMapping(value = "/folder", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> delete(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -578,7 +580,8 @@ public class EmailMobileController {
      * 
      * @param tenantId 租户id
      * @param userId 用户id
-     * @return
+     * @return {@code Y9Result<List<}{@link EmailFolderDTO}{@code >>}
+     * @throws MessagingException 通讯异常
      */
     @GetMapping(value = "/folder/customList", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<List<EmailFolderDTO>> customList(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -597,7 +600,7 @@ public class EmailMobileController {
      *
      * @param tenantId 租户id
      * @param userId 用户id
-     * @return {@link Y9Result}<{@link Map}<{@link String}, {@link Object}>>
+     * @return {@code Y9Result<Map<String, Object>>}
      * @throws MessagingException 通讯异常
      */
     @GetMapping(value = "/allList", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -624,7 +627,7 @@ public class EmailMobileController {
      * @param id id
      * @param treeType 树类型
      * @param name 名字
-     * @return {@link Y9Result}<{@link List}<{@link OrgUnit}>>
+     * @return {@code Y9Result<List<}{@link OrgUnit}{@code >>}
      */
     @RequestMapping(value = "/getOrgTree", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<List<OrgUnit>> getOrgTree(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -673,9 +676,16 @@ public class EmailMobileController {
         return orgUnitList;
     }
 
+    /**
+     * 获取人员信息
+     * 
+     * @param tenantId 租户id
+     * @param userId 人员id
+     * @return {@code Y9Result<Map<String, String>>}
+     */
     @GetMapping(value = "/getPersonData", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Map<String, String>> getPersonData(@RequestHeader(value = "auth-tenantId") String tenantId,
-        @RequestHeader(value = "auth-userId") String userId) throws MessagingException {
+        @RequestHeader(value = "auth-userId") String userId) {
         Person person = personApi.get(tenantId, userId).getData();
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         Map<String, String> map = new HashMap<>();
@@ -685,6 +695,15 @@ public class EmailMobileController {
         return Y9Result.success(map);
     }
 
+    /**
+     * 联系人信息
+     * 
+     * @param tenantId 租户id
+     * @param userId 人员id
+     * @return {@code Y9Result<Object>}
+     * @throws MessagingException 通讯异常
+     * @throws IOException IO异常
+     */
     @GetMapping(value = "/contact", produces = MediaType.APPLICATION_JSON_VALUE)
     public Y9Result<Object> contact(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException, IOException {
@@ -701,8 +720,9 @@ public class EmailMobileController {
      * 
      * @param tenantId 租户id
      * @param userId 用户id
-     * @param jamesAddressBook
-     * @return
+     * @param jamesAddressBook 通讯录信息
+     * @return {@code Y9Result<Object>}
+     * @throws Exception 异常
      */
     @PostMapping(value = "/addressBookSave")
     public Y9Result<Object> addressBookSave(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -721,7 +741,7 @@ public class EmailMobileController {
      * @param tenantId 租户id
      * @param userId 用户id
      * @param search 邮件地址/姓名
-     * @return
+     * @return {@code Y9Result<Object>}
      */
     @GetMapping(value = "/addressBooksearch")
     public Y9Result<Object> addressBooksearch(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -740,7 +760,7 @@ public class EmailMobileController {
      * @param tenantId 租户id
      * @param userId 用户id
      * @param id 通讯录唯一id
-     * @return
+     * @return {@code Y9Result<Object>}
      */
     @GetMapping(value = "/addressBook")
     public Y9Result<Object> addressBook(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -758,7 +778,7 @@ public class EmailMobileController {
      * 
      * @param tenantId 租户id
      * @param userId 用户id
-     * @return
+     * @return {@code Y9Result<Object>}
      */
     @GetMapping(value = "/addressBookList")
     public Y9Result<Object> addressBookList(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -777,7 +797,7 @@ public class EmailMobileController {
      * @param tenantId 租户id
      * @param userId 用户id
      * @param id 通讯录唯一id
-     * @return
+     * @return {@code Y9Result<Object>}
      */
     @DeleteMapping(value = "/addressBookDelete")
     public Y9Result<Object> addressBookDelete(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -795,8 +815,9 @@ public class EmailMobileController {
      * 邮件地址关联
      *
      * @param tenantId 租户id
-     * @param userId 用户id search 邮件地址/姓名
-     * @return
+     * @param userId 用户id
+     * @param search 邮件地址/姓名
+     * @return {@code Y9Result<Object>}
      */
     @GetMapping(value = "/addressRelevancy")
     public Y9Result<Object> addressRelevancy(@RequestHeader(value = "auth-tenantId") String tenantId,
@@ -816,7 +837,8 @@ public class EmailMobileController {
      * @date 2024/2/27 10:31
      * @param tenantId 租户id
      * @param userId 用户id search 邮件地址/姓名
-     * @return
+     * @return {@code Y9Result<Object>}
+     * @throws Exception 异常
      */
     @GetMapping(value = "/unread")
     public Y9Result<Object> unread(@RequestHeader(value = "auth-tenantId") String tenantId,

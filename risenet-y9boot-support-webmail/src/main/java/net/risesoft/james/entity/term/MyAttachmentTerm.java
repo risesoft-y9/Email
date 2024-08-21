@@ -8,9 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.risesoft.service.impl.EmailServiceImpl;
 
 /**
- * @Description 附件搜索
- * @Author lzw
- * @Date 2023-04-25 9:25
+ * description： 附件搜索
+ * 
+ * @author lzw
+ * @date 2023-04-25 9:25
  */
 @Slf4j
 public final class MyAttachmentTerm extends StringTerm {
@@ -21,6 +22,7 @@ public final class MyAttachmentTerm extends StringTerm {
      * Construct a StringTerm with the given pattern. Case will be ignored.
      *
      * @param pattern the pattern
+     * @param hasAttachment if has Attachment
      */
     public MyAttachmentTerm(String pattern, Boolean hasAttachment) {
         super(pattern);

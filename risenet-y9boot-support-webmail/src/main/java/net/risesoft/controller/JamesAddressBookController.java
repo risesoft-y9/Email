@@ -21,8 +21,9 @@ public class JamesAddressBookController {
     /**
      * 个人通讯录保存/修改
      *
-     * @param jamesAddressBook
-     * @return
+     * @param jamesAddressBook 个人通讯录信息
+     * @return {@code Y9Result<Object>}
+     * @throws Exception 异常
      */
     @PostMapping
     public Y9Result<Object> save(JamesAddressBook jamesAddressBook) throws Exception {
@@ -32,8 +33,8 @@ public class JamesAddressBookController {
     /**
      * 个人通讯录查询
      *
-     * @param search
-     * @return
+     * @param search 搜索条件
+     * @return {@code Y9Result<Object>}
      */
     @GetMapping(value = "/search")
     public Y9Result<Object> search(String search) {
@@ -43,8 +44,8 @@ public class JamesAddressBookController {
     /**
      * 通讯录详情
      *
-     * @param id
-     * @return
+     * @param id 通讯录id
+     * @return {@code Y9Result<Object>}
      */
     @GetMapping(value = "/addressBook")
     public Y9Result<Object> addressBookList(String id) {
@@ -54,7 +55,7 @@ public class JamesAddressBookController {
     /**
      * 获取个人通讯录
      *
-     * @return
+     * @return {@code Y9Result<Object>}
      */
     @GetMapping(value = "/addressBookList")
     public Y9Result<Object> addressBookList() {
@@ -63,8 +64,9 @@ public class JamesAddressBookController {
 
     /**
      * 删除个人通讯录
-     *
-     * @return
+     * 
+     * @param id 通讯录id
+     * @return {@code Y9Result<Object>}
      */
     @DeleteMapping
     public Y9Result<Object> delete(String id) {
