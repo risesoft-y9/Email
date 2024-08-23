@@ -4,8 +4,6 @@ management:
             exposure:
                 include: '*'
 server:
-    intranet:
-        ip: 192.168.x.x,10.168.x.x,172.20.x.x
     port: 7055
     servlet:
         encoding:
@@ -153,6 +151,7 @@ spring:
 y9:
     systemCnName: '电子邮件'
     systemName: webmail
+    internalIp: 192.168.x.x,10.0.x.x,172.20.x.x
     app:
         webmail:
             imapHost: imap.youshengyun.com
