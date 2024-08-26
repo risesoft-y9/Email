@@ -17,6 +17,10 @@
 
 电子邮件是一款简化的具备邮件服务器的企业邮箱，支持在将其他主流邮箱的邮件进行导入后自主控制邮件数据安全。电子邮件以其简洁精确的功能和小巧安全的架构方便根据企业和政府机构的业务要求进行二次开发。电子邮件是一个完全开源的项目，无商业版，但是需要依赖开源的数字底座进行人员岗位管控。[系统在线体验----->>>>>](#在线体验)
 
+## 开源地址
+
+源码地址：<a href="https://github.com/y9digitalbase/Email" target="_blank">https://github.com/y9digitalbase/Email </a>
+
 ## 源码目录
 
 ```
@@ -133,6 +137,16 @@ vue -- 前端工程
 ## 文档专区
 
 待补充
+
+## 电子邮箱截图
+
+![收件箱](https://vue.youshengyun.com/files/img/电子邮件收件箱.png)
+
+![通讯录](https://vue.youshengyun.com/files/img/电子邮件通讯录.png)
+
+![写信](https://vue.youshengyun.com/files/img/电子邮件写信.png)
+
+![邮件详情](https://vue.youshengyun.com/files/img/电子邮件邮件详情.png)
 
 ## 同构开源项目
 
