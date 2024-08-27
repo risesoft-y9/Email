@@ -129,7 +129,7 @@ vue -- 前端工程
 ### 电子邮件
 
 **演示地址
-**：<a href="https://test.youshengyun.com/webmail/" target="_blank">https://test.youshengyun.com/webmail/ </a>
+**：<a href="https://test.youshengyun.com/webmail-open/" target="_blank">https://test.youshengyun.com/webmail-open/ </a>
 
 > 演示账号：测试人员 密码：Risesoft@2024
 >
