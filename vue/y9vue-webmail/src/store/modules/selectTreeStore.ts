@@ -1,8 +1,7 @@
-import { remove } from 'lodash';
 import { defineStore } from 'pinia';
 import { useCssModule } from 'vue';
 
-import { $dataType, $deeploneObject } from '@/utils/object.ts';
+import { $dataType } from '@/utils/object.ts';
 
 export const useSelectTreeStore = defineStore('selectTreeStore', {
     state: () => {

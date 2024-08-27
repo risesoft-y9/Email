@@ -209,10 +209,10 @@ store.commit('global/setHeadTabNavList', [
 ...tabNavList.value,
 {
 route: {
-    ...route
+...route
 },
 menu: {
-    ...routeItem.value
+...routeItem.value
 }
 }
 ]);

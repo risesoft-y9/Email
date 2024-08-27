@@ -39,7 +39,6 @@ export const importEml = async (file) => {
     });
 };
 
-
 /**
  * 邮件详情
  * @param id
@@ -50,7 +49,7 @@ export const emlDetail = async (id) => {
     return await emailRequest({
         url: '/api/rest/importEml/getById',
         method: 'GET',
-        params: { 'id': id }
+        params: { id: id }
     });
 };
 
@@ -77,7 +76,6 @@ export const getAttById = async (importEmlId) => {
         url: '/api/rest/importEml/getAttById',
         method: 'GET',
         cType: false,
-        params: { "importEmlId": importEmlId }
+        params: { importEmlId: importEmlId }
     });
 };
-

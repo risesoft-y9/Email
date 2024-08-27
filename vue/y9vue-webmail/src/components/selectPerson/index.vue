@@ -63,9 +63,8 @@
 </template>
 
 <script lang="ts" setup>
-    import { getAllPersonsCount } from '@/api/org/index';
     import { useSettingStore } from '@/store/modules/settingStore';
-    import { computed, onMounted, watch, inject, ref, defineEmits, defineProps } from 'vue';
+    import { computed, defineEmits, defineProps, inject, onMounted, ref, watch } from 'vue';
     import y9_storage from '@/utils/storage';
     // 注入 字体对象
     const fontSizeObj: any = inject('sizeObjInfo') || {};

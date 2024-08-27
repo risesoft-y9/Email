@@ -2,7 +2,7 @@
  * @Author:  
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-19 12:19:01
+ * @LastEditTime: 2024-08-22 16:27:46
  * @Description: 写信
 -->
 <template>
@@ -96,8 +96,7 @@
                     <el-form-item class="item-form">
                         <span
                             :style="{ fontSize: fontSizeObj.baseFontSize }"
-                            class="select"
-                            style="width: 60px; min-width: 60px; text-align: right; margin-right: 16px"
+                            class="select y9label-title"
                             title="点击选择收件人"
                             @click="selectPersonDialog('to')"
                             >收件人</span
@@ -129,20 +128,14 @@
                     </el-form-item>
 
                     <el-form-item style="width: 100%">
-                        <span
-                            :style="{ fontSize: fontSizeObj.baseFontSize }"
-                            style="width: 60px; min-width: 60px; text-align: right; margin-right: 16px"
-                        >
-                            主题
-                        </span>
+                        <span :style="{ fontSize: fontSizeObj.baseFontSize }" class="y9label-title"> 主题 </span>
                         <el-input v-model="email.subject" class="box-input" placeholder="请输入主题" size="large" />
                     </el-form-item>
 
                     <el-form-item v-if="cmEnable" style="width: 100%">
                         <span
                             :style="{ fontSize: fontSizeObj.baseFontSize }"
-                            class="select"
-                            style="width: 60px; min-width: 60px; text-align: right; margin-right: 16px"
+                            class="select y9label-title"
                             title="点击选择抄送人"
                             @click="selectPersonDialog('cc')"
                             >抄送人</span
@@ -173,8 +166,7 @@
                     <el-form-item v-if="cmEnable" style="width: 100%">
                         <span
                             :style="{ fontSize: fontSizeObj.baseFontSize }"
-                            class="select"
-                            style="width: 60px; min-width: 60px; text-align: right; margin-right: 16px"
+                            class="select y9label-title"
                             title="点击选择密送人"
                             @click="selectPersonDialog('bcc')"
                             >密送</span
@@ -935,6 +927,13 @@
         cursor: pointer;
 
         color: var(--el-color-primary);
+    }
+
+    .y9label-title {
+        width: 60px;
+        min-width: 60px;
+        text-align: right;
+        margin-right: 16px;
     }
 
     .left-tree {

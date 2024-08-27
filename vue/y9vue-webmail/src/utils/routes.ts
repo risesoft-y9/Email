@@ -69,7 +69,6 @@ declare module 'vue-router' {
          *   3、(默认不设置 path.split('/')[0])，此参数是为了满足特殊页面特殊需求
          */
         belongTopMenu?: string;
-
     }
 }
 
