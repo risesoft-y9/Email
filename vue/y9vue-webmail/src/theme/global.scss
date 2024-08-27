@@ -275,7 +275,7 @@ $hoverBgColor: rgb(231, 236, 237);
 
 /* 表格多选框 */
 :deep(.el-table__body-wrapper) {
-  .el-table-column--selection>.cell {
+  .el-table-column--selection > .cell {
     justify-content: center;
   }
 
@@ -320,7 +320,7 @@ $hoverBgColor: rgb(231, 236, 237);
 
 /* 表格多选框 */
 :deep(.el-table__body-wrapper) {
-  .el-table-column--selection>.cell {
+  .el-table-column--selection > .cell {
     justify-content: center;
   }
 

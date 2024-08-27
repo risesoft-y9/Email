@@ -9,9 +9,9 @@
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /sz-team-frontend-9.5.x/y9vue-email/src/router/checkRole.js
  */
-import router, { asyncRoutes } from '@/router';
-import { useRouterStore } from '@/store/modules/routerStore';
-import { useFolderStore } from '@/store/modules/folderStore';
+import router, {asyncRoutes} from '@/router';
+import {useRouterStore} from '@/store/modules/routerStore';
+import {useFolderStore} from '@/store/modules/folderStore';
 
 /**
  * 根据 meta.role 判断当前用户是否有权限

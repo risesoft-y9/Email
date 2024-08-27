@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2022-05-05 09:43:05
- * @LastEditTime: 2024-08-19 15:22:49
- * @LastEditors: mengjuhua
+ * @LastEditTime: 2024-08-22 11:29:09
+ * @LastEditors: chensiwen cikl777@163.com
  * @Description: 邮件查询
 -->
 <template>
@@ -651,7 +651,7 @@
         }
     }
 
-    :deep(.el-select__wrapper) {
+    :deep(.y9-filter .el-select__wrapper) {
         border-radius: 30px;
     }
 </style>

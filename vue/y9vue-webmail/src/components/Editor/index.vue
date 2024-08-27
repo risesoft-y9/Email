@@ -10,7 +10,6 @@
 
     // 我注释这些代码了，我觉得是没有必要这里再次导入的，可以解决打包后的那个警告问题
     // 如果一定要这样导入，那个警告不是错误，第一次加载会慢点，性能问题，先不管它
-
     import 'tinymce/themes/silver';
     import 'tinymce/themes/silver/theme';
     import 'tinymce/icons/default'; //引入编辑器图标icon，不引入则不显示对应图标
@@ -46,7 +45,7 @@
 
     //接下来定义编辑器所需要的插件数据
     import { reactive, ref } from 'vue';
-    import { onMounted, defineEmits, watch } from '@vue/runtime-core';
+    import { defineEmits, onMounted, watch } from '@vue/runtime-core';
     import { uploadFile } from '@/api/email/attachment';
     // import { updateImg } from '@/api/order/order'
     const emits = defineEmits(['getContent', 'getContentTxt']);

@@ -8,7 +8,7 @@
 -->
 <script lang="ts" setup>
     import { useI18n } from 'vue-i18n';
-    import { onMounted, onUnmounted, ref, provide, watch, computed } from 'vue';
+    import { computed, onMounted, onUnmounted, provide, ref, watch } from 'vue';
     // 引入字体调整的方法
     import { getConcreteSize } from '@/utils/index';
     import { ElConfigProvider } from 'element-plus';
@@ -17,11 +17,11 @@
     import en from 'element-plus/dist/locale/en.mjs';
     import { useSettingStore } from '@/store/modules/settingStore';
     import y9_storage from '@/utils/storage';
+    import watermark from 'y9plugin-watermark/lib/index';
 
     const settingStore = useSettingStore();
     const locale = settingStore.getWebLanguage === 'zh' ? zhCn : en;
     const { t } = useI18n();
-    import watermark from 'y9plugin-watermark/lib/index';
 
     interface watermarkData {
         text?;

@@ -40,9 +40,6 @@ export const getInfoList = async (params) => {
     });
 };
 
-
-
-
 /**
  * 获取登录信息
  */
@@ -54,4 +51,3 @@ export const getLoginInfo = async () => {
         params: {}
     });
 };
-

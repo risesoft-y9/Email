@@ -7,16 +7,15 @@
  * @FilePath: \workspace-y9boot-v9.5.x-vue\y9vue-info\src\router\index.js
  */
 
-import { routerBeforeEach } from '@/router/checkRouter';
+import {routerBeforeEach} from '@/router/checkRouter';
 import NProgress from 'nprogress';
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 import authRouter from './modules/authRouter';
 import menuRouter from './modules/menuRouter';
 import emailDetailRouter from './modules/emailDetailRouter';
 import dynamicRouter from './modules/dynamicRouter';
 
 import importEmlRouter from './modules/importEmlRouter';
-
 
 //constantRoutes为不需要动态判断权限的路由，如登录、404、500等
 export const constantRoutes: Array<any> = [
