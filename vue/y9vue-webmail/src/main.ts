@@ -1,18 +1,17 @@
 /*
  * @Author: your name
  * @Date: 2022-01-10 18:09:52
- * @LastEditTime: 2024-08-26 11:47:15
+ * @LastEditTime: 2024-08-27 17:13:13
  * @LastEditors: mengjuhua
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /sz- team-frontend-9.6.x/y9vue-email/src/main.js
  */
-import BaiduCalendar from 'vue-baidu-calendar';
 import router from '@/router/index';
-import { setupStore } from '@/store';
+import {setupStore} from '@/store';
 import 'animate.css';
 import 'normalize.css'; // 样式初始化
 import 'remixicon/fonts/remixicon.css';
-import { createApp, ref, watch } from 'vue';
+import {createApp, ref, watch} from 'vue';
 import sso from 'y9plugin-sso';
 import App from './App.vue';
 import './theme/global.scss';
@@ -22,7 +21,7 @@ import i18n from './language';
 import y9pluginComponents from 'y9plugin-components';
 import y9_zhCn from 'y9plugin-components/src/language/zh-cn'; //默认的y9组件插件中文包
 import y9_en from 'y9plugin-components/src/language/en'; //默认的y9组件插件英文包
-import { useSettingStore } from '@/store/modules/settingStore';
+import {useSettingStore} from '@/store/modules/settingStore';
 import customDirective from '@/utils/directive'; //自定义指令
 
 // 传入sso所需的环境变量
@@ -45,7 +44,7 @@ const env = {
     }
 };
 const app: any = createApp(App);
-app.use(sso, { env });
+app.use(sso, {env});
 
 setupStore(app);
 
@@ -61,7 +60,6 @@ watch(
 );
 app.use(y9pluginComponents, opts.value);
 app.use(router);
-app.use(BaiduCalendar);
 app.use(customDirective);
 app.use(i18n);
 app.mount('#app');
