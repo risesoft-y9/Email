@@ -19,7 +19,7 @@
 
 ## 开源地址
 
-源码地址：<a href="https://github.com/y9digitalbase/Email" target="_blank">https://github.com/y9digitalbase/Email </a>
+源码地址：<a href="https://github.com/risesoft-y9/Email" target="_blank">https://github.com/risesoft-y9/Email </a>
 
 ## 源码目录
 
