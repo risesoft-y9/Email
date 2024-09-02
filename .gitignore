@@ -27,3 +27,5 @@ rebel.xml
 node_modules/
 
 .flattened-pom.xml
+
+vue/y9vue-webmail/webmail/
