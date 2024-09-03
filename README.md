@@ -131,7 +131,7 @@ vue -- 前端工程
 **演示地址
 **：<a href="https://demo.youshengyun.com/webmail-open/" target="_blank">https://demo.youshengyun.com/webmail-open/ </a>
 
-> 演示账号：测试人员 密码：Risesoft@2024
+> 演示账号：user 密码：Risesoft@2024
 >
 
 ## 文档专区
