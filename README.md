@@ -19,7 +19,7 @@
 
 ## 开源地址
 
-源码地址：<a href="https://github.com/risesoft-y9/Email" target="_blank">https://github.com/risesoft-y9/Email </a>
+源码地址：https://github.com/risesoft-y9/Email
 
 ## 源码目录
 
@@ -129,7 +129,7 @@ vue -- 前端工程
 ### 电子邮件
 
 **演示地址
-**：<a href="https://demo.youshengyun.com/webmail-open/" target="_blank">https://demo.youshengyun.com/webmail-open/ </a>
+**：https://demo.youshengyun.com/webmail/
 
 > 演示账号：user 密码：Risesoft@2024
 >
