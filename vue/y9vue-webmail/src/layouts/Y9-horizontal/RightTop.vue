@@ -107,14 +107,14 @@
                 <!-- 头像测试链接地址：https://www.youshengyun.com/fileManager/files/e6b5d41fd2bd4cdda538139f9b7848c7.jpg -->
                 <el-avatar :src="userInfo.avator ? userInfo.avator : ''"> {{ $t(`${userInfo.loginName}`) }}</el-avatar>
             </div>
-            <div class="item" @click="back">
+            <!-- <div class="item" @click="back">
                 <i class="ri-arrow-go-back-line"></i>
                 <span>{{ $t('首页') }}</span>
-            </div>
-            <!-- <div class="item" @click="logout">
+            </div> -->
+            <div class="item" @click="logout">
                 <i class="ri-logout-box-r-line"></i>
                 <span>{{ $t('退出') }}</span>
-            </div> -->
+            </div>
         </div>
     </div>
 </template>

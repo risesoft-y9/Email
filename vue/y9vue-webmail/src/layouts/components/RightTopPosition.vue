@@ -42,7 +42,6 @@
     import { useSettingStore } from '@/store/modules/settingStore';
     import y9_storage from '@/utils/storage';
     import IconSvg from './IconSvg';
-    import { getLoginInfo } from '@/api/home';
 
     // import PersonInfo from '@/views/personal/personInfo.vue';
     interface RightTopUserSetupData {
@@ -84,9 +83,6 @@
                 sessionStorage.setItem('positionName', command?.positionName);
                 // 设置 deptName
                 sessionStorage.setItem('deptName', command?.parentName);
-                let res = await getLoginInfo();
-                sessionStorage.setItem('positionList', JSON.stringify(res.data.positionList));
-                positionList.value = res.data.positionList;
                 // 所有岗位的待办消息
                 positionList?.map((item) => {
                     totalCount += item.todoCount;
