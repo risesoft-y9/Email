@@ -4,10 +4,9 @@ import java.text.SimpleDateFormat;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.risesoft.config.Y9WebMailProperties;
 import net.risesoft.controller.dto.EmailDTO;
 import net.risesoft.y9.Y9Context;
-import net.risesoft.y9.configuration.Y9Properties;
-import net.risesoft.y9.configuration.app.y9webmail.Y9WebmailProperties;
 
 public class EmailUtil {
 
@@ -32,7 +31,7 @@ public class EmailUtil {
     }
 
     public static String buildEmailAddress(String loginName) {
-        Y9WebmailProperties emailProperties = Y9Context.getBean(Y9Properties.class).getApp().getWebmail();
-        return ConvertPinYin.getPinyin(loginName) + "@" + emailProperties.getHost();
+        Y9WebMailProperties y9WebMailProperties = Y9Context.getBean(Y9WebMailProperties.class);
+        return ConvertPinYin.getPinyin(loginName) + "@" + y9WebMailProperties.getHost();
     }
 }

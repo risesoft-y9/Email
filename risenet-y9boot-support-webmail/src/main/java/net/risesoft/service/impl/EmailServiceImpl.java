@@ -102,9 +102,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     PersonApi personApi;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
     private Y9FileStoreService y9FileStoreService;
 
     private static void setMailer(MimeMessage mimeMessage) throws MessagingException {
@@ -934,7 +931,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     private String generateUniqueMessageId() {
-        return String.format("<%s@%s>", Y9IdGenerator.genId(), properties.getApp().getWebmail().getHost());
+        return String.format("<%s@%s>", Y9IdGenerator.genId(), y9WebMailProperties.getHost());
     }
 
     private MimeBodyPart getBaseBodyPart(final MimeMultipart mimeMultipart) throws MessagingException {
