@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.sun.mail.imap.IMAPFolder;
 
+import net.risesoft.config.Y9WebMailProperties;
 import net.risesoft.controller.dto.EmailAttachmentDTO;
 import net.risesoft.controller.dto.EmailContactDTO;
 import net.risesoft.controller.dto.EmailListDTO;
@@ -31,8 +32,6 @@ import net.risesoft.model.platform.Person;
 import net.risesoft.support.EmailThreadLocalHolder;
 import net.risesoft.util.MimeMessageParser;
 import net.risesoft.y9.Y9LoginUserHolder;
-import net.risesoft.y9.configuration.Y9Properties;
-import net.risesoft.y9.configuration.app.y9webmail.Y9WebmailProperties;
 import net.risesoft.y9.util.signing.Y9MessageDigest;
 
 import y9.client.rest.platform.org.PersonApiClient;
@@ -47,7 +46,7 @@ import jodd.mail.SmtpServer;
 public class MailHelper {
 
     @Autowired
-    protected Y9Properties properties;
+    protected Y9WebMailProperties y9WebMailProperties;
 
     @Autowired
     private JamesUserService jamesUserService;
@@ -61,12 +60,11 @@ public class MailHelper {
         String email = EmailThreadLocalHolder.getEmailAddress();
 
         // todo 密码
-        Y9WebmailProperties emailProperties = properties.getApp().getWebmail();
-        ImapServer imapServer = MailServer.create().host(emailProperties.getImapHost())
-                // 3.7.x james 无 authorizationid 时用户密码存在@符号会有问题
-                // 具体可跟踪源码 org.apache.james.imap.processor.AuthenticateProcessor#parseDelegationAttempt
-                .property("mail.imap.sasl.authorizationid", email).port(emailProperties.getImapPort())
-                .auth(email, plainText).buildImapMailServer();
+        ImapServer imapServer = MailServer.create().host(y9WebMailProperties.getImapHost())
+            // 3.7.x james 无 authorizationid 时用户密码存在@符号会有问题
+            // 具体可跟踪源码 org.apache.james.imap.processor.AuthenticateProcessor#parseDelegationAttempt
+            .property("mail.imap.sasl.authorizationid", email).port(y9WebMailProperties.getImapPort())
+            .auth(email, plainText).buildImapMailServer();
         return imapServer.createSession();
     }
 
@@ -75,9 +73,8 @@ public class MailHelper {
         String plainText = jamesUserService.getPlainTextByPersonId(Y9LoginUserHolder.getUserInfo().getPersonId());
         String email = EmailThreadLocalHolder.getEmailAddress();
 
-        Y9WebmailProperties emailProperties = properties.getApp().getWebmail();
-        SmtpServer smtpServer = MailServer.create().host(emailProperties.getSmtpHost())
-                .port(emailProperties.getSmtpPort()).auth(email, plainText).buildSmtpMailServer();
+        SmtpServer smtpServer = MailServer.create().host(y9WebMailProperties.getSmtpHost())
+            .port(y9WebMailProperties.getSmtpPort()).auth(email, plainText).buildSmtpMailServer();
         return smtpServer.createSession();
     }
 
