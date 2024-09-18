@@ -38,8 +38,8 @@ spring:
             config:
                 enabled: false
                 group: DEFAULT_GROUP
-                namespace: dev
-                server-addr: https://dev.youshengyun.com:443
+                namespace: local
+                server-addr: http://localhost:8848
                 username: nacos
                 password: ${NACOS_PASSWORD:111111}
             discovery:
@@ -83,22 +83,21 @@ spring:
                 maximumPoolSize: 20
                 minimumIdle: 1
     jpa:
+        #databasePlatform: org.hibernate.dialect.MySQL8Dialect
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL8Dialect
+                hbm2ddl:
+                    auto: none
+                jdbc:
+                    batchSize: 100
+                showSql: true
         hibernate:
+            ddl-auto: none
             naming:
                 implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
                 physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         open-in-view: false
-        properties:
-            hibernate:
-                cache:
-                    use_query_cache: false
-                    use_second_level_cache: false
-                dialect: org.hibernate.dialect.MySQL8Dialect
-                hbm2ddl:
-                    auto: update
-                jdbc:
-                    batch_size: 100
-                show_sql: true
     kafka:
         bootstrap-servers: localhost:9092
         consumer:
