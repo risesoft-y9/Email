@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import net.risesoft.filter.EmailAddressFilter;
 import net.risesoft.y9.configuration.Y9Properties;
+import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 
 @Configuration
 @EnableConfigurationProperties({Y9Properties.class, Y9WebMailProperties.class})

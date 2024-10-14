@@ -4,9 +4,9 @@ import java.text.SimpleDateFormat;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.risesoft.config.Y9WebMailProperties;
 import net.risesoft.controller.dto.EmailDTO;
 import net.risesoft.y9.Y9Context;
+import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 
 public class EmailUtil {
 

@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import com.sun.mail.imap.IMAPFolder;
 
-import net.risesoft.config.Y9WebMailProperties;
 import net.risesoft.controller.dto.EmailAttachmentDTO;
 import net.risesoft.controller.dto.EmailContactDTO;
 import net.risesoft.controller.dto.EmailListDTO;
@@ -32,6 +31,7 @@ import net.risesoft.model.platform.Person;
 import net.risesoft.support.EmailThreadLocalHolder;
 import net.risesoft.util.MimeMessageParser;
 import net.risesoft.y9.Y9LoginUserHolder;
+import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 import net.risesoft.y9.util.signing.Y9MessageDigest;
 
 import y9.client.rest.platform.org.PersonApiClient;
