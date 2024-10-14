@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import com.sun.mail.imap.IMAPFolder;
 
-import net.risesoft.config.Y9WebMailProperties;
 import net.risesoft.controller.dto.EmailAttachmentDTO;
 import net.risesoft.controller.dto.EmailContactDTO;
 import net.risesoft.controller.dto.EmailListDTO;
@@ -32,6 +31,7 @@ import net.risesoft.model.platform.Person;
 import net.risesoft.support.EmailThreadLocalHolder;
 import net.risesoft.util.MimeMessageParser;
 import net.risesoft.y9.Y9LoginUserHolder;
+import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 import net.risesoft.y9.util.signing.Y9MessageDigest;
 
 import y9.client.rest.platform.org.PersonApiClient;
@@ -53,6 +53,18 @@ public class MailHelper {
 
     @Autowired
     private PersonApiClient personManager;
+
+    public static EmailAttachmentDTO parseEmailAttachment(DataSource dataSource) throws IOException {
+        EmailAttachmentDTO emailAttachmentDTO = new EmailAttachmentDTO();
+
+        byte[] bytes = IOUtils.toByteArray(dataSource.getInputStream());
+        emailAttachmentDTO.setMd5(Y9MessageDigest.md5(bytes));
+        emailAttachmentDTO.setFileExt(FilenameUtils.getExtension(dataSource.getName()));
+        emailAttachmentDTO.setFileName(dataSource.getName());
+        emailAttachmentDTO.setDisplaySize(FileUtils.byteCountToDisplaySize(bytes.length));
+
+        return emailAttachmentDTO;
+    }
 
     public ReceiveMailSession createReceiveMailSession() {
         // String plainText = properties.getCommon().getDefaultPassword();
@@ -92,18 +104,6 @@ public class MailHelper {
             emailAttachmentDTOList.add(parseEmailAttachment(dataSource));
         }
         return emailAttachmentDTOList;
-    }
-
-    public static EmailAttachmentDTO parseEmailAttachment(DataSource dataSource) throws IOException {
-        EmailAttachmentDTO emailAttachmentDTO = new EmailAttachmentDTO();
-
-        byte[] bytes = IOUtils.toByteArray(dataSource.getInputStream());
-        emailAttachmentDTO.setMd5(Y9MessageDigest.md5(bytes));
-        emailAttachmentDTO.setFileExt(FilenameUtils.getExtension(dataSource.getName()));
-        emailAttachmentDTO.setFileName(dataSource.getName());
-        emailAttachmentDTO.setDisplaySize(FileUtils.byteCountToDisplaySize(bytes.length));
-
-        return emailAttachmentDTO;
     }
 
     public void getPersonData(IMAPFolder folder, List<EmailListDTO> emailReceiverDTOList) {
@@ -169,7 +169,7 @@ public class MailHelper {
                             continue;
                         boolean exists =
                             contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
-                                && ((String)param.getContactPerson()).equalsIgnoreCase(emailAddress));
+                                && param.getContactPerson().equalsIgnoreCase(emailAddress));
                         if (exists)
                             continue;
                         EmailContactDTO contactDTO = new EmailContactDTO();
@@ -191,7 +191,7 @@ public class MailHelper {
                 if (StringUtils.isNotBlank(from) && !from.equals(email)) {
                     boolean exists =
                         contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
-                            && ((String)param.getContactPerson()).equalsIgnoreCase(from));
+                            && param.getContactPerson().equalsIgnoreCase(from));
                     if (exists)
                         continue;
                     EmailContactDTO contactDTO = new EmailContactDTO();
