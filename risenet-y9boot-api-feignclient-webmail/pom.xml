@@ -12,9 +12,18 @@
     <artifactId>risenet-y9boot-api-feignclient-webmail</artifactId>
     <version>${revision}</version>
     <packaging>jar</packaging>
+    <name>risenet-y9boot-api-feignclient-webmail</name>
+    <description>RiseSoft/Email feignclient api</description>
+    <url>https://gitee.com/risesoft-y9/y9-email</url>
 
     <properties>
     </properties>
+
+    <scm>
+        <url>${gitee.url}</url>
+        <connection>${gitee.connection}</connection>
+        <developerConnection>${gitee.developerConnection}</developerConnection>
+    </scm>
 
     <dependencies>
         <dependency>

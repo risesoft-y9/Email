@@ -11,9 +11,18 @@
     <artifactId>risenet-y9boot-support-webmail</artifactId>
     <version>${revision}</version>
     <packaging>jar</packaging>
+    <name>risenet-y9boot-support-webmail</name>
+    <description>RiseSoft/Email support jar</description>
+    <url>https://gitee.com/risesoft-y9/y9-email</url>
 
     <properties>
     </properties>
+
+    <scm>
+        <url>${gitee.url}</url>
+        <connection>${gitee.connection}</connection>
+        <developerConnection>${gitee.developerConnection}</developerConnection>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -21,8 +30,8 @@
             <artifactId>risenet-y9boot-starter-idgenerator</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
-         <dependency>
+
+        <dependency>
             <groupId>net.risesoft</groupId>
             <artifactId>risenet-y9boot-properties</artifactId>
             <version>${project.version}</version>
