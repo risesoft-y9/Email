@@ -59,8 +59,8 @@ export const saveFolder = async (params) => {
 export const deleteFolder = async (params) => {
     const data = qs.stringify(params);
     return await folderRequest({
-        url: '/api/standard/emailFolder',
-        method: 'DELETE',
+        url: '/api/standard/emailFolder/delete',
+        method: 'POST',
         cType: false,
         data: data
     });
