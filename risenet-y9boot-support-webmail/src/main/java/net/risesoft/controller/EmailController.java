@@ -8,8 +8,6 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.controller.dto.EmailContactDTO;
@@ -31,12 +31,11 @@ import net.risesoft.y9.Y9LoginUserHolder;
 
 @RestController(value = "standardEmailController")
 @RequestMapping("/api/standard/email")
+@RequiredArgsConstructor
 public class EmailController {
 
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private PersonApi personApi;
+    private final EmailService emailService;
+    private final PersonApi personApi;
 
     /**
      * 删除邮件
@@ -46,7 +45,7 @@ public class EmailController {
      * @return {@code Y9Result<Object>}
      * @throws MessagingException 通讯异常
      */
-    @DeleteMapping
+    @PostMapping(value = "/delete")
     public Y9Result<Object> delete(@RequestParam(value = "uids") long[] uids, String folder) throws MessagingException {
         emailService.delete(folder, uids);
         return Y9Result.successMsg("删除成功");
@@ -60,7 +59,7 @@ public class EmailController {
      * @return {@code Y9Result<Object>}
      * @throws MessagingException 通讯异常
      */
-    @DeleteMapping(value = "/permanently")
+    @PostMapping(value = "/deletePermanently")
     public Y9Result<Object> deletePermanently(@RequestParam(value = "uids") long[] uids, String folder)
         throws MessagingException {
         emailService.deletePermanently(folder, uids);

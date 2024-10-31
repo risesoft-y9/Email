@@ -15,13 +15,15 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.util.ByteArrayDataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.risesoft.api.platform.org.PersonApi;
+import net.risesoft.james.service.JamesUserService;
 import net.risesoft.model.user.UserInfo;
 import net.risesoft.service.EmailMessageService;
 import net.risesoft.support.EmailThreadLocalHolder;
 import net.risesoft.y9.Y9LoginUserHolder;
+import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 import net.risesoft.y9public.entity.Y9FileStore;
 import net.risesoft.y9public.service.Y9FileStoreService;
 
@@ -30,8 +32,13 @@ import jodd.mail.SendMailSession;
 @Service
 public class EmailMessageServiceImpl extends MailHelper implements EmailMessageService {
 
-    @Autowired
-    private Y9FileStoreService y9FileStoreService;
+    private final Y9FileStoreService y9FileStoreService;
+
+    public EmailMessageServiceImpl(Y9WebMailProperties y9WebMailProperties, JamesUserService jamesUserService,
+        PersonApi personApi, Y9FileStoreService y9FileStoreService) {
+        super(y9WebMailProperties, jamesUserService, personApi);
+        this.y9FileStoreService = y9FileStoreService;
+    }
 
     @Override
     public void send(Integer messageNumber, String subject, String richText, List<String> emailAddressList,

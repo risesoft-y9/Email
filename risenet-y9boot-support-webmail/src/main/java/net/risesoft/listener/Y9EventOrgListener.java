@@ -2,9 +2,10 @@ package net.risesoft.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.james.service.JamesUserService;
 import net.risesoft.model.platform.Department;
@@ -14,12 +15,12 @@ import net.risesoft.y9.pubsub.constant.Y9OrgEventTypeConst;
 import net.risesoft.y9.pubsub.event.Y9EventOrg;
 
 @Component
+@RequiredArgsConstructor
 public class Y9EventOrgListener implements ApplicationListener<Y9EventOrg> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private JamesUserService jamesUserService;
+    private final JamesUserService jamesUserService;
 
     @Override
     public void onApplicationEvent(Y9EventOrg event) {

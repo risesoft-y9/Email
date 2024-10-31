@@ -2,21 +2,22 @@ package net.risesoft.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.james.service.JamesUserService;
 import net.risesoft.pojo.Y9Result;
 
 @RestController(value = "standardJamesUserController")
 @RequestMapping(value = "/api/standard/jamesUser")
+@RequiredArgsConstructor
 public class JamesUserController {
 
-    @Autowired
-    private JamesUserService jamesUserService;
+    private final JamesUserService jamesUserService;
 
     /**
      * 根据组织架构id获取下面所有人的邮箱地址

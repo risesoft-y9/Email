@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.api.platform.org.OrgUnitApi;
 import net.risesoft.api.platform.org.OrganizationApi;
@@ -52,26 +53,18 @@ import net.risesoft.y9.Y9LoginUserHolder;
  * 电子邮件接口
  */
 @RestController
-@RequestMapping("/mobile")
+@RequestMapping(value = "/mobile", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class EmailMobileController {
 
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private PersonApi personApi;
-    @Autowired
-    private EmailAttachmentService emailAttachmentService;
-    @Autowired
-    private EmailFolderService emailFolderService;
-    @Autowired
-    private OrgUnitApi orgUnitApi;
-    @Autowired
-    private OrganizationApi organizationApi;
-    @Autowired
-    private JamesUserService jamesUserService;
-
-    @Autowired
-    private JamesAddressBookService jamesAddressBookService;
+    private final EmailService emailService;
+    private final PersonApi personApi;
+    private final EmailAttachmentService emailAttachmentService;
+    private final EmailFolderService emailFolderService;
+    private final OrgUnitApi orgUnitApi;
+    private final OrganizationApi organizationApi;
+    private final JamesUserService jamesUserService;
+    private final JamesAddressBookService jamesAddressBookService;
 
     /**
      * 删除邮件
@@ -83,7 +76,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Object>}
      * @throws MessagingException 通讯异常
      */
-    @DeleteMapping(value = "/email", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/email")
     public Y9Result<Object> delete(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids, String folder)
         throws MessagingException {
@@ -106,7 +99,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Object>}
      * @throws MessagingException 通讯异常
      */
-    @DeleteMapping(value = "/permanently", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/permanently")
     public Y9Result<Object> deletePermanently(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids, String folder)
         throws MessagingException {
@@ -129,7 +122,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<}{@link EmailDetailDTO}{@code >}
      * @throws Exception 异常
      */
-    @GetMapping(value = "/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{folder}/{uid}")
     public Y9Result<EmailDetailDTO> detail(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable long uid)
         throws Exception {
@@ -154,7 +147,7 @@ public class EmailMobileController {
      * @throws MessagingException 通讯异常
      * @throws IOException IO异常
      */
-    @GetMapping(value = "/exportEml", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/exportEml")
     public void exportEml(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String folder, int uid, HttpServletResponse response,
         HttpServletRequest request) throws MessagingException, IOException {
@@ -177,7 +170,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Object>}
      * @throws Exception 异常
      */
-    @PostMapping(value = "/flag", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/flag")
     public Y9Result<Object> flag(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids,
         @RequestParam String folder, boolean flagged) throws Exception {
@@ -200,7 +193,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<}{@link EmailDTO}{@code >}
      * @throws Exception 异常
      */
-    @GetMapping(value = "/forward/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/forward/{folder}/{uid}")
     public Y9Result<EmailDTO> forward(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable long uid)
         throws Exception {
@@ -247,7 +240,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Object>}
      * @throws MessagingException 通讯异常
      */
-    @PostMapping(value = "/move", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/move")
     public Y9Result<Object> move(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids,
         String originFolder, String toFolder) throws MessagingException {
@@ -271,7 +264,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Object>}
      * @throws Exception 异常
      */
-    @PostMapping(value = "/read", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/read")
     public Y9Result<Object> read(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids,
         @RequestParam String folder, @RequestParam Boolean isRead) throws Exception {
@@ -294,7 +287,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<}{@link EmailDTO}{@code >}
      * @throws Exception 异常
      */
-    @GetMapping(value = "/reply/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/reply/{folder}/{uid}")
     public Y9Result<EmailDTO> reply(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable Long uid)
         throws Exception {
@@ -317,7 +310,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<}{@link EmailDTO}{@code >}
      * @throws Exception 异常
      */
-    @PostMapping(value = "/quickReply/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/quickReply/{folder}/{uid}")
     public Y9Result<EmailDTO> quickReply(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable Long uid,
         @RequestParam String richText) throws Exception {
@@ -340,7 +333,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<}{@link EmailDTO}{@code >}
      * @throws Exception 异常
      */
-    @GetMapping(value = "/replyAll/{folder}/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/replyAll/{folder}/{uid}")
     public Y9Result<EmailDTO> replyAll(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable Long uid)
         throws Exception {
@@ -361,7 +354,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<String>}
      * @throws Exception 异常
      */
-    @PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/save")
     public Y9Result<String> save(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, EmailDTO email) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
@@ -383,7 +376,7 @@ public class EmailMobileController {
      * @throws MessagingException 通讯异常
      * @throws IOException IO异常
      */
-    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search")
     public Y9Page<EmailListDTO> search(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, EmailSearchDTO searchDTO)
         throws MessagingException, IOException {
@@ -404,7 +397,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Object>}
      * @throws Exception 异常
      */
-    @PostMapping(value = "/send", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/send")
     public Y9Result<Object> send(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String messageId) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
@@ -424,7 +417,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Object>}
      * @throws MessagingException 通讯异常
      */
-    @GetMapping(value = "/todoList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/todoList")
     public Y9Result<Object> todoList(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
@@ -448,7 +441,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<}{@link EmailAttachmentDTO}{@code >}
      * @throws Exception 异常
      */
-    @PostMapping(value = "/addAttachment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/addAttachment")
     public Y9Result<EmailAttachmentDTO> addAttachment(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String folder, String messageId, MultipartFile file)
         throws Exception {
@@ -472,7 +465,7 @@ public class EmailMobileController {
      * @param response 响应
      * @param request 请求
      */
-    @RequestMapping(value = "/download", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/download")
     public void download(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String folder, String messageId, String fileName,
         HttpServletResponse response, HttpServletRequest request) {
@@ -498,7 +491,7 @@ public class EmailMobileController {
      * @param request 请求
      * @param response 响应
      */
-    @RequestMapping(value = "/batchDownload", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/batchDownload")
     public void batchDownload(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String folder, String messageId,
         HttpServletRequest request, HttpServletResponse response) {
@@ -521,7 +514,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Object>}
      * @throws Exception 异常
      */
-    @DeleteMapping(value = "/deleteAttachment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/deleteAttachment")
     public Y9Result<Object> deleteAttachment(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String folder, String messageId, String fileName)
         throws Exception {
@@ -543,7 +536,7 @@ public class EmailMobileController {
      * @param newFolderName 新文件夹名称
      * @return {@code Y9Result<Object>}
      */
-    @PostMapping(value = "/folder", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/folder")
     public Y9Result<Object> save(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String originFolderName, String newFolderName) {
         Y9LoginUserHolder.setTenantId(tenantId);
@@ -563,7 +556,7 @@ public class EmailMobileController {
      * @param folder 文件夹
      * @return {@code Y9Result<Object>}
      */
-    @DeleteMapping(value = "/folder", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/folder")
     public Y9Result<Object> delete(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, String folder) {
         Y9LoginUserHolder.setTenantId(tenantId);
@@ -583,7 +576,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<List<}{@link EmailFolderDTO}{@code >>}
      * @throws MessagingException 通讯异常
      */
-    @GetMapping(value = "/folder/customList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/folder/customList")
     public Y9Result<List<EmailFolderDTO>> customList(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
@@ -603,7 +596,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Map<String, Object>>}
      * @throws MessagingException 通讯异常
      */
-    @GetMapping(value = "/allList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/allList")
     public Y9Result<Map<String, Object>> list(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
@@ -629,7 +622,7 @@ public class EmailMobileController {
      * @param name 名字
      * @return {@code Y9Result<List<}{@link OrgUnit}{@code >>}
      */
-    @RequestMapping(value = "/getOrgTree", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getOrgTree")
     public Y9Result<List<OrgUnit>> getOrgTree(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(required = false) String id,
         @RequestParam(required = false) OrgTreeTypeEnum treeType, @RequestParam(required = false) String name) {
@@ -683,7 +676,7 @@ public class EmailMobileController {
      * @param userId 人员id
      * @return {@code Y9Result<Map<String, String>>}
      */
-    @GetMapping(value = "/getPersonData", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/getPersonData")
     public Y9Result<Map<String, String>> getPersonData(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) {
         Person person = personApi.get(tenantId, userId).getData();
@@ -704,7 +697,7 @@ public class EmailMobileController {
      * @throws MessagingException 通讯异常
      * @throws IOException IO异常
      */
-    @GetMapping(value = "/contact", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/contact")
     public Y9Result<Object> contact(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId) throws MessagingException, IOException {
         Y9LoginUserHolder.setTenantId(tenantId);

@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.api.platform.customgroup.CustomGroupApi;
 import net.risesoft.api.platform.org.PersonApi;
@@ -20,13 +21,12 @@ import net.risesoft.y9.Y9LoginUserHolder;
 
 @RestController(value = "standardGroupController")
 @RequestMapping("/api/standard/group")
+@RequiredArgsConstructor
 public class GroupController {
 
-    @Autowired
-    private CustomGroupApi customGroupApi;
+    private final CustomGroupApi customGroupApi;
 
-    @Autowired
-    private PersonApi personApi;
+    private final PersonApi personApi;
 
     /**
      * 获取所有群组

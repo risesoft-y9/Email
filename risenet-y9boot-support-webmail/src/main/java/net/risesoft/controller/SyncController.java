@@ -3,27 +3,24 @@ package net.risesoft.controller;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.james.service.JamesUserService;
 import net.risesoft.model.platform.Person;
 import net.risesoft.pojo.Y9Result;
 import net.risesoft.y9.Y9LoginUserHolder;
-import net.risesoft.y9.configuration.Y9Properties;
 
 @RestController(value = "standardSyncController")
 @RequestMapping(value = "/api/standard")
+@RequiredArgsConstructor
 public class SyncController {
 
-    @Autowired
-    Y9Properties y9config;
-    @Autowired
-    JamesUserService jamesUserService;
-    @Autowired
-    private PersonApi personApi;
+    private final JamesUserService jamesUserService;
+    private final PersonApi personApi;
 
     /**
      * 同步人员信息

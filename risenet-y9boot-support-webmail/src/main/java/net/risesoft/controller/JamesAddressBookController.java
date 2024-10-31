@@ -1,11 +1,11 @@
 package net.risesoft.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.james.entity.JamesAddressBook;
 import net.risesoft.james.service.JamesAddressBookService;
@@ -13,10 +13,10 @@ import net.risesoft.pojo.Y9Result;
 
 @RestController(value = "standardJamesAddressBookController")
 @RequestMapping(value = "/api/standard/jamesAddressBook")
+@RequiredArgsConstructor
 public class JamesAddressBookController {
 
-    @Autowired
-    private JamesAddressBookService jamesAddressBookService;
+    private final JamesAddressBookService jamesAddressBookService;
 
     /**
      * 个人通讯录保存/修改
@@ -68,7 +68,7 @@ public class JamesAddressBookController {
      * @param id 通讯录id
      * @return {@code Y9Result<Object>}
      */
-    @DeleteMapping
+    @PostMapping(value = "/delete")
     public Y9Result<Object> delete(String id) {
         jamesAddressBookService.delete(id);
         return Y9Result.successMsg("删除成功");

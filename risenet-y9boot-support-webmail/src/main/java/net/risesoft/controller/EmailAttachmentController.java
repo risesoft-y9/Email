@@ -4,12 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.controller.dto.EmailAttachmentDTO;
 import net.risesoft.pojo.Y9Result;
@@ -21,16 +21,14 @@ import net.risesoft.y9public.service.Y9FileStoreService;
 
 @RestController(value = "standardEmailAttachmentController")
 @RequestMapping(value = "/api/standard/emailAttachment")
+@RequiredArgsConstructor
 public class EmailAttachmentController {
 
-    @Autowired
-    private EmailAttachmentService emailAttachmentService;
+    private final EmailAttachmentService emailAttachmentService;
 
-    @Autowired
-    private Y9FileStoreService y9FileStoreService;
+    private final Y9FileStoreService y9FileStoreService;
 
-    @Autowired
-    private Y9Properties y9Properties;
+    private final Y9Properties y9Properties;
 
     @PostMapping
     public Y9Result<EmailAttachmentDTO> addAttachment(String folder, String messageId, MultipartFile file)
@@ -62,7 +60,7 @@ public class EmailAttachmentController {
      * @return {@code Y9Result<Object>}
      * @throws Exception 异常
      */
-    @DeleteMapping
+    @PostMapping(value = "/delete")
     public Y9Result<Object> deleteAttachment(String folder, String messageId, String fileName) throws Exception {
         emailAttachmentService.removeAttachment(folder, messageId, fileName);
         return Y9Result.success();

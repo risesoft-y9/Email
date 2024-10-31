@@ -3,8 +3,9 @@ package net.risesoft.james.service.impl;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.james.entity.JamesAddressBook;
 import net.risesoft.james.repository.JamesAddressBookRepository;
@@ -12,10 +13,10 @@ import net.risesoft.james.service.JamesAddressBookService;
 import net.risesoft.y9.Y9LoginUserHolder;
 
 @Service(value = "jamesAddressBookService")
+@RequiredArgsConstructor
 public class JamesAddressBookServiceImpl implements JamesAddressBookService {
 
-    @Autowired
-    private JamesAddressBookRepository jamesAddressBookRepository;
+    private final JamesAddressBookRepository jamesAddressBookRepository;
 
     @Override
     public JamesAddressBook saveOrUpdate(JamesAddressBook jamesAddressBook) {

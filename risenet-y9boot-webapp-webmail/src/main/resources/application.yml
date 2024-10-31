@@ -125,8 +125,6 @@ y9:
             imapPort: 143
             smtpHost: smtp.youshengyun.com
             smtpPort: 25
-            jmx-host: 192.168.0.110
-            jmxPort: 9999
             host: youshengyun.com
     service:
         org:

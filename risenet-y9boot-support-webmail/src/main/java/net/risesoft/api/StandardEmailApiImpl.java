@@ -2,7 +2,6 @@ package net.risesoft.api;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import net.risesoft.controller.dto.EmailDTO;
 import net.risesoft.james.service.JamesUserService;
@@ -28,19 +30,17 @@ import dm.jdbc.util.StringUtil;
 
 @RestController(value = "Standard4EmailApiImpl")
 @RequestMapping(value = "/services/rest/standardEmail", produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
+@RequiredArgsConstructor
 public class StandardEmailApiImpl {
 
-    @Autowired
-    EmailService emailService;
+    private final EmailService emailService;
 
-    @Autowired
-    PersonApiClient personManager;
+    private final PersonApiClient personManager;
 
-    @Autowired
-    JamesUserService jamesUserService;
+    private final JamesUserService jamesUserService;
 
-    @Autowired
-    private EmailAttachmentService emailAttachmentService;
+    private final EmailAttachmentService emailAttachmentService;
 
     @Transactional
     @PostMapping(value = "/send", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
