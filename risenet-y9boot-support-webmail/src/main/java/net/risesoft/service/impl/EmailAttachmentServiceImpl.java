@@ -35,15 +35,23 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sun.mail.imap.IMAPFolder;
 
+import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.controller.dto.EmailAttachmentDTO;
+import net.risesoft.james.service.JamesUserService;
 import net.risesoft.service.EmailAttachmentService;
 import net.risesoft.support.DefaultFolder;
 import net.risesoft.support.EmailConst;
+import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 
 import jodd.mail.ReceiveMailSession;
 
 @Service
 public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttachmentService {
+
+    public EmailAttachmentServiceImpl(Y9WebMailProperties y9WebMailProperties, JamesUserService jamesUserService,
+        PersonApi personApi) {
+        super(y9WebMailProperties, jamesUserService, personApi);
+    }
 
     @Override
     public void download(String folderName, String messageId, String name, HttpServletResponse response,

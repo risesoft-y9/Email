@@ -15,11 +15,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.sun.mail.imap.IMAPFolder;
 
+import lombok.RequiredArgsConstructor;
+
+import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.controller.dto.EmailAttachmentDTO;
 import net.risesoft.controller.dto.EmailContactDTO;
 import net.risesoft.controller.dto.EmailListDTO;
@@ -34,25 +35,20 @@ import net.risesoft.y9.Y9LoginUserHolder;
 import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 import net.risesoft.y9.util.signing.Y9MessageDigest;
 
-import y9.client.rest.platform.org.PersonApiClient;
-
 import jodd.mail.ImapServer;
 import jodd.mail.MailServer;
 import jodd.mail.ReceiveMailSession;
 import jodd.mail.SendMailSession;
 import jodd.mail.SmtpServer;
 
-@Service
+@RequiredArgsConstructor
 public class MailHelper {
 
-    @Autowired
-    protected Y9WebMailProperties y9WebMailProperties;
+    protected final Y9WebMailProperties y9WebMailProperties;
 
-    @Autowired
-    private JamesUserService jamesUserService;
+    protected final JamesUserService jamesUserService;
 
-    @Autowired
-    private PersonApiClient personManager;
+    protected final PersonApi personApi;
 
     public static EmailAttachmentDTO parseEmailAttachment(DataSource dataSource) throws IOException {
         EmailAttachmentDTO emailAttachmentDTO = new EmailAttachmentDTO();
@@ -126,8 +122,7 @@ public class MailHelper {
                         toDTO.setTo(emailAddress);
                         JamesUser = jamesUserService.findByEmailAddress(emailAddress);
                         if (JamesUser != null) {
-                            person =
-                                personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
+                            person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                             toDTO.setToName(person.getName());
                             toDTO.setToAvator(person.getAvator());
                         }
@@ -139,7 +134,7 @@ public class MailHelper {
                     emailListDTO.setFrom(parser.getFrom());
                     JamesUser = jamesUserService.findByEmailAddress(emailListDTO.getFrom());
                     if (JamesUser != null) {
-                        person = personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
+                        person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                         emailListDTO.setFromName(person.getName());
                         emailListDTO.setFromAvator(person.getAvator());
                     }
@@ -177,8 +172,8 @@ public class MailHelper {
                         if (emailAddress.indexOf("@youshengyun.com") != -1) {
                             JamesUser = jamesUserService.findByEmailAddress(emailAddress);
                             if (JamesUser != null) {
-                                person = personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId())
-                                    .getData();
+                                person =
+                                    personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                                 contactDTO.setContactPersonId(person.getId());
                                 contactDTO.setContactPersonName(person.getName());
                                 contactDTO.setContactPersonAvator(person.getAvator());
@@ -199,8 +194,7 @@ public class MailHelper {
                     if (parser.getFrom().indexOf("@youshengyun.com") != -1) {
                         JamesUser = jamesUserService.findByEmailAddress(parser.getFrom());
                         if (JamesUser != null) {
-                            person =
-                                personManager.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
+                            person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
                             contactDTO.setContactPersonId(person.getId());
                             contactDTO.setContactPersonName(person.getName());
                             contactDTO.setContactPersonAvator(person.getAvator());

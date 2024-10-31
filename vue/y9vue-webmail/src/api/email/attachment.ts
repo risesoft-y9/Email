@@ -45,8 +45,8 @@ export const deleteAttachment = async (folder, messageId, fileName) => {
     data.append('fileName', fileName);
 
     return await emailRequest({
-        url: '/api/standard/emailAttachment',
-        method: 'DELETE',
+        url: '/api/standard/emailAttachment/delete',
+        method: 'POST',
         cType: false,
         data: data
     });

@@ -14,6 +14,7 @@ public class Y9WebMailProperties {
      * 邮箱域名
      */
     private String host = "youshengyun.com";
+
     /**
      * imap 域名
      */
@@ -32,14 +33,5 @@ public class Y9WebMailProperties {
      * smtp 端口
      */
     private Integer smtpPort = 25;
-
-    /**
-     * james jmx 管理IP
-     */
-    private String jmxHost = "127.0.0.1";
-    /**
-     * james jmx 管理端口
-     */
-    private Integer jmxPort = 9999;
 
 }

@@ -48,7 +48,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sun.mail.imap.IMAPFolder;
@@ -86,6 +85,7 @@ import net.risesoft.util.EmailUtil;
 import net.risesoft.util.MimeMessageParser;
 import net.risesoft.y9.Y9Context;
 import net.risesoft.y9.Y9LoginUserHolder;
+import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 import net.risesoft.y9.exception.Y9BusinessException;
 import net.risesoft.y9.util.mime.ContentDispositionUtil;
 import net.risesoft.y9public.entity.Y9FileStore;
@@ -98,11 +98,23 @@ import jodd.util.Base64;
 @Service
 public class EmailServiceImpl extends MailHelper implements EmailService {
 
-    @Autowired
-    PersonApi personApi;
+    private final Y9FileStoreService y9FileStoreService;
 
-    @Autowired
-    private Y9FileStoreService y9FileStoreService;
+    private final OrgUnitApi orgUnitApi;
+
+    private final JamesAddressBookService jamesAddressBookService;
+
+    private final JamesUserService jamesUserService;
+
+    public EmailServiceImpl(Y9WebMailProperties y9WebMailProperties, JamesUserService jamesUserService,
+        PersonApi personApi, Y9FileStoreService y9FileStoreService, OrgUnitApi orgUnitApi,
+        JamesAddressBookService jamesAddressBookService, JamesUserService jamesUserService1) {
+        super(y9WebMailProperties, jamesUserService, personApi);
+        this.y9FileStoreService = y9FileStoreService;
+        this.orgUnitApi = orgUnitApi;
+        this.jamesAddressBookService = jamesAddressBookService;
+        this.jamesUserService = jamesUserService1;
+    }
 
     private static void setMailer(MimeMessage mimeMessage) throws MessagingException {
         mimeMessage.setHeader(EmailConst.HEADER_MAILER, "risesoft webmail");
@@ -386,7 +398,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     IMAPMessage imapMessage = (IMAPMessage)messages[i];
                     long uid = folder.getUID(imapMessage);
                     EmailListDTO eDTO = messageToEmailListDTO(messages[i], uid);
-                    if(eDTO.getCreateTime() == null){
+                    if (eDTO.getCreateTime() == null) {
                         eDTO.setCreateTime(messages[i].getReceivedDate());
                     }
                     emailReceiverDTOList.add(eDTO);
@@ -590,7 +602,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 for (Message message : messages) {
                     long uid = folder.getUID(message);
                     EmailListDTO eDTO = messageToEmailListDTO(message, uid);
-                    if(eDTO.getCreateTime() == null){
+                    if (eDTO.getCreateTime() == null) {
                         eDTO.setCreateTime(message.getReceivedDate());
                     }
                     emailListDTOList.add(eDTO);
@@ -608,7 +620,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     for (Message message : messages) {
                         long uid = folder.getUID(message);
                         EmailListDTO eDTO = messageToEmailListDTO(message, uid);
-                        if(eDTO.getCreateTime() == null){
+                        if (eDTO.getCreateTime() == null) {
                             eDTO.setCreateTime(message.getReceivedDate());
                         }
                         emailListDTOList.add(eDTO);
@@ -1053,15 +1065,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         mimeMessage.setSubject(subject);
     }
 
-    @Autowired
-    private OrgUnitApi orgUnitApi;
-
-    @Autowired
-    private JamesAddressBookService jamesAddressBookService;
-
-    @Autowired
-    private JamesUserService jamesUserService;
-
     @Override
     public Map<String, Object> addressRelevancy(String search) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -1088,7 +1091,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         // 从最近联系人获取
         try {
             List<EmailContactDTO> emailContactDTOList = this.contactPerson();
-            List<EmailContactDTO> emailContactDTOs = new ArrayList<EmailContactDTO>();
+            List<EmailContactDTO> emailContactDTOs = new ArrayList<>();
             for (EmailContactDTO ec : emailContactDTOList) {
                 if ((StringUtils.isNotBlank(ec.getContactPerson()) && ec.getContactPerson().indexOf(search) != -1)
                     || (StringUtils.isNotBlank(ec.getContactPersonName())

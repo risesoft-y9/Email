@@ -11,14 +11,22 @@ import javax.mail.MessagingException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.controller.dto.EmailFolderDTO;
+import net.risesoft.james.service.JamesUserService;
 import net.risesoft.service.EmailFolderService;
 import net.risesoft.support.DefaultFolder;
+import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 
 import jodd.mail.ReceiveMailSession;
 
 @Service
 public class EmailFolderServiceImpl extends MailHelper implements EmailFolderService {
+
+    public EmailFolderServiceImpl(Y9WebMailProperties y9WebMailProperties, JamesUserService jamesUserService,
+        PersonApi personApi) {
+        super(y9WebMailProperties, jamesUserService, personApi);
+    }
 
     @Override
     public List<EmailFolderDTO> list() throws MessagingException {

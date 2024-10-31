@@ -23,8 +23,8 @@ export const deleteEmail = async (folder, ids) => {
     };
     const data = qs.stringify(params);
     return await emailRequest({
-        url: '/api/standard/email',
-        method: 'DELETE',
+        url: '/api/standard/email/delete',
+        method: 'POST',
         cType: false,
         data: data
     });
@@ -42,8 +42,8 @@ export const deleteForeverEmail = async (folder, ids) => {
     };
     const data = qs.stringify(params);
     return await emailRequest({
-        url: '/api/standard/email/permanently',
-        method: 'DELETE',
+        url: '/api/standard/email/deletePermanently',
+        method: 'POST',
         cType: false,
         data: data
     });

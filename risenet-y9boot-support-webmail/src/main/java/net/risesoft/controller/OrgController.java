@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.api.platform.org.OrgUnitApi;
 import net.risesoft.api.platform.org.OrganizationApi;
@@ -23,14 +24,12 @@ import net.risesoft.y9.Y9LoginUserHolder;
 
 @RestController(value = "standardOrgController")
 @RequestMapping(value = "/api/standard/org")
+@RequiredArgsConstructor
 public class OrgController {
 
-    @Autowired
-    private OrgUnitApi orgUnitApi;
-    @Autowired
-    private OrganizationApi organizationApi;
-    @Autowired
-    private JamesUserService jamesUserService;
+    private final OrgUnitApi orgUnitApi;
+    private final OrganizationApi organizationApi;
+    private final JamesUserService jamesUserService;
 
     /**
      * 获取组织列表

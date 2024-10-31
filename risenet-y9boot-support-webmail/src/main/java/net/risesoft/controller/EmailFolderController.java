@@ -6,12 +6,12 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 import net.risesoft.controller.dto.EmailFolderDTO;
 import net.risesoft.pojo.Y9Result;
@@ -19,10 +19,10 @@ import net.risesoft.service.EmailFolderService;
 
 @RestController(value = "standardEmailFolderController")
 @RequestMapping(value = "/api/standard/emailFolder")
+@RequiredArgsConstructor
 public class EmailFolderController {
 
-    @Autowired
-    private EmailFolderService emailFolderService;
+    private final EmailFolderService emailFolderService;
 
     /**
      * 新增或修改文件夹
@@ -43,7 +43,7 @@ public class EmailFolderController {
      * @param folder 文件夹
      * @return {@code Y9Result<Object>}
      */
-    @DeleteMapping
+    @PostMapping(value = "/delete")
     public Y9Result<Object> delete(String folder) {
         emailFolderService.delete(folder);
         return Y9Result.success();
