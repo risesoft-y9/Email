@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+    - name: 电子邮件文档
+      url: https://docs.youshengyun.com/email/backend/introduction
+      about: 提供电子邮件介绍、基本组件使用和常见问题解答
