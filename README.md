@@ -135,8 +135,21 @@ vue -- 前端工程
 >
 
 ## 文档专区
+开发文档：https://docs.youshengyun.com/
 
-待补充
+| 序号 | 名称                                                                                                         |
+|:---|------------------------------------------------------------------------------------------------------------|
+| 1  | <a href="https://vue.youshengyun.com/files/内部Java开发规范手册.pdf" target="_blank">内部Java开发规范手册</a>              |
+| 7  | <a href="https://vue.youshengyun.com/files/有生博大Vue开发手册v1.0.pdf" target="_blank">前端开发手册</a>                 |
+| 8  | <a href="https://vue.youshengyun.com/files/开发规范.pdf" target="_blank">前端开发规范</a>                            |
+| 9  | <a href="https://vue.youshengyun.com/files/代码格式化.pdf" target="_blank">前端代码格式化</a>                          |
+| 10 | <a href="https://vue.youshengyun.com/files/系统组件.pdf" target="_blank">前端系统组件</a>                            |
+| 11 | <a href="https://vue.youshengyun.com/files/通用方法.pdf" target="_blank">前端通用方法</a>                            |
+| 12 | <a href="https://vue.youshengyun.com/files/国际化.pdf" target="_blank">前端国际化</a>                              |
+| 13 | <a href="https://vue.youshengyun.com/files/Icon图标.pdf" target="_blank">前端Icon图标</a>                        |
+| 16 | <a href="https://docs.youshengyun.com/webmail/backend/introduction" target="_blank">电子邮件在线文档</a>           |
+| 18 | <a href="https://docs.youshengyun.com/webmail/backend/sourcecode-deploy" target="_blank">电子邮件源码部署文档</a>         | |
+| 20 | <a href="https://docs.youshengyun.com/webmail/backend/database-support/MySQL" target="_blank">MySQL数据库适配文档</a> |
 
 ## 电子邮箱截图
 
