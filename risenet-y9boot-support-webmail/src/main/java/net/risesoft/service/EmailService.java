@@ -60,4 +60,6 @@ public interface EmailService {
 
     Map<String, Object> addressRelevancy(String search);
 
+    EmailDTO newEmail();
+
 }

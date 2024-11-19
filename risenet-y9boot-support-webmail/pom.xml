@@ -110,7 +110,6 @@
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
-            <version>2.0.1</version>
         </dependency>
 
         <dependency>
@@ -125,11 +124,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.belerweb</groupId>
-            <artifactId>pinyin4j</artifactId>
-            <version>2.5.1</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
         </dependency>
-
         <!-- eml文件解析 -->
         <dependency>
             <groupId>org.apache.james</groupId>
@@ -147,6 +144,12 @@
             <version>0.8.11</version>
         </dependency>
         <!-- eml文件解析 end -->
+
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

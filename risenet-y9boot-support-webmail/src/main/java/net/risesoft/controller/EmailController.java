@@ -116,6 +116,17 @@ public class EmailController {
     }
 
     /**
+     * 新建邮件
+     *
+     * @return {@code Y9Result<}{@link EmailDTO}{@code >}
+     * @throws Exception 异常
+     */
+    @GetMapping(value = "/newEmail")
+    public Y9Result<EmailDTO> newEmail() throws Exception {
+        return Y9Result.success(emailService.newEmail());
+    }
+
+    /**
      * 转发邮件
      *
      * @param uid 消息 uid
