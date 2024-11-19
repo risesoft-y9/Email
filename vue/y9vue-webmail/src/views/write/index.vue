@@ -352,7 +352,7 @@
     import { useI18n } from 'vue-i18n';
     import { computed, h, inject, onBeforeUnmount, onMounted, reactive, ref, shallowRef, toRefs } from 'vue';
     import Editor from '@/components/Editor/index.vue';
-    import { emailDetail, forwardPageEmail, replyAllEmail, replyEmail, saveEmail, sendEmail } from '@/api/email/index';
+    import { emailDetail, forwardPageEmail, replyAllEmail, replyEmail, saveEmail, sendEmail, newEmail as newEmailApi } from '@/api/email/index';
     import router from '@/router';
     import { getTreeItemById, searchByName, treeInterface } from '@/api/org/index';
     import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
@@ -558,6 +558,9 @@
             } else if (path.indexOf('writing') >= 0) {
                 draftDetail(folder, uid);
             }
+        } else {
+            // 新建邮件
+            newEmail();
         }
         const paramsStr = window.location.search;
         if (paramsStr != null && paramsStr != '') {
@@ -578,6 +581,16 @@
             email.value[key] = forwardPageData.data[key];
         }
         emailAttachmentDTOList.value = forwardPageData.data.emailAttachmentDTOList;
+    }
+
+    // 新建邮件
+    async function newEmail() {
+        sendLoading.value = true;
+        let newEmailData = await newEmailApi();
+        sendLoading.value = false;
+        for (const key in email.value) {
+            email.value[key] = newEmailData.data[key];
+        }
     }
 
     //打开草稿
@@ -601,9 +614,9 @@
     }
 
     //回复
-    async function reply(fodler, uid) {
+    async function reply(folder, uid) {
         sendLoading.value = true;
-        let replyData = await replyEmail(fodler, uid);
+        let replyData = await replyEmail(folder, uid);
         sendLoading.value = false;
         for (const key in email.value) {
             email.value[key] = replyData.data[key];

@@ -124,6 +124,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.james</groupId>
             <artifactId>apache-mime4j-dom</artifactId>
             <version>0.8.11</version>

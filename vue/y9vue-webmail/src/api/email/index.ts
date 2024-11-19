@@ -169,6 +169,17 @@ export const replyEmail = async (folder, uid) => {
 };
 
 /**
+ * 新建邮件
+ */
+export const newEmail = async () => {
+    return await emailRequest({
+        url: '/api/standard/email/newEmail',
+        method: 'GET',
+        cType: false
+    });
+};
+
+/**
  * 全部回复
  */
 export const replyAllEmail = async (folder, uid) => {

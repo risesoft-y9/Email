@@ -312,8 +312,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         EmailDTO forwardEmail = new EmailDTO();
         forwardEmail.setFolder(folderName);
         forwardEmail.setForwardMessageId(email.getMessageId());
-        forwardEmail.setRichText(
-            EmailUtil.getReplyHead(email) + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
+        forwardEmail.setRichText(EmailUtil.getReplyOrForwardContent(email)
+            + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
         forwardEmail.setSubject("转发：" + email.getSubject());
         forwardEmail.setEmailAttachmentDTOList(email.getEmailAttachmentDTOList());
         return forwardEmail;
@@ -492,8 +492,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         EmailDTO replyEmail = new EmailDTO();
         replyEmail.setFolder(folderName);
         replyEmail.setReplyMessageId(email.getMessageId());
-        replyEmail.setRichText(
-            EmailUtil.getReplyHead(email) + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
+        replyEmail.setRichText(EmailUtil.getReplyOrForwardContent(email)
+            + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
         replyEmail.setSubject("回复：" + email.getSubject());
         return replyEmail;
     }
@@ -1104,5 +1104,12 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             throw new RuntimeException(e);
         }
         return map;
+    }
+
+    @Override
+    public EmailDTO newEmail() {
+        EmailDTO email = new EmailDTO();
+        email.setRichText(EmailUtil.getSignature());
+        return email;
     }
 }
