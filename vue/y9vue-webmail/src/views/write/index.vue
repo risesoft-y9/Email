@@ -352,14 +352,24 @@
     import { useI18n } from 'vue-i18n';
     import { computed, h, inject, onBeforeUnmount, onMounted, reactive, ref, shallowRef, toRefs } from 'vue';
     import Editor from '@/components/Editor/index.vue';
-    import { emailDetail, forwardPageEmail, replyAllEmail, replyEmail, saveEmail, sendEmail, newEmail as newEmailApi } from '@/api/email/index';
+    import {
+        emailDetail,
+        forwardPageEmail,
+        replyAllEmail,
+        replyEmail,
+        saveEmail,
+        sendEmail,
+        newEmail as newEmailApi
+    } from '@/api/email/index';
     import router from '@/router';
+    import { useRoute } from 'vue-router';
     import { getTreeItemById, searchByName, treeInterface } from '@/api/org/index';
     import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
     import settings from '@/settings';
     import y9_storage from '@/utils/storage';
     import { addAttachment, deleteAttachment } from '@/api/email/attachment';
 
+    const route = useRoute();
     const settingStore = useSettingStore();
     const layout = computed(() => settingStore.getLayout);
     const isFiexHeader = computed(() => settingStore.getFixedHeader);
@@ -374,10 +384,7 @@
         label: string;
     }
 
-    //数据
-    const data = reactive({
-        col: '',
-        flagst: true,
+    const initData = {
         loading: false,
         sendLoading: false,
         treeApiObj: {
@@ -418,7 +425,14 @@
         ccEnable: false,
         bccEnable: false,
         recentContactEnable: false
-    });
+    };
+
+    //数据
+    const data = reactive({ ...initData });
+
+    function resetInitData() {
+        Object.assign(data, initData);
+    }
 
     const {
         treeApiObj,
@@ -443,9 +457,6 @@
     const getContentTxt = (v: string) => {
         email.value.text = v;
     };
-
-    const mode = 'default';
-    const input = ref('');
 
     const list = ref<ListItem[]>([]);
     const options = ref<ListItem[]>([]);
@@ -540,11 +551,23 @@
             window.addEventListener('scroll', listener, false);
         }
 
-        if (router.currentRoute.value.query.uid != null) {
-            console.log(router.currentRoute.value.path + '地址');
-            let path = router.currentRoute.value.path;
-            let uid = router.currentRoute.value.query.uid;
-            let folder = router.currentRoute.value.query.folder;
+        loadData();
+    });
+
+    watch(
+        () => route.path,
+        () => {
+            resetInitData();
+            loadData();
+        }
+    );
+
+    function loadData() {
+        if (route.query.uid != null) {
+            console.log(route.path + '地址');
+            let path = route.path;
+            let uid = route.query.uid;
+            let folder = route.query.folder;
             console.log('path=' + path);
             if (path.indexOf('replyAll') >= 0) {
                 console.log('进去了replyAll');
@@ -568,7 +591,7 @@
             let emailParam = params.get('email');
             email.value.toEmailAddressList.push(emailParam);
         }
-    });
+    }
 
     //转发
     async function forwardEmail(folder, uid) {
