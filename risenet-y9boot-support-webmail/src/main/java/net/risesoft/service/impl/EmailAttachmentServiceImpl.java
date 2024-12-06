@@ -53,15 +53,33 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
         super(y9WebMailProperties, jamesUserService, personApi);
     }
 
+    /**
+     * 获取邮件中附件名集合
+     *
+     * @param originMimeMultipart 邮件体)
+     * @return {@link Set}<{@link String}>
+     * @throws MessagingException 通讯异常
+     */
+    private static Set<String> getFileNameSet(MimeMultipart originMimeMultipart) throws MessagingException {
+        Set<String> fileNameSet = new HashSet<>();
+        for (int i = 0; i < originMimeMultipart.getCount(); i++) {
+            BodyPart bodyPart = originMimeMultipart.getBodyPart(i);
+            if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())) {
+                fileNameSet.add(bodyPart.getFileName());
+            }
+        }
+        return fileNameSet;
+    }
+
     @Override
     public void download(String folderName, String messageId, String name, HttpServletResponse response,
-                         HttpServletRequest request) throws IOException, MessagingException {
+        HttpServletRequest request) throws IOException, MessagingException {
         InputStream inputStream = null;
         String filename = name;
         if (request.getHeader("User-Agent").toLowerCase().indexOf("firefox") > 0) {
             filename = new String(filename.getBytes(StandardCharsets.UTF_8), "ISO8859-1");// 火狐浏览器
         } else {
-            filename = URLEncoder.encode(filename, "UTF-8");
+            filename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
         }
 
         OutputStream out = response.getOutputStream();
@@ -84,7 +102,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
             BodyPart bodyPart = mimeMultipart.getBodyPart(i);
             String disposition = bodyPart.getDisposition();
             if (StringUtils.isNotBlank(disposition) && disposition.equals(Part.ATTACHMENT)
-                    && name.equals(bodyPart.getFileName())) {
+                && name.equals(bodyPart.getFileName())) {
                 inputStream = bodyPart.getInputStream();
                 int len = 0;
                 byte[] buffer = new byte[1024];
@@ -102,7 +120,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
     @Override
     public void batchDownload(String folderName, String messageId, HttpServletRequest request,
-                              HttpServletResponse response) {
+        HttpServletResponse response) {
         DataOutputStream dataOutputStream = null;
         ZipOutputStream zipOutputStream = null;
         OutputStream outputStream = null;
@@ -124,7 +142,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
             fileName = message.getSubject() + "_附件打包.zip";
             String userAgent = request.getHeader("User-Agent");
             if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
-                fileName = URLEncoder.encode(fileName, "UTF-8");
+                fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
                 fileName = fileName.replaceAll("\\+", "%20");
             } else {
                 fileName = new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1");
@@ -187,7 +205,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
     @Override
     public EmailAttachmentDTO addAttachment(String folder, String messageId, MultipartFile file)
-            throws MessagingException, IOException {
+        throws MessagingException, IOException {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
         receiveMailSession.open();
 
@@ -209,7 +227,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         ByteArrayDataSource dataSource =
-                new ByteArrayDataSource(file.getBytes(), new MimetypesFileTypeMap().getContentType(fileName));
+            new ByteArrayDataSource(file.getBytes(), new MimetypesFileTypeMap().getContentType(fileName));
         dataSource.setName(fileName);
         DataHandler dataHandler = new DataHandler(dataSource);
         mimeBodyPart.setDataHandler(dataHandler);
@@ -229,7 +247,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
     @Override
     public void removeAttachment(String folder, String messageId, String fileName)
-            throws MessagingException, IOException {
+        throws MessagingException, IOException {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
         receiveMailSession.open();
 
@@ -249,7 +267,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
         for (int i = 0; i < originMimeMultipart.getCount(); i++) {
             BodyPart bodyPart = originMimeMultipart.getBodyPart(i);
             if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())
-                    && Objects.equals(fileName, bodyPart.getFileName())) {
+                && Objects.equals(fileName, bodyPart.getFileName())) {
                 originMimeMultipart.removeBodyPart(i);
             }
         }
@@ -261,24 +279,6 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
         draftsFolder.close();
         receiveMailSession.close();
-    }
-
-    /**
-     * 获取邮件中附件名集合
-     *
-     * @param originMimeMultipart 邮件体)
-     * @return {@link Set}<{@link String}>
-     * @throws MessagingException 通讯异常
-     */
-    private static Set<String> getFileNameSet(MimeMultipart originMimeMultipart) throws MessagingException {
-        Set<String> fileNameSet = new HashSet<>();
-        for (int i = 0; i < originMimeMultipart.getCount(); i++) {
-            BodyPart bodyPart = originMimeMultipart.getBodyPart(i);
-            if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())) {
-                fileNameSet.add(bodyPart.getFileName());
-            }
-        }
-        return fileNameSet;
     }
 
     /**

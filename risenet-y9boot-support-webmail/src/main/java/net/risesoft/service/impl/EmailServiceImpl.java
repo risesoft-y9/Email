@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +121,56 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         mimeMessage.setHeader(EmailConst.HEADER_MAILER, "risesoft webmail");
     }
 
+    private static EmailDTO buildReplyEmail(String folderName, EmailDTO email) {
+        EmailDTO replyEmail = new EmailDTO();
+        replyEmail.setFolder(folderName);
+        replyEmail.setReplyMessageId(email.getMessageId());
+        replyEmail.setRichText(EmailUtil.getReplyOrForwardContent(email)
+            + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
+        replyEmail.setSubject("回复：" + email.getSubject());
+        return replyEmail;
+    }
+
+    public static boolean isHasAttachment(Message message) throws IOException, MessagingException {
+        boolean hasAttachment = false;
+        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
+            MimeMultipart mmp = (MimeMultipart)message.getContent();
+            int count = mmp.getCount();
+            for (int j = 0; j < count; j++) {
+                BodyPart bodyPart = mmp.getBodyPart(j);
+                String disposition = bodyPart.getDisposition();
+                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
+                    hasAttachment = true;
+                }
+            }
+        }
+        return hasAttachment;
+    }
+
+    private static String getAttachmentSize(Message message) throws IOException, MessagingException {
+        long attachmentSize = 0L;
+        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
+            MimeMultipart mmp = (MimeMultipart)message.getContent();
+            int count = mmp.getCount();
+            for (int j = 0; j < count; j++) {
+                BodyPart bodyPart = mmp.getBodyPart(j);
+                String disposition = bodyPart.getDisposition();
+                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
+                    InputStream inputStream = bodyPart.getInputStream();
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead = -1;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    attachmentSize += outputStream.toByteArray().length;
+                    outputStream.close();
+                }
+            }
+        }
+        return (attachmentSize >> 10) + " KB";
+    }
+
     private void addHtml(MimeMultipart mimeMultipart, String richText) throws MessagingException {
         MimeBodyPart bodyPart = new MimeBodyPart();
         bodyPart.setContent(richText, "text/html;charset=UTF-8");
@@ -168,7 +219,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     byte[] bytes = y9FileStoreService.downloadFileToBytes(fileId);
                     Y9FileStore y9FileStore = y9FileStoreService.getById(fileId);
                     DataSource dataSource = new ByteArrayDataSource(bytes,
-                            new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
+                        new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
                     DataHandler dataHandler = new DataHandler(dataSource);
                     mimeBodyPart.setDataHandler(dataHandler);
                     mimeBodyPart.setContentID("<" + fileId + ">");
@@ -241,7 +292,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Override
     public void exportEml(String folderName, long uid, HttpServletResponse response, HttpServletRequest request)
-            throws IOException, MessagingException {
+        throws IOException, MessagingException {
         ReceiveMailSession receiveMailSession = createReceiveMailSession();
         receiveMailSession.open();
         IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(folderName);
@@ -284,7 +335,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         Message message = folder.getMessageByUID(uid);
         if (message == null) {
             throw new Y9BusinessException(EmailErrorCodeEnum.EMAIL_NOT_EXIST.getCode(),
-                    EmailErrorCodeEnum.EMAIL_NOT_EXIST.getDescription());
+                EmailErrorCodeEnum.EMAIL_NOT_EXIST.getDescription());
         }
         return message;
     }
@@ -405,8 +456,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 }
                 // 未读置顶
                 if (!"Sent".equals(folderName)) {
-                    emailReceiverDTOList = emailReceiverDTOList.stream().sorted(EmailListDTO.getComparator())
-                        .collect(java.util.stream.Collectors.toList());
+                    emailReceiverDTOList =
+                        emailReceiverDTOList.stream().sorted(EmailListDTO.getComparator()).collect(Collectors.toList());
                 }
             }
         }
@@ -469,7 +520,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         EmailDTO email = this.findByFolderAndUid(folderName, uid);
         EmailDTO replyEmail = buildReplyEmail(folderName, email);
 
-        replyEmail.setToEmailAddressList(Arrays.asList(email.getFrom()));
+        replyEmail.setToEmailAddressList(Collections.singletonList(email.getFrom()));
         return replyEmail;
     }
 
@@ -485,16 +536,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         toEmailAddressList.remove(EmailThreadLocalHolder.getEmailAddress());
 
         replyEmail.setToEmailAddressList(toEmailAddressList);
-        return replyEmail;
-    }
-
-    private static EmailDTO buildReplyEmail(String folderName, EmailDTO email) {
-        EmailDTO replyEmail = new EmailDTO();
-        replyEmail.setFolder(folderName);
-        replyEmail.setReplyMessageId(email.getMessageId());
-        replyEmail.setRichText(EmailUtil.getReplyOrForwardContent(email)
-            + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
-        replyEmail.setSubject("回复：" + email.getSubject());
         return replyEmail;
     }
 
@@ -847,46 +888,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     private String getFromString(Message message) throws MessagingException {
         InternetAddress internetAddress = (InternetAddress)message.getFrom()[0];
         return internetAddress.getAddress().split("@")[0];
-    }
-
-    public static boolean isHasAttachment(Message message) throws IOException, MessagingException {
-        boolean hasAttachment = false;
-        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
-            MimeMultipart mmp = (MimeMultipart)message.getContent();
-            int count = mmp.getCount();
-            for (int j = 0; j < count; j++) {
-                BodyPart bodyPart = mmp.getBodyPart(j);
-                String disposition = bodyPart.getDisposition();
-                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
-                    hasAttachment = true;
-                }
-            }
-        }
-        return hasAttachment;
-    }
-
-    private static String getAttachmentSize(Message message) throws IOException, MessagingException {
-        long attachmentSize = 0L;
-        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
-            MimeMultipart mmp = (MimeMultipart)message.getContent();
-            int count = mmp.getCount();
-            for (int j = 0; j < count; j++) {
-                BodyPart bodyPart = mmp.getBodyPart(j);
-                String disposition = bodyPart.getDisposition();
-                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
-                    InputStream inputStream = bodyPart.getInputStream();
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[4096];
-                    int bytesRead = -1;
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-                    attachmentSize += outputStream.toByteArray().length;
-                    outputStream.close();
-                }
-            }
-        }
-        return (attachmentSize >> 10) + " KB";
     }
 
     private String getToString(Address[] to) {

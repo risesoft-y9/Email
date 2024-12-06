@@ -58,7 +58,7 @@ public class EmailFolderServiceImpl extends MailHelper implements EmailFolderSer
 
         List<EmailFolderDTO> emailFolderDTOList = new ArrayList<>();
         List<DefaultFolder> defaultFolderList = Arrays.stream(DefaultFolder.values())
-                .filter(defaultFolder -> !defaultFolder.isExistSubFolder()).collect(Collectors.toList());
+            .filter(defaultFolder -> !defaultFolder.isExistSubFolder()).collect(Collectors.toList());
         for (DefaultFolder folder : defaultFolderList) {
             Folder mailFolder = session.getFolder(folder.getName());
             try {

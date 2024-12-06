@@ -24,7 +24,7 @@ public interface EmailService {
     EmailDetailDTO detail(String folder, long uid) throws Exception;
 
     void exportEml(String folderName, long uid, HttpServletResponse response, HttpServletRequest request)
-            throws IOException, MessagingException;
+        throws IOException, MessagingException;
 
     EmailDTO findByFolderAndUid(String folderName, long uid) throws Exception;
 

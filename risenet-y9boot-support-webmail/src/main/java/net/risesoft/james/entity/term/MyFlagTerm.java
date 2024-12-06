@@ -14,7 +14,6 @@ import jakarta.mail.search.SearchTerm;
 public final class MyFlagTerm extends SearchTerm {
     private static final long serialVersionUID = -142991500302030647L;
     private final boolean set;
-
     /**
      * Flags object containing the flags to test.
      *

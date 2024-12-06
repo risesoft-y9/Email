@@ -42,13 +42,13 @@ public class EmailMessageServiceImpl extends MailHelper implements EmailMessageS
 
     @Override
     public void send(Integer messageNumber, String subject, String richText, List<String> emailAddressList,
-                     List<String> ccEmailAddressList, List<String> bccEmailAddressList, List<String> attachmentIdList)
-            throws Exception {
+        List<String> ccEmailAddressList, List<String> bccEmailAddressList, List<String> attachmentIdList)
+        throws Exception {
         SendMailSession sendMailSession = createSendMailSession();
         sendMailSession.open();
         Session session = sendMailSession.getSession();
         MimeMessage mimeMessage = createEmail(session, emailAddressList, ccEmailAddressList, bccEmailAddressList,
-                subject, richText, attachmentIdList);
+            subject, richText, attachmentIdList);
         Transport transport = sendMailSession.getService();
         // transport.connect(emailHost, loginName + "@" + emailHost, plainText);
 
@@ -57,7 +57,7 @@ public class EmailMessageServiceImpl extends MailHelper implements EmailMessageS
     }
 
     public MimeMessage createEmail(Session session, List<String> toJamesUserIds, List<String> ccJamesUserIds,
-                                   List<String> bccJamesUserIds, String title, String body, List<String> attachmentIdList) throws Exception {
+        List<String> bccJamesUserIds, String title, String body, List<String> attachmentIdList) throws Exception {
         UserInfo userInfo = Y9LoginUserHolder.getUserInfo();
         MimeMessage message = new MimeMessage(session);
         /** 发件人 **/
@@ -104,7 +104,7 @@ public class EmailMessageServiceImpl extends MailHelper implements EmailMessageS
                 byte[] bytes = y9FileStoreService.downloadFileToBytes(attachmentId);
                 Y9FileStore y9FileStore = y9FileStoreService.getById(attachmentId);
                 DataSource dataSource = new ByteArrayDataSource(bytes,
-                        new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
+                    new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
                 DataHandler dataHandler = new DataHandler(dataSource);
                 mimeBodyPart.setDataHandler(dataHandler);
                 mimeBodyPart.setFileName(y9FileStore.getFileName());
