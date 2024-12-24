@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -14,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import net.risesoft.api.webmail.StandardEmailApi;
 import net.risesoft.controller.dto.EmailDTO;
 import net.risesoft.james.service.JamesUserService;
 import net.risesoft.model.platform.Person;
@@ -32,7 +32,7 @@ import dm.jdbc.util.StringUtil;
 @RequestMapping(value = "/services/rest/standardEmail", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @RequiredArgsConstructor
-public class StandardEmailApiImpl {
+public class StandardEmailApiImpl implements StandardEmailApi {
 
     private final EmailService emailService;
 
@@ -43,7 +43,6 @@ public class StandardEmailApiImpl {
     private final EmailAttachmentService emailAttachmentService;
 
     @Transactional
-    @PostMapping(value = "/send", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Y9Result<Object> send(@RequestParam("userId") String userId, @RequestParam("tenantId") String tenantId,
         @RequestParam("subject") String subject, @RequestParam("content") String content,
         @RequestParam(value = "fromEmail", required = false) String fromEmail,

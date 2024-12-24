@@ -34,7 +34,7 @@
 
         <dependency>
             <groupId>net.risesoft</groupId>
-            <artifactId>risenet-y9boot-api-interface-email</artifactId>
+            <artifactId>risenet-y9boot-api-interface-webmail</artifactId>
             <version>${project.version}</version>
         </dependency>
 

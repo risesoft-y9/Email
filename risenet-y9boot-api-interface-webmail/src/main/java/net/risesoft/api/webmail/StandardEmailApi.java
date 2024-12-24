@@ -2,6 +2,10 @@ package net.risesoft.api.webmail;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import net.risesoft.pojo.Y9Result;
@@ -23,6 +27,9 @@ public interface StandardEmailApi {
      * @param file 邮件附件
      * @return {@code Y9Result<Object>}
      */
-    Y9Result<Object> send(String userId, String tenantId, String subject, String content, String fromEmail,
-        List<String> toEmail, MultipartFile file);
+    @PostMapping(value = "/send", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    Y9Result<Object> send(@RequestParam("userId") String userId, @RequestParam("tenantId") String tenantId,
+        @RequestParam("subject") String subject, @RequestParam("content") String content,
+        @RequestParam(value = "fromEmail", required = false) String fromEmail,
+        @RequestParam("toEmail") List<String> toEmail, @RequestPart("file") MultipartFile file) throws Exception;
 }
