@@ -46,7 +46,7 @@ public class StandardEmailApiImpl implements StandardEmailApi {
     public Y9Result<Object> send(@RequestParam("userId") String userId, @RequestParam("tenantId") String tenantId,
         @RequestParam("subject") String subject, @RequestParam("content") String content,
         @RequestParam(value = "fromEmail", required = false) String fromEmail,
-        @RequestParam("toEmail") List<String> toEmail, @RequestPart("file") MultipartFile file) throws Exception {
+        @RequestParam("toEmail") List<String> toEmail, @RequestPart("file") MultipartFile file) {
         Person person = personManager.get(tenantId, userId).getData();
         Y9LoginUserHolder.setPerson(person);
         Y9LoginUserHolder.setTenantId(tenantId);
@@ -64,10 +64,15 @@ public class StandardEmailApiImpl implements StandardEmailApi {
             EmailThreadLocalHolder.setEmailAddress(fromEmail);
             email.setFrom(fromEmail);
         }
-        String messageId = emailService.save(email);
+        try {
+            String messageId = emailService.save(email);
 
-        emailAttachmentService.addAttachment(DefaultFolder.DRAFTS.getName(), messageId, file);
-        emailService.send(messageId);
+            emailAttachmentService.addAttachment(DefaultFolder.DRAFTS.getName(), messageId, file);
+            emailService.send(messageId);
+        } catch (Exception e) {
+            LOGGER.warn("发送标准电子邮件失败", e);
+            return Y9Result.failure("发送标准电子邮件失败，原因：" + e.getMessage());
+        }
 
         return Y9Result.successMsg("发送成功");
     }

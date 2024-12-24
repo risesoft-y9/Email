@@ -31,5 +31,5 @@ public interface StandardEmailApi {
     Y9Result<Object> send(@RequestParam("userId") String userId, @RequestParam("tenantId") String tenantId,
         @RequestParam("subject") String subject, @RequestParam("content") String content,
         @RequestParam(value = "fromEmail", required = false) String fromEmail,
-        @RequestParam("toEmail") List<String> toEmail, @RequestPart("file") MultipartFile file) throws Exception;
+        @RequestParam("toEmail") List<String> toEmail, @RequestPart("file") MultipartFile file);
 }
