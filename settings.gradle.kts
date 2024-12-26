@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("y9libs") {
             // from(files("../gradle/libs.versions.toml"))
-            from("net.risesoft.y9:risenet-gradle-version-catalog:0.0.5")
+            from("net.risesoft.y9:risenet-gradle-version-catalog:9.7.0-01")
         }
     }
 }
