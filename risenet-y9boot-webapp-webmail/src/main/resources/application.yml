@@ -177,6 +177,9 @@ y9:
         listener:
             kafka:
                 enabled: true
+        multi-tenant:
+            # kafka, db
+            event-source: kafka
         log:
             enabled: true
             # kafka, api
@@ -186,6 +189,11 @@ y9:
                 enabled: true
                 maxInactiveIntervalInSeconds: 3600
         security:
+            csrf:
+                accepted-referer:
+                    - youshengyun.com
+                    - localhost
+                    - 127.0.0.1
             cors:
                 allowCredentials: true
                 allowedOriginPatterns:
