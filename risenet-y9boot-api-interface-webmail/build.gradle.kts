@@ -10,9 +10,12 @@ plugins {
 }
 
 dependencies {
-    api(y9libs.net.risesoft.risenet.y9boot.common.model)
-    api(y9libs.org.springframework.spring.web)
-    api(y9libs.org.springframework.boot.spring.boot.starter.validation)
+    api(platform(libs.y9.digitalbase.bom))
+    api(platform(y9libs.spring.boot.bom))
+
+    api("net.risesoft:risenet-y9boot-common-model")
+    api("org.springframework:spring-web")
+    api("org.springframework.boot:spring-boot-starter-validation")
 }
 
 description = "risenet-y9boot-api-interface-webmail"

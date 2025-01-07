@@ -11,7 +11,6 @@ plugins {
     id("net.risesoft.y9.javaPlatform-publish") version "9.7.0-01" apply false
     id("net.risesoft.y9.javaPlatform-publish-central") version "9.7.0-01" apply false
     id("net.risesoft.y9.lombok") version "9.7.0-01" apply false
-    id("net.risesoft.y9.management") version "9.7.0-01" apply true
     id("net.risesoft.y9.repository") version "9.7.0-01" apply false
     id("net.risesoft.y9.smart-doc") version "9.7.0-01" apply false
 }
@@ -20,11 +19,15 @@ repositories {
     mavenCentral()
     //gradlePluginPortal()
 }
-
 dependencies {
     //management(platform(project(":y9-digitalbase-dependencies")))
     //management(platform(libs.spring.boot.bom))
 }
 
 group = "net.risesoft"
-version = "v9.7.0-SNAPSHUT"
+version = findProperty("Y9_VERSION") as String? ?: "9.7.0-SNAPSHOT"
+
+rootProject.subprojects.forEach { p ->
+    p.version = findProperty("Y9_VERSION") as String? ?: "9.7.0-SNAPSHOT"
+    p.extra.set("Y9_VERSION", version)
+}

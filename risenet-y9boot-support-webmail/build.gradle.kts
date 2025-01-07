@@ -7,33 +7,41 @@
 plugins {
     id("net.risesoft.y9.java-conventions")
     id("net.risesoft.y9.lombok")
+    id("net.risesoft.y9.smart-doc")
 }
 
 dependencies {
-    api(y9libs.net.risesoft.risenet.y9boot.starter.idgenerator)
-    api(y9libs.net.risesoft.risenet.y9boot.properties)
-    api(y9libs.net.risesoft.risenet.y9boot.starter.jpa.public)
-    api(y9libs.net.risesoft.risenet.y9boot.starter.jpa.dedicated)
-    api(y9libs.net.risesoft.risenet.y9boot.starter.log)
-    api(y9libs.net.risesoft.risenet.y9boot.support.file.service.ftp)
-    api(y9libs.net.risesoft.risenet.y9boot.api.feignclient.platform)
-    api(y9libs.net.risesoft.risenet.y9boot.starter.listener.kafka)
-    api(y9libs.net.risesoft.risenet.y9boot.starter.security)
-    api(y9libs.net.risesoft.risenet.y9boot.starter.web)
-    api(y9libs.org.springframework.boot.spring.boot.starter.validation)
-    api(y9libs.org.apache.commons.commons.lang3)
+    // api(platform(libs.y9.digitalbase.bom))
+    // api(platform(y9libs.spring.boot.bom))
+
+    api("net.risesoft:risenet-y9boot-starter-idgenerator")
+    api("net.risesoft:risenet-y9boot-properties")
+    api("net.risesoft:risenet-y9boot-starter-jpa-public")
+    api("net.risesoft:risenet-y9boot-starter-jpa-dedicated")
+    api("net.risesoft:risenet-y9boot-starter-log")
+    api("net.risesoft:risenet-y9boot-support-file-service-ftp")
+    api("net.risesoft:risenet-y9boot-api-feignclient-platform")
+    api("net.risesoft:risenet-y9boot-starter-listener-kafka")
+    api("net.risesoft:risenet-y9boot-starter-security")
+    api("net.risesoft:risenet-y9boot-starter-web")
+    api(project(":risenet-y9boot-api-interface-webmail"))
+
+    api("org.springframework.boot:spring-boot-starter-validation")
+    api("com.google.guava:guava")
+    api(y9libs.commons.lang3)
     api(libs.jakarta.mail.jakarta.mail.api)
     api(libs.com.sun.mail.jakarta.mail)
     api(libs.org.jodd.jodd.mail)
-    api(libs.javax.mail.mail)
-    api(libs.org.apache.commons.commons.text)
-    api(libs.org.apache.james.apache.mime4j.dom)
-    api(libs.org.apache.james.apache.mime4j.mbox.iterator)
-    api(libs.org.apache.james.apache.mime4j.storage)
+    api(libs.commons.text)
+    api(libs.james.apache.mime4j.dom)
+    api(libs.james.apache.mime4j.mbox.iterator)
+    api(libs.james.apache.mime4j.storage)
     api(libs.com.belerweb.pinyin4j)
-    testImplementation(y9libs.org.springframework.boot.spring.boot.starter.test)
-    compileOnly(libs.jakarta.servlet.jakarta.servlet.api)
-    compileOnly(libs.org.projectlombok.lombok)
+
+    compileOnly("jakarta.servlet:jakarta.servlet-api")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
 }
 
 description = "risenet-y9boot-support-webmail"

@@ -10,9 +10,11 @@ plugins {
 }
 
 dependencies {
-    api(y9libs.net.risesoft.risenet.y9boot.starter.openfeign)
-    api(y9libs.net.risesoft.risenet.y9boot.api.interface.email)
-    compileOnly(libs.jakarta.servlet.jakarta.servlet.api)
+    //   api(platform(libs.y9.digitalbase.bom))
+    api("net.risesoft:risenet-y9boot-starter-openfeign")
+    api(project(":risenet-y9boot-api-interface-webmail"))
+    
+    compileOnly("jakarta.servlet:jakarta.servlet-api")
 }
 
 description = "risenet-y9boot-api-feignclient-webmail"
