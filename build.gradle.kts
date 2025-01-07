@@ -3,16 +3,17 @@ plugins {
     id("com.vanniktech.maven.publish") version "0.30.0" apply false
     id("tech.yanand.maven-central-publish") version "1.3.0" apply false
 
-    id("net.risesoft.y9.aspectj") version "9.7.0-01" apply false
-    id("net.risesoft.y9.docker") version "9.7.0-01" apply false
-    id("net.risesoft.y9.java-conventions") version "9.7.0-01" apply false
-    id("net.risesoft.y9.java-publish") version "9.7.0-01" apply false
-    id("net.risesoft.y9.java-publish-central") version "9.7.0-01" apply false
-    id("net.risesoft.y9.javaPlatform-publish") version "9.7.0-01" apply false
-    id("net.risesoft.y9.javaPlatform-publish-central") version "9.7.0-01" apply false
-    id("net.risesoft.y9.lombok") version "9.7.0-01" apply false
-    id("net.risesoft.y9.repository") version "9.7.0-01" apply false
-    id("net.risesoft.y9.smart-doc") version "9.7.0-01" apply false
+    alias(libs.plugins.y9.aspectj) apply false
+    alias(libs.plugins.y9.docker) apply false
+    alias(libs.plugins.y9.conventions.java) apply false
+    alias(libs.plugins.y9.conventions.war) apply false
+    alias(libs.plugins.y9.java.publish) apply false
+    alias(libs.plugins.y9.java.publish.central) apply false
+    alias(libs.plugins.y9.javaPlatform.publish) apply false
+    alias(libs.plugins.y9.javaPlatform.publish.central) apply false
+    alias(libs.plugins.y9.lombok) apply false
+    alias(libs.plugins.y9.repository) apply false
+    alias(libs.plugins.y9.smart.doc) apply false
 }
 
 repositories {

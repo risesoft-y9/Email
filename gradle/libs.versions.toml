@@ -2,6 +2,7 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
+y9-plugin = "9.7.0-03"
 y9-digitalbase-bom = "9.7.0-SNAPSHOT"
 com-belerweb-pinyin4j = "2.5.1"
 com-sun-mail = "2.0.1"
@@ -21,3 +22,15 @@ james-apache-mime4j-mbox-iterator = { module = "org.apache.james:apache-mime4j-m
 james-apache-mime4j-storage = { module = "org.apache.james:apache-mime4j-storage", version.ref = "james-apache-mime4j" }
 org-jodd-jodd-mail = { module = "org.jodd:jodd-mail", version.ref = "jodd-mail" }
 
+[plugins]
+y9-aspectj = { id = "net.risesoft.y9.aspectj", version.ref = "y9-plugin" }
+y9-docker = { id = "net.risesoft.y9.docker", version.ref = "y9-plugin" }
+y9-conventions-java = { id = "net.risesoft.y9.conventions-java", version.ref = "y9-plugin" }
+y9-conventions-war = { id = "net.risesoft.y9.conventions-war", version.ref = "y9-plugin" }
+y9-java-publish = { id = "net.risesoft.y9.java-publish", version.ref = "y9-plugin" }
+y9-java-publish-central = { id = "net.risesoft.y9.java-publish-central", version.ref = "y9-plugin" }
+y9-javaPlatform-publish = { id = "net.risesoft.y9.javaPlatform-publish", version.ref = "y9-plugin" }
+y9-javaPlatform-publish-central = { id = "net.risesoft.y9.javaPlatform-publish-central", version.ref = "y9-plugin" }
+y9-lombok = { id = "net.risesoft.y9.lombok", version.ref = "y9-plugin" }
+y9-repository = { id = "net.risesoft.y9.repository", version.ref = "y9-plugin" }
+y9-smart-doc = { id = "net.risesoft.y9.smart-doc", version.ref = "y9-plugin" }

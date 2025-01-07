@@ -24,7 +24,7 @@ dependencyResolutionManagement {
     //引入y9的版本定义
     versionCatalogs {
         create("y9libs") {
-            from("net.risesoft.y9:risenet-gradle-version-catalog:9.7.0-01")
+            from("net.risesoft.y9:risenet-gradle-version-catalog:9.7.0-03")
         }
     }
 }
