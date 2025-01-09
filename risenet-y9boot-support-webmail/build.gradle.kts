@@ -28,7 +28,7 @@ dependencies {
 
     api("org.springframework.boot:spring-boot-starter-validation")
     api("com.google.guava:guava")
-    api(y9libs.commons.lang3)
+    api("org.apache.commons:commons-lang3")
     api(libs.jakarta.mail.jakarta.mail.api)
     api(libs.com.sun.mail.jakarta.mail)
     api(libs.org.jodd.jodd.mail)

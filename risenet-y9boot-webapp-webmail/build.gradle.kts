@@ -12,7 +12,7 @@ dependencies {
     api(project(":risenet-y9boot-support-webmail"))
     api("net.risesoft:risenet-y9boot-starter-sso-oauth2-resource")
     api("net.risesoft:risenet-y9boot-common-nacos")
-    api(y9libs.commons.pool2)
+    api("org.apache.commons:commons-pool2")
 
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 }
