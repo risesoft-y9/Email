@@ -213,7 +213,6 @@ y9:
         oauth2:
             resource:
                 enabled: true
-                saveOnlineMessage: false
                 allowFormEncodedBodyParameter: true
                 allowUriQueryParameter: true
                 protectedUrlPatterns: /api/*
