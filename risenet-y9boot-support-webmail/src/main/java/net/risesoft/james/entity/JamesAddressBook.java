@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "JAMES_ADDRESSBOOK")
-@Comment( "邮件个人通讯录" )
+@Comment("邮件个人通讯录")
 public class JamesAddressBook implements Serializable {
 
     private static final long serialVersionUID = 7817380951308022777L;

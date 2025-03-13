@@ -456,8 +456,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 }
                 // 未读置顶
                 if (!"Sent".equals(folderName)) {
-                    emailReceiverDTOList =
-                        emailReceiverDTOList.stream().sorted(EmailListDTO.getComparator()).collect(Collectors.toList());
+                    emailReceiverDTOList = emailReceiverDTOList.stream().sorted(EmailListDTO.getComparator())
+                        .collect(java.util.stream.Collectors.toList());
                 }
             }
         }

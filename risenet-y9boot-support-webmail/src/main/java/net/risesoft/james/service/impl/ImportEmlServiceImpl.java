@@ -221,8 +221,7 @@ public class ImportEmlServiceImpl implements ImportEmlService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setTimeZone(timeZone);
         emlDTO.setDateTime(sdf.format(message.getDate()));
-        if (message.getBody() instanceof TextBody) {
-            TextBody textBody = (TextBody)message.getBody();
+        if (message.getBody() instanceof TextBody textBody) {
             emlDTO = outputContentInText(message.getHeader(), textBody, emlDTO);
         } else {
             MultipartImpl body = (MultipartImpl)message.getBody();
@@ -281,15 +280,13 @@ public class ImportEmlServiceImpl implements ImportEmlService {
                     .add(MutableTriple.of(bodyPart.getFilename(), binaryBody.size(), binaryBody.getInputStream()));
                 continue;
             }
-            if (bodyContent instanceof TextBody) {
+            if (bodyContent instanceof TextBody textBody) {
                 // 纯文本内容
-                TextBody textBody = (TextBody)bodyContent;
                 outputContentInText(bodyPart.getHeader(), textBody, entry);
             } else if (bodyContent instanceof Multipart) {
                 MultipartImpl multipart = (MultipartImpl)bodyContent;
                 outputContentAndAttachments(multipart.getBodyParts(), entry);
-            } else if (bodyContent instanceof BinaryBody) {
-                BinaryBody binaryBody = (BinaryBody)bodyContent;
+            } else if (bodyContent instanceof BinaryBody binaryBody) {
                 outputContentInAttachment(bodyPart.getHeader(), binaryBody, entry);
             } else {
                 LOGGER.error("【是否还存在未覆盖到的其它内容类型场景】？");
@@ -309,8 +306,7 @@ public class ImportEmlServiceImpl implements ImportEmlService {
         throws IOException {
         Field contentIdField = header.getField(FieldName.CONTENT_ID);
         Field typeField = header.getField(FieldName.CONTENT_TYPE);
-        if (typeField instanceof ContentTypeField) {
-            ContentTypeField contentTypeField = (ContentTypeField)typeField;
+        if (typeField instanceof ContentTypeField contentTypeField) {
             if (contentTypeField.getMediaType().startsWith(MediaType.ANY_IMAGE_TYPE.type())) {
                 try (InputStream inputStream = binaryBody.getInputStream()) {
                     String base64 = Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputStream));

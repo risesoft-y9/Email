@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "JAMES_IMPORT_EML")
-@Comment("历史邮件详细信息" )
+@Comment("历史邮件详细信息")
 public class ImportEml implements Serializable {
 
     private static final long serialVersionUID = -3212100925052119103L;
