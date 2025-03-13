@@ -90,30 +90,26 @@ public class EmailListDTO implements Serializable {
      * 邮件类型: 1.正常 2.转发 3.回复
      */
     private Integer emailType;
+    /**
+     * 发件人(仅包含.@youshengyun.com的发送人)
+     */
+    private String from;
+    /**
+     * 发件人姓名(仅包含.@youshengyun.com的发送人)
+     */
+    private String fromName;
+    /**
+     * 发件人头像(仅包含.@youshengyun.com的发送人)
+     */
+    private String fromAvator;
+    /**
+     * 收件人信息列表(仅包含.@youshengyun.com的发送人)
+     */
+    private List<ToDTO> ToDTOList;
 
     public static Comparator<EmailListDTO> getComparator() {
         return Comparator.comparing(EmailListDTO::getRead).thenComparing(EmailListDTO::getCreateTime,
             Comparator.reverseOrder());
     }
-
-    /**
-     * 发件人(仅包含.@youshengyun.com的发送人)
-     */
-    private String from;
-
-    /**
-     * 发件人姓名(仅包含.@youshengyun.com的发送人)
-     */
-    private String fromName;
-
-    /**
-     * 发件人头像(仅包含.@youshengyun.com的发送人)
-     */
-    private String fromAvator;
-
-    /**
-     * 收件人信息列表(仅包含.@youshengyun.com的发送人)
-     */
-    private List<ToDTO> ToDTOList;
 
 }

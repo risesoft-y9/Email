@@ -53,6 +53,24 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
         super(y9WebMailProperties, jamesUserService, personApi);
     }
 
+    /**
+     * 获取邮件中附件名集合
+     *
+     * @param originMimeMultipart 邮件体)
+     * @return {@link Set}<{@link String}>
+     * @throws MessagingException 通讯异常
+     */
+    private static Set<String> getFileNameSet(MimeMultipart originMimeMultipart) throws MessagingException {
+        Set<String> fileNameSet = new HashSet<>();
+        for (int i = 0; i < originMimeMultipart.getCount(); i++) {
+            BodyPart bodyPart = originMimeMultipart.getBodyPart(i);
+            if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())) {
+                fileNameSet.add(bodyPart.getFileName());
+            }
+        }
+        return fileNameSet;
+    }
+
     @Override
     public void download(String folderName, String messageId, String name, HttpServletResponse response,
         HttpServletRequest request) throws IOException, MessagingException {
@@ -61,7 +79,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
         if (request.getHeader("User-Agent").toLowerCase().indexOf("firefox") > 0) {
             filename = new String(filename.getBytes(StandardCharsets.UTF_8), "ISO8859-1");// 火狐浏览器
         } else {
-            filename = URLEncoder.encode(filename, "UTF-8");
+            filename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
         }
 
         OutputStream out = response.getOutputStream();
@@ -124,7 +142,7 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
             fileName = message.getSubject() + "_附件打包.zip";
             String userAgent = request.getHeader("User-Agent");
             if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
-                fileName = URLEncoder.encode(fileName, "UTF-8");
+                fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
                 fileName = fileName.replaceAll("\\+", "%20");
             } else {
                 fileName = new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1");
@@ -261,24 +279,6 @@ public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttac
 
         draftsFolder.close();
         receiveMailSession.close();
-    }
-
-    /**
-     * 获取邮件中附件名集合
-     *
-     * @param originMimeMultipart 邮件体)
-     * @return {@link Set}<{@link String}>
-     * @throws MessagingException 通讯异常
-     */
-    private static Set<String> getFileNameSet(MimeMultipart originMimeMultipart) throws MessagingException {
-        Set<String> fileNameSet = new HashSet<>();
-        for (int i = 0; i < originMimeMultipart.getCount(); i++) {
-            BodyPart bodyPart = originMimeMultipart.getBodyPart(i);
-            if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())) {
-                fileNameSet.add(bodyPart.getFileName());
-            }
-        }
-        return fileNameSet;
     }
 
     /**
