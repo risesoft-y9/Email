@@ -39,9 +39,7 @@
                 // 删除标签 & 隐藏标签
                 const lockDivClassName = document.getElementsByClassName('lock-div')[0]?.className;
                 if (lockStatus.value && lockDivClassName !== 'lock-div') {
-                    const params = {
-                        logoutUrl: import.meta.env.VUE_APP_SSO_LOGOUT_URL + import.meta.env.VUE_APP_NAME + '/'
-                    };
+                    const params = {};
                     $y9_SSO.ssoLogout(params);
                 }
             }, 100)

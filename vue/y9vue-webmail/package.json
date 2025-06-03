@@ -1,9 +1,9 @@
 {
     "name": "y9vue-email",
-    "version": "9.6.6",
+    "version": "9.6.7",
     "scripts": {
         "serve": "vite  --mode development",
-        "serve_localEnv": "vite  --mode localEnv",
+        "serve-local": "vite  --mode localEnv",
         "build": "vite build",
         "build-dev": "vite build  --mode development",
         "preview": "vite preview",
@@ -18,7 +18,7 @@
         "@typescript-eslint/parser": "^5.27.0",
         "@vueuse/core": "^9.1.0",
         "animate.css": "^4.1.1",
-        "axios": "^0.24.0",
+        "axios": "^1.4.0",
         "core-js": "^3.20.1",
         "echarts": "^5.3.2",
         "element-plus": "^2.7.7",
@@ -39,8 +39,8 @@
         "vue-router": "^4.0.13",
         "vxe-table": "^4.3.5",
         "xe-utils": "^3.5.7",
-        "y9plugin-components": "^3.0.1",
-        "y9plugin-sso": "^4.1.4",
+        "y9plugin-components": "^3.0.3",
+        "y9plugin-sso": "^4.2.9",
         "y9plugin-watermark": "^1.2.0"
     },
     "devDependencies": {
