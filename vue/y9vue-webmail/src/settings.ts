@@ -1,10 +1,10 @@
 /*
  * @Author: your name
  * @Date: 2022-01-13 17:37:14
- * @LastEditTime: 2024-09-10 15:30:02
- * @LastEditors: mengjuhua
+ * @LastEditTime: 2022-01-17 18:35:30
+ * @LastEditors: your name
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: \vue\y9vue-webmail\src\settings.ts
+ * @FilePath: /sz- team-frontend-9.6.x/y9vue-email/src/settings.ts
  */
 import { RoutesDataItem } from '@/utils/routes';
 

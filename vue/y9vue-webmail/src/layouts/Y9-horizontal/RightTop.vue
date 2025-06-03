@@ -40,25 +40,13 @@
     const userInfo = y9_storage.getObjectItem('ssoUserInfo');
 
     const back = () => {
-        if (userInfo.tenantId == '1563572018593402880') {
-            window.location = import.meta.env.VUE_APP_CONTEXT_Y9HOME;
-        } else {
-            window.location = import.meta.env.VUE_APP_HOME_INDEX;
-        }
+        window.location = import.meta.env.VUE_APP_HOME_INDEX;
     };
 
     const logout = () => {
         try {
             // const loginOut = await this.$store.dispatch("user/logout");
-            const params = {
-                to: { path: window.location.pathname },
-                logoutUrl: import.meta.env.VUE_APP_SSO_LOGOUT_URL + import.meta.env.VUE_APP_NAME + '/',
-                __y9delete__: () => {
-                    // 删除前执行的函数
-                    console.log('删除前执行的函数');
-                }
-            };
-            $y9_SSO.ssoLogout(params);
+            $y9_SSO.ssoLogout({});
         } catch (error) {
             ElMessage.error(error.message || 'Has Error');
         }
