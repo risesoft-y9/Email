@@ -46,6 +46,24 @@ spring:
         name: y9PublicDS
         generate-unique-name: false
         druid:
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 2000
+                wall:
+                    config:
+                        drop-table-allow: false
+                    enabled: true
+            stat-view-servlet:
+                enabled: true
+                login-password: admin
+                login-username: admin
+                reset-enable: false
+                url-pattern: /druid/*
+            web-stat-filter:
+                enabled: true
+                exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*,/static/*'
+                url-pattern: /*
             y9-public:
                 driver-class-name: com.mysql.cj.jdbc.Driver
                 url: jdbc:mysql://localhost:3306/y9_public?serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&useUnicode=true&characterEncoding=utf-8&rewriteBatchedStatements=true&useCompression=true&useSSL=false&allowPublicKeyRetrieval=true
@@ -85,24 +103,6 @@ spring:
                 timeBetweenEvictionRunsMillis: 60000
                 useGlobalDataSourceStat: true
                 validationQuery: SELECT 1 FROM DUAL
-            filter:
-                stat:
-                    log-slow-sql: true
-                    slow-sql-millis: 2000
-                wall:
-                    config:
-                        drop-table-allow: false
-                    enabled: true
-            stat-view-servlet:
-                enabled: true
-                login-password: admin
-                login-username: admin
-                reset-enable: false
-                url-pattern: /druid/*
-            web-stat-filter:
-                enabled: true
-                exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*,/static/*'
-                url-pattern: /*
     jpa:
         hibernate:
             naming:
@@ -136,6 +136,8 @@ spring:
     redis:
         database: 8
         host: localhost
+        password: '111111'
+        port: 6379
         lettuce:
             pool:
                 max-active: 8
@@ -143,8 +145,6 @@ spring:
                 max-wait: -1
                 min-idle: 0
                 shutdown-timeout: 100ms
-        password: y9i-83204585
-        port: 6379
         ssl: false
         timeout: 10000
     servlet:
