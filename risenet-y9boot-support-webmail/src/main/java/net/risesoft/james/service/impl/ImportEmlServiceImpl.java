@@ -23,7 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.james.mime4j.dom.BinaryBody;
 import org.apache.james.mime4j.dom.Body;
 import org.apache.james.mime4j.dom.Entity;
@@ -334,6 +334,7 @@ public class ImportEmlServiceImpl implements ImportEmlService {
      * @throws IOException
      */
     private EmlResult outputContentInText(Header header, TextBody body, EmlResult entry) throws IOException {
+
         ContentTypeFieldLenientImpl contentType =
             (ContentTypeFieldLenientImpl)header.getField(HttpHeaders.CONTENT_TYPE);
         String mimeType = contentType.getMimeType();
