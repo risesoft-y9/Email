@@ -4,7 +4,7 @@
 <p align="center">基于SpringBoot+Vue前后端分离的电子邮件</p>
 <p align="center">
  <a href='https://gitee.com/risesoft-y9/y9-email/stargazers'><img src='https://gitee.com/risesoft-y9/y9-email/badge/star.svg?theme=dark' alt='star'></img></a>
-    <img src="https://img.shields.io/badge/version-v9.6.8-yellow.svg">
+    <img src="https://img.shields.io/badge/version-v9.6.9-yellow.svg">
     <img src="https://img.shields.io/badge/Spring%20Boot-2.7-blue.svg">
     <img alt="logo" src="https://img.shields.io/badge/Vue-3.3-red.svg">
     <img alt="" src="https://img.shields.io/badge/JDK-11-green.svg">
@@ -135,20 +135,21 @@ vue -- 前端工程
 >
 
 ## 文档专区
+
 开发文档：https://docs.youshengyun.com/
 
-| 序号 | 名称                                                                                                         |
-|:---|------------------------------------------------------------------------------------------------------------|
-| 1  | <a href="https://vue.youshengyun.com/files/内部Java开发规范手册.pdf" target="_blank">内部Java开发规范手册</a>              |
-| 7  | <a href="https://vue.youshengyun.com/files/有生博大Vue开发手册v1.0.pdf" target="_blank">前端开发手册</a>                 |
-| 8  | <a href="https://vue.youshengyun.com/files/开发规范.pdf" target="_blank">前端开发规范</a>                            |
-| 9  | <a href="https://vue.youshengyun.com/files/代码格式化.pdf" target="_blank">前端代码格式化</a>                          |
-| 10 | <a href="https://vue.youshengyun.com/files/系统组件.pdf" target="_blank">前端系统组件</a>                            |
-| 11 | <a href="https://vue.youshengyun.com/files/通用方法.pdf" target="_blank">前端通用方法</a>                            |
-| 12 | <a href="https://vue.youshengyun.com/files/国际化.pdf" target="_blank">前端国际化</a>                              |
-| 13 | <a href="https://vue.youshengyun.com/files/Icon图标.pdf" target="_blank">前端Icon图标</a>                        |
-| 16 | <a href="https://docs.youshengyun.com/webmail/backend/introduction" target="_blank">电子邮件在线文档</a>           |
-| 18 | <a href="https://docs.youshengyun.com/webmail/backend/sourcecode-deploy" target="_blank">电子邮件源码部署文档</a>         | |
+| 序号 | 名称                                                                                                             |
+|:---|----------------------------------------------------------------------------------------------------------------|
+| 1  | <a href="https://vue.youshengyun.com/files/内部Java开发规范手册.pdf" target="_blank">内部Java开发规范手册</a>                  |
+| 7  | <a href="https://vue.youshengyun.com/files/有生博大Vue开发手册v1.0.pdf" target="_blank">前端开发手册</a>                     |
+| 8  | <a href="https://vue.youshengyun.com/files/开发规范.pdf" target="_blank">前端开发规范</a>                                |
+| 9  | <a href="https://vue.youshengyun.com/files/代码格式化.pdf" target="_blank">前端代码格式化</a>                              |
+| 10 | <a href="https://vue.youshengyun.com/files/系统组件.pdf" target="_blank">前端系统组件</a>                                |
+| 11 | <a href="https://vue.youshengyun.com/files/通用方法.pdf" target="_blank">前端通用方法</a>                                |
+| 12 | <a href="https://vue.youshengyun.com/files/国际化.pdf" target="_blank">前端国际化</a>                                  |
+| 13 | <a href="https://vue.youshengyun.com/files/Icon图标.pdf" target="_blank">前端Icon图标</a>                            |
+| 16 | <a href="https://docs.youshengyun.com/webmail/backend/introduction" target="_blank">电子邮件在线文档</a>               |
+| 18 | <a href="https://docs.youshengyun.com/webmail/backend/sourcecode-deploy" target="_blank">电子邮件源码部署文档</a>        | |
 | 20 | <a href="https://docs.youshengyun.com/webmail/backend/database-support/MySQL" target="_blank">MySQL数据库适配文档</a> |
 
 ## 电子邮箱截图
@@ -163,9 +164,9 @@ vue -- 前端工程
 
 ## 依赖开源项目
 
-| 序&nbsp;号 | 项&nbsp;目&nbsp;&nbsp;名&nbsp;称          | 项目介绍           | 地&nbsp;址                                                                                                                                                          |
-| ----- | ----------- | ----------------------------------------- |-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1    | 数字底座 | 数字底座是一款面向大型政府、企业数字化转型，基于身份认证、组织架构、岗位职务、应用系统、资源角色等功能构建的统一且安全的管理支撑平台。数字底座基于三员管理模式，具备微服务、多租户、容器化和国产化，支持用户利用代码生成器快速构建自己的业务应用，同时可关联诸多成熟且好用的内部生态应用      | <a href="https://gitee.com/risesoft-y9/y9-core" target="_blank">码云</a> <a href="https://github.com/risesoft-y9/Digital-Infrastructure" target="_blank">GitHub</a> |
+| 序&nbsp;号 | 项&nbsp;目&nbsp;&nbsp;名&nbsp;称 | 项目介绍                                                                                                                                         | 地&nbsp;址                                                                                                                                                          |
+|----------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1        | 数字底座                         | 数字底座是一款面向大型政府、企业数字化转型，基于身份认证、组织架构、岗位职务、应用系统、资源角色等功能构建的统一且安全的管理支撑平台。数字底座基于三员管理模式，具备微服务、多租户、容器化和国产化，支持用户利用代码生成器快速构建自己的业务应用，同时可关联诸多成熟且好用的内部生态应用 | <a href="https://gitee.com/risesoft-y9/y9-core" target="_blank">码云</a> <a href="https://github.com/risesoft-y9/Digital-Infrastructure" target="_blank">GitHub</a> |
 
 ## 赞助与支持
 
