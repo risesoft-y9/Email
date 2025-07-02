@@ -8,11 +8,11 @@
         <version>${revision}</version>
     </parent>
     <!-- <groupId>net.risesoft</groupId> -->
-    <artifactId>risenet-y9boot-webapp-webmail</artifactId>
+    <artifactId>risenet-y9boot-server-webmail</artifactId>
     <version>${revision}</version>
     <packaging>war</packaging>
-    <name>risenet-y9boot-webapp-webmail</name>
-    <description>RiseSoft/Email webapp</description>
+    <name>risenet-y9boot-server-webmail</name>
+    <description>RiseSoft/Email server</description>
     <url>https://gitee.com/risesoft-y9/y9-email</url>
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -57,7 +57,7 @@
     </dependencies>
 
     <build>
-        <finalName>webmail</finalName>
+        <finalName>server-webmail</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
