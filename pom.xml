@@ -65,7 +65,7 @@
         <module>risenet-y9boot-api-feignclient-webmail</module>
         <module>risenet-y9boot-api-interface-webmail</module>
         <module>risenet-y9boot-support-webmail</module>
-        <module>risenet-y9boot-webapp-webmail</module>
+        <module>risenet-y9boot-server-webmail</module>
     </modules>
 
     <repositories>

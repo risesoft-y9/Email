@@ -22,7 +22,7 @@ server:
             force: true
             force-request: true
             force-response: true
-        context-path: /webmail
+        context-path: /server-webmail
     tomcat:
         uri-encoding: UTF-8
 spring:
@@ -134,12 +134,12 @@ y9:
     common:
         default-password: 111111
         kafkaEnabled: true
-        orgBaseUrl: http://127.0.0.1:7055/platform
-        emailBaseUrl: http://127.0.0.1:7056/email
-        webmailBaseUrl: http://127.0.0.1:7056/webmail
-        jodconverterBaseUrl: http://newoa.nanhai.gov.cn/jodconverter
-        logBaseUrl: http://localhost:7056/log
-        userOnlineBaseUrl: http://localhost:7056/userOnline
+        orgBaseUrl: http://127.0.0.1:7055/server-platform
+        emailBaseUrl: http://127.0.0.1:7056/server-email
+        webmailBaseUrl: http://127.0.0.1:7056/server-webmail
+        jodconverterBaseUrl: http://localhost:7056/jodconverter
+        logBaseUrl: http://localhost:7056/server-log
+        userOnlineBaseUrl: http://localhost:7056/server-useronline
     feature:
         file:
             rest:
