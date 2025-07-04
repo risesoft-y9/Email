@@ -17,6 +17,7 @@ export default (serve) => {
         base: ENV.VUE_APP_PUBLIC_PATH,
         build: {
             outDir: ENV.VUE_APP_NAME,
+            chunkSizeWarningLimit: 1500,
             rollupOptions: {
                 output: {
                     manualChunks(id) {
