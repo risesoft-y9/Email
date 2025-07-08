@@ -33,4 +33,4 @@ rootProject.name = "y9-email"
 include(":risenet-y9boot-support-webmail")
 include(":risenet-y9boot-api-interface-webmail")
 include(":risenet-y9boot-api-feignclient-webmail")
-include(":risenet-y9boot-webapp-webmail")
+include(":risenet-y9boot-server-webmail")

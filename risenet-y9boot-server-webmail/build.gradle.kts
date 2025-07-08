@@ -16,9 +16,9 @@ dependencies {
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 }
 
-description = "risenet-y9boot-webapp-webmail"
+description = "risenet-y9boot-server-webmail"
 
-val finalName = "webmail"
+val finalName = "server-webmail"
 y9Docker {
     appName = finalName
 }
