@@ -59,6 +59,9 @@
         <gitee.developerConnection>scm:git:https://gitee.com/risesoft-y9/y9-email.git</gitee.developerConnection>
 
         <revision>v9.6.9-SNAPSHOT</revision>
+
+        <apache-mime4j.version>0.8.13</apache-mime4j.version>
+        <pinyin4j.version>2.5.1</pinyin4j.version>
     </properties>
 
     <modules>
@@ -67,6 +70,33 @@
         <module>risenet-y9boot-support-webmail</module>
         <module>risenet-y9boot-server-webmail</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- MIME 解析器 -->
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-dom</artifactId>
+                <version>${apache-mime4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-mbox-iterator</artifactId>
+                <version>${apache-mime4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-storage</artifactId>
+                <version>${apache-mime4j.version}</version>
+            </dependency>
+            <!-- MIME 解析器 end -->
+            <dependency>
+                <groupId>com.belerweb</groupId>
+                <artifactId>pinyin4j</artifactId>
+                <version>${pinyin4j.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>
