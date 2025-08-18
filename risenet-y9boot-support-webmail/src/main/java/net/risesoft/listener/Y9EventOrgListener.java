@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 import net.risesoft.james.service.JamesUserService;
-import net.risesoft.model.platform.Person;
+import net.risesoft.model.platform.org.Person;
 import net.risesoft.y9.Y9LoginUserHolder;
 import net.risesoft.y9.pubsub.constant.Y9OrgEventTypeConst;
 import net.risesoft.y9.pubsub.event.Y9EventOrg;

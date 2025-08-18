@@ -3,7 +3,7 @@ package net.risesoft.james.service;
 import java.util.List;
 
 import net.risesoft.james.entity.JamesUser;
-import net.risesoft.model.platform.Person;
+import net.risesoft.model.platform.org.Person;
 
 public interface JamesUserService {
 

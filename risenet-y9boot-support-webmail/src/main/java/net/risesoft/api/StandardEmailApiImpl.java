@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.risesoft.api.webmail.StandardEmailApi;
 import net.risesoft.controller.dto.EmailDTO;
 import net.risesoft.james.service.JamesUserService;
-import net.risesoft.model.platform.Person;
+import net.risesoft.model.platform.org.Person;
 import net.risesoft.pojo.Y9Result;
 import net.risesoft.service.EmailAttachmentService;
 import net.risesoft.service.EmailService;
