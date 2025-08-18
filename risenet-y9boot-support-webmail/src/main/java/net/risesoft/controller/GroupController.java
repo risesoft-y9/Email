@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-import net.risesoft.api.platform.customgroup.CustomGroupApi;
+import net.risesoft.api.platform.org.CustomGroupApi;
 import net.risesoft.api.platform.org.PersonApi;
-import net.risesoft.enums.platform.OrgTypeEnum;
-import net.risesoft.model.platform.CustomGroup;
-import net.risesoft.model.platform.CustomGroupMember;
-import net.risesoft.model.platform.Person;
+import net.risesoft.enums.platform.org.OrgTypeEnum;
+import net.risesoft.model.platform.org.CustomGroup;
+import net.risesoft.model.platform.org.CustomGroupMember;
+import net.risesoft.model.platform.org.Person;
 import net.risesoft.pojo.Y9Result;
 import net.risesoft.y9.Y9LoginUserHolder;
 

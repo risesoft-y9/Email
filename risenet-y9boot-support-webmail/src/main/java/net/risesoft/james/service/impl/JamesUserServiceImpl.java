@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-import net.risesoft.api.platform.customgroup.CustomGroupApi;
+import net.risesoft.api.platform.org.CustomGroupApi;
 import net.risesoft.api.platform.org.PersonApi;
-import net.risesoft.enums.platform.ExtendedOrgTypeEnum;
-import net.risesoft.enums.platform.OrgTypeEnum;
+import net.risesoft.enums.platform.org.ExtendedOrgTypeEnum;
+import net.risesoft.enums.platform.org.OrgTypeEnum;
 import net.risesoft.james.entity.JamesUser;
 import net.risesoft.james.repository.JamesUserRepository;
 import net.risesoft.james.service.JamesUserService;
-import net.risesoft.model.platform.CustomGroupMember;
-import net.risesoft.model.platform.Person;
+import net.risesoft.model.platform.org.CustomGroupMember;
+import net.risesoft.model.platform.org.Person;
 import net.risesoft.util.EmailUtil;
 import net.risesoft.y9.Y9LoginUserHolder;
 import net.risesoft.y9.configuration.Y9Properties;
@@ -103,8 +103,9 @@ public class JamesUserServiceImpl implements JamesUserService {
         } else if (OrgTypeEnum.PERSON.getEnName().equals(orgType)) {
             addByPersonId(emailAddressList, orgUnitId);
         } else if (ExtendedOrgTypeEnum.CUSTOM_GROUP.getEnName().equals(orgType)) {
-            List<CustomGroupMember> groupMemberList = customGroupApi
-                .listCustomGroupMemberByGroupId(tenantId, Y9LoginUserHolder.getPersonId(), orgUnitId).getData();
+            List<CustomGroupMember> groupMemberList =
+                customGroupApi.listCustomGroupMemberByGroupId(tenantId, Y9LoginUserHolder.getPersonId(), orgUnitId)
+                    .getData();
             for (CustomGroupMember customGroupMember : groupMemberList) {
                 addByPersonId(emailAddressList, customGroupMember.getMemberId());
             }

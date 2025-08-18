@@ -28,7 +28,7 @@ import net.risesoft.controller.dto.ToDTO;
 import net.risesoft.james.entity.JamesUser;
 import net.risesoft.james.entity.term.MyMessageIDTerm;
 import net.risesoft.james.service.JamesUserService;
-import net.risesoft.model.platform.Person;
+import net.risesoft.model.platform.org.Person;
 import net.risesoft.support.EmailThreadLocalHolder;
 import net.risesoft.util.MimeMessageParser;
 import net.risesoft.y9.Y9LoginUserHolder;

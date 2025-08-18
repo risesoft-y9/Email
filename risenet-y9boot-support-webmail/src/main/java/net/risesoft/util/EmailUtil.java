@@ -15,7 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import net.risesoft.api.platform.org.PositionApi;
 import net.risesoft.controller.dto.EmailDTO;
-import net.risesoft.model.platform.Position;
+import net.risesoft.model.platform.org.Position;
 import net.risesoft.model.user.UserInfo;
 import net.risesoft.y9.Y9Context;
 import net.risesoft.y9.Y9LoginUserHolder;
