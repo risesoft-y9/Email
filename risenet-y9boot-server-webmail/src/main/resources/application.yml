@@ -142,14 +142,15 @@ y9:
         userOnlineBaseUrl: http://localhost:7056/server-useronline
     feature:
         file:
-            rest:
-                fileManagerUrl: http://127.0.0.1:7055/filemanager
             base64FileName: false
             encryptionFileContent: false
             #privateKey:
             #publicKey:
+            rest:
+                fileManagerUrl: http://localhost:8080/filemanager
             ftp:
-                host: 192.168.3.5
+                enabled: true
+                host: localhost
                 port: 21
                 username: y9admin
                 password: '111111'
@@ -169,6 +170,10 @@ y9:
                 testWhileIdle: true
                 useEPSVwithIPv4: false
                 passiveMode: true
+            local:
+                enabled: false
+                # 本地文件存储的根路径，按需设置为自己的
+                basePath: "d:/y9FileStore"
         jpa:
             packagesToScanEntityPublic: net.risesoft.y9public.entity
             packagesToScanEntityTenant: net.risesoft.entity
