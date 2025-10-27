@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -365,8 +364,7 @@ public class ImportEmlServiceImpl implements ImportEmlService {
             @Override
             public Predicate toPredicate(Root<ImportEml> root, CriteriaQuery<?> query,
                 CriteriaBuilder criteriaBuilder) {
-                Predicate predicate = criteriaBuilder.conjunction();
-                List<Expression<Boolean>> list = predicate.getExpressions();
+                List<Predicate> list = new ArrayList<>();
                 list.add(criteriaBuilder.equal(root.get("personId").as(String.class), personId));
                 if (StringUtils.isNotBlank(subject)) {
                     list.add(criteriaBuilder.like(root.get("subject").as(String.class), "%" + subject + "%"));
@@ -374,7 +372,11 @@ public class ImportEmlServiceImpl implements ImportEmlService {
                 if (StringUtils.isNotBlank(htmlContent)) {
                     list.add(criteriaBuilder.like(root.get("htmlContent").as(String.class), "%" + htmlContent + "%"));
                 }
-                return predicate;
+                // 如果没有条件，返回空查询
+                if (list.isEmpty()) {
+                    return criteriaBuilder.conjunction(); // 相当于 WHERE 1=1
+                }
+                return criteriaBuilder.and(list.toArray(new Predicate[list.size()]));
             }
         }, pageable);
     }
