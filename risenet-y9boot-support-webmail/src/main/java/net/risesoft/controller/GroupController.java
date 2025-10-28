@@ -17,6 +17,7 @@ import net.risesoft.model.platform.org.CustomGroup;
 import net.risesoft.model.platform.org.CustomGroupMember;
 import net.risesoft.model.platform.org.Person;
 import net.risesoft.pojo.Y9Result;
+import net.risesoft.query.platform.CustomGroupMemberQuery;
 import net.risesoft.y9.Y9LoginUserHolder;
 
 @RestController(value = "standardGroupController")
@@ -51,10 +52,10 @@ public class GroupController {
     @RequestMapping(value = "/getGroupMembers4Email")
     public Y9Result<List<CustomGroupMember>> getEmailGroupMembers(String groupId) {
         String tenantId = Y9LoginUserHolder.getTenantId();
-        String personId = Y9LoginUserHolder.getUserInfo().getPersonId();
         List<CustomGroupMember> groupMemberModels = new ArrayList<>();
         if (StringUtils.isNotBlank(groupId)) {
-            groupMemberModels = customGroupApi.listCustomGroupMemberByGroupId(tenantId, personId, groupId).getData();
+            groupMemberModels =
+                customGroupApi.listCustomGroupMember(tenantId, new CustomGroupMemberQuery(groupId)).getData();
         }
         return Y9Result.success(groupMemberModels);
     }
@@ -68,10 +69,10 @@ public class GroupController {
     @RequestMapping(value = "/getGroupMembers")
     public Y9Result<List<CustomGroupMember>> getGroupMembers(String groupId) {
         String tenantId = Y9LoginUserHolder.getTenantId();
-        String personId = Y9LoginUserHolder.getUserInfo().getPersonId();
         List<CustomGroupMember> groupMemberModels = new ArrayList<>();
         if (StringUtils.isNotBlank(groupId)) {
-            groupMemberModels = customGroupApi.listCustomGroupMemberByGroupId(tenantId, personId, groupId).getData();
+            groupMemberModels =
+                customGroupApi.listCustomGroupMember(tenantId, new CustomGroupMemberQuery(groupId)).getData();
         }
         for (CustomGroupMember customGroupModel : groupMemberModels) {
             if (customGroupModel.getMemberType().equals(OrgTypeEnum.PERSON)) {

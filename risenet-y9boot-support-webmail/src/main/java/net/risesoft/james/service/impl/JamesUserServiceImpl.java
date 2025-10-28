@@ -18,6 +18,7 @@ import net.risesoft.james.repository.JamesUserRepository;
 import net.risesoft.james.service.JamesUserService;
 import net.risesoft.model.platform.org.CustomGroupMember;
 import net.risesoft.model.platform.org.Person;
+import net.risesoft.query.platform.CustomGroupMemberQuery;
 import net.risesoft.util.EmailUtil;
 import net.risesoft.y9.Y9LoginUserHolder;
 import net.risesoft.y9.configuration.Y9Properties;
@@ -104,8 +105,7 @@ public class JamesUserServiceImpl implements JamesUserService {
             addByPersonId(emailAddressList, orgUnitId);
         } else if (ExtendedOrgTypeEnum.CUSTOM_GROUP.getEnName().equals(orgType)) {
             List<CustomGroupMember> groupMemberList =
-                customGroupApi.listCustomGroupMemberByGroupId(tenantId, Y9LoginUserHolder.getPersonId(), orgUnitId)
-                    .getData();
+                customGroupApi.listCustomGroupMember(tenantId, new CustomGroupMemberQuery(orgUnitId)).getData();
             for (CustomGroupMember customGroupMember : groupMemberList) {
                 addByPersonId(emailAddressList, customGroupMember.getMemberId());
             }
