@@ -68,11 +68,14 @@ public class MailHelper {
         String email = EmailThreadLocalHolder.getEmailAddress();
 
         // todo 密码
-        ImapServer imapServer = MailServer.create().host(y9WebMailProperties.getImapHost())
+        ImapServer imapServer = MailServer.create()
+            .host(y9WebMailProperties.getImapHost())
             // 3.7.x james 无 authorizationid 时用户密码存在@符号会有问题
             // 具体可跟踪源码 org.apache.james.imap.processor.AuthenticateProcessor#parseDelegationAttempt
-            .property("mail.imap.sasl.authorizationid", email).port(y9WebMailProperties.getImapPort())
-            .auth(email, plainText).buildImapMailServer();
+            .property("mail.imap.sasl.authorizationid", email)
+            .port(y9WebMailProperties.getImapPort())
+            .auth(email, plainText)
+            .buildImapMailServer();
         return imapServer.createSession();
     }
 
@@ -81,8 +84,11 @@ public class MailHelper {
         String plainText = jamesUserService.getPlainTextByPersonId(Y9LoginUserHolder.getUserInfo().getPersonId());
         String email = EmailThreadLocalHolder.getEmailAddress();
 
-        SmtpServer smtpServer = MailServer.create().host(y9WebMailProperties.getSmtpHost())
-            .port(y9WebMailProperties.getSmtpPort()).auth(email, plainText).buildSmtpMailServer();
+        SmtpServer smtpServer = MailServer.create()
+            .host(y9WebMailProperties.getSmtpHost())
+            .port(y9WebMailProperties.getSmtpPort())
+            .auth(email, plainText)
+            .buildSmtpMailServer();
         return smtpServer.createSession();
     }
 
@@ -111,8 +117,10 @@ public class MailHelper {
                 if (message == null)
                     continue;
                 MimeMessageParser parser = new MimeMessageParser((MimeMessage)message).parse();
-                List<String> emailAddressList = parser.getTo().stream()
-                    .map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
+                List<String> emailAddressList = parser.getTo()
+                    .stream()
+                    .map(address -> ((InternetAddress)address).getAddress())
+                    .collect(Collectors.toList());
                 if (emailAddressList != null && emailAddressList.size() != 0) {
                     List<ToDTO> toDTOList = new ArrayList<ToDTO>();
                     for (String emailAddress : emailAddressList) {
@@ -156,14 +164,16 @@ public class MailHelper {
                 if (message == null)
                     continue;
                 MimeMessageParser parser = new MimeMessageParser((MimeMessage)message).parse();
-                List<String> emailAddressList = parser.getTo().stream()
-                    .map(address -> ((InternetAddress)address).getAddress()).collect(Collectors.toList());
+                List<String> emailAddressList = parser.getTo()
+                    .stream()
+                    .map(address -> ((InternetAddress)address).getAddress())
+                    .collect(Collectors.toList());
                 if (emailAddressList != null && emailAddressList.size() != 0) {
                     for (String emailAddress : emailAddressList) {
                         if (emailAddress.equals(email))
                             continue;
-                        boolean exists =
-                            contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
+                        boolean exists = contactDTOList.stream()
+                            .anyMatch(param -> param.getContactPerson() instanceof String
                                 && param.getContactPerson().equalsIgnoreCase(emailAddress));
                         if (exists)
                             continue;
@@ -184,8 +194,8 @@ public class MailHelper {
                 }
                 String from = parser.getFrom();
                 if (StringUtils.isNotBlank(from) && !from.equals(email)) {
-                    boolean exists =
-                        contactDTOList.stream().anyMatch(param -> param.getContactPerson() instanceof String
+                    boolean exists = contactDTOList.stream()
+                        .anyMatch(param -> param.getContactPerson() instanceof String
                             && param.getContactPerson().equalsIgnoreCase(from));
                     if (exists)
                         continue;

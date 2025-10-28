@@ -17,9 +17,8 @@ import net.risesoft.y9.pubsub.event.Y9EventOrg;
 @RequiredArgsConstructor
 public class Y9EventOrgListener implements ApplicationListener<Y9EventOrg> {
 
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-
     private final JamesUserService jamesUserService;
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void onApplicationEvent(Y9EventOrg event) {

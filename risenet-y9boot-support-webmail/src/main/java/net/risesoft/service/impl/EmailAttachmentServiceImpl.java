@@ -48,7 +48,9 @@ import jodd.mail.ReceiveMailSession;
 @Service
 public class EmailAttachmentServiceImpl extends MailHelper implements EmailAttachmentService {
 
-    public EmailAttachmentServiceImpl(Y9WebMailProperties y9WebMailProperties, JamesUserService jamesUserService,
+    public EmailAttachmentServiceImpl(
+        Y9WebMailProperties y9WebMailProperties,
+        JamesUserService jamesUserService,
         PersonApi personApi) {
         super(y9WebMailProperties, jamesUserService, personApi);
     }

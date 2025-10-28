@@ -107,9 +107,14 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     private final JamesUserService jamesUserService;
 
-    public EmailServiceImpl(Y9WebMailProperties y9WebMailProperties, JamesUserService jamesUserService,
-        PersonApi personApi, Y9FileStoreService y9FileStoreService, OrgUnitApi orgUnitApi,
-        JamesAddressBookService jamesAddressBookService, JamesUserService jamesUserService1) {
+    public EmailServiceImpl(
+        Y9WebMailProperties y9WebMailProperties,
+        JamesUserService jamesUserService,
+        PersonApi personApi,
+        Y9FileStoreService y9FileStoreService,
+        OrgUnitApi orgUnitApi,
+        JamesAddressBookService jamesAddressBookService,
+        JamesUserService jamesUserService1) {
         super(y9WebMailProperties, jamesUserService, personApi);
         this.y9FileStoreService = y9FileStoreService;
         this.orgUnitApi = orgUnitApi;
@@ -456,7 +461,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 }
                 // 未读置顶
                 if (!"Sent".equals(folderName)) {
-                    emailReceiverDTOList = emailReceiverDTOList.stream().sorted(EmailListDTO.getComparator())
+                    emailReceiverDTOList = emailReceiverDTOList.stream()
+                        .sorted(EmailListDTO.getComparator())
                         .collect(java.util.stream.Collectors.toList());
                 }
             }
@@ -893,7 +899,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     private String getToString(Address[] to) {
         String toPerson = "";
         if (null != to) {
-            toPerson = Arrays.stream(to).map(address -> ((InternetAddress)address).getAddress().split("@")[0])
+            toPerson = Arrays.stream(to)
+                .map(address -> ((InternetAddress)address).getAddress().split("@")[0])
                 .collect(Collectors.joining(";"));
         }
         return toPerson;
@@ -932,13 +939,19 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     private List<String> getEmailAddressList(MimeMessageParser parser, Message.RecipientType recipientType)
         throws Exception {
         if (recipientType == Message.RecipientType.TO) {
-            return parser.getTo().stream().map(address -> ((InternetAddress)address).getAddress())
+            return parser.getTo()
+                .stream()
+                .map(address -> ((InternetAddress)address).getAddress())
                 .collect(Collectors.toList());
         } else if (recipientType == Message.RecipientType.CC) {
-            return parser.getCc().stream().map(address -> ((InternetAddress)address).getAddress())
+            return parser.getCc()
+                .stream()
+                .map(address -> ((InternetAddress)address).getAddress())
                 .collect(Collectors.toList());
         } else {
-            return parser.getBcc().stream().map(address -> ((InternetAddress)address).getAddress())
+            return parser.getBcc()
+                .stream()
+                .map(address -> ((InternetAddress)address).getAddress())
                 .collect(Collectors.toList());
         }
     }
