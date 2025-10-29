@@ -13,10 +13,11 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import net.risesoft.api.platform.user.UserApi;
 import net.risesoft.api.webmail.StandardEmailApi;
 import net.risesoft.controller.dto.EmailDTO;
 import net.risesoft.james.service.JamesUserService;
-import net.risesoft.model.platform.org.Person;
+import net.risesoft.model.user.UserInfo;
 import net.risesoft.pojo.Y9Result;
 import net.risesoft.service.EmailAttachmentService;
 import net.risesoft.service.EmailService;
@@ -42,15 +43,16 @@ public class StandardEmailApiImpl implements StandardEmailApi {
 
     private final EmailAttachmentService emailAttachmentService;
 
+    private final UserApi userApi;
+
     @Transactional
     public Y9Result<Object> send(@RequestParam("userId") String userId, @RequestParam("tenantId") String tenantId,
         @RequestParam("subject") String subject, @RequestParam("content") String content,
         @RequestParam(value = "fromEmail", required = false) String fromEmail,
         @RequestParam("toEmail") List<String> toEmail, @RequestPart("file") MultipartFile file) {
-        Person person = personManager.get(tenantId, userId).getData();
-        Y9LoginUserHolder.setPerson(person);
         Y9LoginUserHolder.setTenantId(tenantId);
-        Y9LoginUserHolder.setUserInfo(person.toUserInfo());
+        UserInfo userInfo = userApi.get(tenantId, userId).getData();
+        Y9LoginUserHolder.setUserInfo(userInfo);
 
         EmailDTO email = new EmailDTO();
         email.setSubject(subject);
@@ -58,7 +60,7 @@ public class StandardEmailApiImpl implements StandardEmailApi {
         email.setText(content);
         email.setToEmailAddressList(toEmail);
         if (StringUtil.isEmpty(fromEmail)) {
-            EmailThreadLocalHolder.setEmailAddress(jamesUserService.getEmailAddressByPersonId(person.getId()));
+            EmailThreadLocalHolder.setEmailAddress(jamesUserService.getEmailAddressByPersonId(userId));
             email.setFrom(EmailThreadLocalHolder.getEmailAddress());
         } else {
             EmailThreadLocalHolder.setEmailAddress(fromEmail);
