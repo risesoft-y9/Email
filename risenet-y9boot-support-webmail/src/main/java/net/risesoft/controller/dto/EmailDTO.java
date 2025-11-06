@@ -64,7 +64,9 @@ public class EmailDTO implements Serializable {
     private List<EmailAttachmentDTO> emailAttachmentDTOList;
 
     public enum Type {
-        NORMAL(1), REPLY(2), FORWARD(3);
+        NORMAL(1),
+        REPLY(2),
+        FORWARD(3);
 
         Integer value;
 

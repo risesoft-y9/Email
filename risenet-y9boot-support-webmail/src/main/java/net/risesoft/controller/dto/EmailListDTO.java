@@ -108,8 +108,8 @@ public class EmailListDTO implements Serializable {
     private List<ToDTO> ToDTOList;
 
     public static Comparator<EmailListDTO> getComparator() {
-        return Comparator.comparing(EmailListDTO::getRead).thenComparing(EmailListDTO::getCreateTime,
-            Comparator.reverseOrder());
+        return Comparator.comparing(EmailListDTO::getRead)
+            .thenComparing(EmailListDTO::getCreateTime, Comparator.reverseOrder());
     }
 
 }

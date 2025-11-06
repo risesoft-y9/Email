@@ -5,8 +5,11 @@ import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 
 public enum DefaultFolder {
-    INBOX("INBOX", "收件箱", false), DRAFTS("Drafts", "草稿箱", false), SENT("Sent", "已发送", false),
-    TRASH("Trash", "回收站", false), MY_FOLDER("My Folder", "我的文件夹", true);
+    INBOX("INBOX", "收件箱", false),
+    DRAFTS("Drafts", "草稿箱", false),
+    SENT("Sent", "已发送", false),
+    TRASH("Trash", "回收站", false),
+    MY_FOLDER("My Folder", "我的文件夹", true);
 
     /**
      * 英文名称

@@ -23,7 +23,9 @@ import jodd.mail.ReceiveMailSession;
 @Service
 public class EmailFolderServiceImpl extends MailHelper implements EmailFolderService {
 
-    public EmailFolderServiceImpl(Y9WebMailProperties y9WebMailProperties, JamesUserService jamesUserService,
+    public EmailFolderServiceImpl(
+        Y9WebMailProperties y9WebMailProperties,
+        JamesUserService jamesUserService,
         PersonApi personApi) {
         super(y9WebMailProperties, jamesUserService, personApi);
     }
@@ -58,7 +60,8 @@ public class EmailFolderServiceImpl extends MailHelper implements EmailFolderSer
 
         List<EmailFolderDTO> emailFolderDTOList = new ArrayList<>();
         List<DefaultFolder> defaultFolderList = Arrays.stream(DefaultFolder.values())
-            .filter(defaultFolder -> !defaultFolder.isExistSubFolder()).collect(Collectors.toList());
+            .filter(defaultFolder -> !defaultFolder.isExistSubFolder())
+            .collect(Collectors.toList());
         for (DefaultFolder folder : defaultFolderList) {
             Folder mailFolder = session.getFolder(folder.getName());
             try {

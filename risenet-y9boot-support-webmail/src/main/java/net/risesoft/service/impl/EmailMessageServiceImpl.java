@@ -34,8 +34,11 @@ public class EmailMessageServiceImpl extends MailHelper implements EmailMessageS
 
     private final Y9FileStoreService y9FileStoreService;
 
-    public EmailMessageServiceImpl(Y9WebMailProperties y9WebMailProperties, JamesUserService jamesUserService,
-        PersonApi personApi, Y9FileStoreService y9FileStoreService) {
+    public EmailMessageServiceImpl(
+        Y9WebMailProperties y9WebMailProperties,
+        JamesUserService jamesUserService,
+        PersonApi personApi,
+        Y9FileStoreService y9FileStoreService) {
         super(y9WebMailProperties, jamesUserService, personApi);
         this.y9FileStoreService = y9FileStoreService;
     }
