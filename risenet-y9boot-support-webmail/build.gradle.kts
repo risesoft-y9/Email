@@ -11,6 +11,7 @@ dependencies {
     api("net.risesoft:risenet-y9boot-starter-jpa-dedicated")
     api("net.risesoft:risenet-y9boot-starter-log")
     api("net.risesoft:risenet-y9boot-support-file-service-ftp")
+    api("net.risesoft:risenet-y9boot-support-file-service-local")
     api("net.risesoft:risenet-y9boot-api-feignclient-platform")
     api("net.risesoft:risenet-y9boot-starter-listener-kafka")
     api("net.risesoft:risenet-y9boot-starter-security")
