@@ -55,7 +55,7 @@ public class GroupController {
         List<CustomGroupMember> groupMemberModels = new ArrayList<>();
         if (StringUtils.isNotBlank(groupId)) {
             groupMemberModels =
-                customGroupApi.listCustomGroupMember(tenantId, new CustomGroupMemberQuery(groupId)).getData();
+                customGroupApi.listCustomGroupMember(tenantId, new CustomGroupMemberQuery(groupId, null)).getData();
         }
         return Y9Result.success(groupMemberModels);
     }
@@ -72,7 +72,7 @@ public class GroupController {
         List<CustomGroupMember> groupMemberModels = new ArrayList<>();
         if (StringUtils.isNotBlank(groupId)) {
             groupMemberModels =
-                customGroupApi.listCustomGroupMember(tenantId, new CustomGroupMemberQuery(groupId)).getData();
+                customGroupApi.listCustomGroupMember(tenantId, new CustomGroupMemberQuery(groupId, null)).getData();
         }
         for (CustomGroupMember customGroupModel : groupMemberModels) {
             if (customGroupModel.getMemberType().equals(OrgTypeEnum.PERSON)) {

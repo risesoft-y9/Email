@@ -105,7 +105,7 @@ public class JamesUserServiceImpl implements JamesUserService {
             addByPersonId(emailAddressList, orgUnitId);
         } else if (ExtendedOrgTypeEnum.CUSTOM_GROUP.getEnName().equals(orgType)) {
             List<CustomGroupMember> groupMemberList =
-                customGroupApi.listCustomGroupMember(tenantId, new CustomGroupMemberQuery(orgUnitId)).getData();
+                customGroupApi.listCustomGroupMember(tenantId, new CustomGroupMemberQuery(orgUnitId, null)).getData();
             for (CustomGroupMember customGroupMember : groupMemberList) {
                 addByPersonId(emailAddressList, customGroupMember.getMemberId());
             }
