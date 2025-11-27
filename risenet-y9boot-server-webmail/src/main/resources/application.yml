@@ -167,7 +167,6 @@ y9:
             directUrl: http://localhost:7055
     common:
         default-password: 111111
-        kafkaEnabled: true
         orgBaseUrl: http://127.0.0.1:7055/server-platform
         emailBaseUrl: http://127.0.0.1:7056/server-email
         webmailBaseUrl: http://127.0.0.1:7056/server-webmail
@@ -215,9 +214,6 @@ y9:
             packagesToScanRepositoryPublic: net.risesoft.y9public.repository
             packagesToScanRepositoryTenant: net.risesoft.repository
             packagesToScanRepositoryDedicated: net.risesoft.james.repository
-        listener:
-            kafka:
-                enabled: true
         multi-tenant:
             # kafka, db
             event-source: kafka
