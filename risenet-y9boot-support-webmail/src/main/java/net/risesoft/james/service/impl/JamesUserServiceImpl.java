@@ -22,7 +22,7 @@ import net.risesoft.query.platform.CustomGroupMemberQuery;
 import net.risesoft.util.EmailUtil;
 import net.risesoft.y9.Y9LoginUserHolder;
 import net.risesoft.y9.configuration.Y9Properties;
-import net.risesoft.y9.util.signing.Y9MessageDigest;
+import net.risesoft.y9.util.signing.Y9MessageDigestUtil;
 
 @Service(value = "jamesUserService")
 @RequiredArgsConstructor
@@ -51,7 +51,7 @@ public class JamesUserServiceImpl implements JamesUserService {
             jamesUser.setPasswordHashAlgorithm("MD5");
             jamesUser.setPlainText(password);
             jamesUser.setPersonId(personId);
-            jamesUser.setPassword(Y9MessageDigest.md5(password));
+            jamesUser.setPassword(Y9MessageDigestUtil.md5(password));
             jamesUserRepository.save(jamesUser);
         }
     }
@@ -138,7 +138,7 @@ public class JamesUserServiceImpl implements JamesUserService {
         JamesUser oldju = this.findById(id);
         Integer version = oldju.getVersion() + 1;
         oldju.setPlainText(plainText);
-        plainText = Y9MessageDigest.md5(plainText);
+        plainText = Y9MessageDigestUtil.md5(plainText);
         oldju.setPassword(plainText);
         oldju.setVersion(version);
         jamesUserRepository.save(oldju);
