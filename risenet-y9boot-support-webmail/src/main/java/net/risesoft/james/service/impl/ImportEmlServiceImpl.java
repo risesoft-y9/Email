@@ -67,7 +67,7 @@ import net.risesoft.pojo.Y9PageQuery;
 import net.risesoft.service.EmailService;
 import net.risesoft.util.EmailUtil;
 import net.risesoft.y9.Y9LoginUserHolder;
-import net.risesoft.y9.util.signing.Y9MessageDigest;
+import net.risesoft.y9.util.signing.Y9MessageDigestUtil;
 import net.risesoft.y9public.service.Y9FileStoreService;
 
 @Service(value = "importEmlService")
@@ -169,7 +169,7 @@ public class ImportEmlServiceImpl implements ImportEmlService {
                     emailAttachmentDTO.setFileExt(attch.getFileExt());
 
                     byte[] bytes = y9FileStoreService.downloadFileToBytes(attch.getFileStoreId());
-                    emailAttachmentDTO.setMd5(Y9MessageDigest.md5(bytes));
+                    emailAttachmentDTO.setMd5(Y9MessageDigestUtil.md5(bytes));
                     emailAttachmentDTO.setFileName(attch.getFileName());
                     emailAttachmentDTO.setDisplaySize(FileUtils.byteCountToDisplaySize(bytes.length));
                     emailAttachmentDTOList.add(emailAttachmentDTO);
