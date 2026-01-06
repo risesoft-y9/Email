@@ -2,6 +2,7 @@ package net.risesoft.util;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,9 +47,10 @@ public class EmailUtil {
 
     public static String getSignature() {
         UserInfo userInfo = Y9LoginUserHolder.getUserInfo();
+        String positionId = StringUtils.isNotBlank(userInfo.getPositionId()) ? userInfo.getPositionId()
+            : Arrays.stream(userInfo.getPositions().split(",")).findFirst().orElse(null);
 
-        Position position =
-            Y9Context.getBean(PositionApi.class).get(userInfo.getTenantId(), userInfo.getPositionId()).getData();
+        Position position = Y9Context.getBean(PositionApi.class).get(userInfo.getTenantId(), positionId).getData();
         HttpServletRequest request =
             ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
         String ipAddr = Y9Context.getIpAddr(request);
