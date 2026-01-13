@@ -2,7 +2,7 @@
  * @Author:  
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-22 16:27:46
+ * @LastEditTime: 2025-12-23 17:17:46
  * @Description: 写信
 -->
 <template>
@@ -351,6 +351,11 @@
     import { useSettingStore } from '@/store/modules/settingStore';
     import { useI18n } from 'vue-i18n';
     import { computed, h, inject, onBeforeUnmount, onMounted, reactive, ref, shallowRef, toRefs } from 'vue';
+    import router from '@/router';
+    import { useRoute } from 'vue-router';
+    import settings from '@/settings';
+    import y9_storage from '@/utils/storage';
+
     import Editor from '@/components/Editor/index.vue';
     import {
         emailDetail,
@@ -361,12 +366,7 @@
         sendEmail,
         newEmail as newEmailApi
     } from '@/api/email/index';
-    import router from '@/router';
-    import { useRoute } from 'vue-router';
     import { getTreeItemById, searchByName, treeInterface } from '@/api/org/index';
-    import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
-    import settings from '@/settings';
-    import y9_storage from '@/utils/storage';
     import { addAttachment, deleteAttachment } from '@/api/email/attachment';
 
     const route = useRoute();

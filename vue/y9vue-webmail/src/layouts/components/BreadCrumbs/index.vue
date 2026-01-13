@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2022-01-13 17:31:19
- * @LastEditTime: 2024-08-14 17:12:18
+ * @LastEditTime: 2025-12-04 14:11:52
  * @LastEditors: mengjuhua
  * @Description:   
 -->
@@ -18,6 +18,7 @@
         <span class="title">{{ $t(`${list[0].meta.title}`) }}</span>
         <div style="display: flex; align-items: center; cursor: pointer">
             <i class="ri-map-pin-line ri-lx" style="color: var(--el-color-primary)"></i>
+            &nbsp;&nbsp;
             <el-breadcrumb>
                 <el-breadcrumb-item v-for="item in list" :key="item.path">
                     <a-link :to="item.path" class="title-link">{{ $t(`${item.meta.title}`) }}</a-link>

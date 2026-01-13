@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-19 12:19:30
+ * @LastEditTime: 2025-12-23 17:15:27
  * @Description: 邮件详情
 -->
 <template>
@@ -278,10 +278,9 @@
 </template>
 <script lang="ts" setup>
     import { useRouter } from 'vue-router';
-    import { defineProps, inject, onMounted, reactive, ref, toRefs, watch } from 'vue';
+    import { inject, onMounted, reactive, ref, toRefs, watch } from 'vue';
     import { deleteEmail, deleteForeverEmail, emailDetail, quickReplyEmail, withDrawEmail } from '@/api/email/index';
     import { useI18n } from 'vue-i18n';
-    import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
     import settings from '@/settings';
     import y9_storage from '@/utils/storage';
     // 注入 字体对象

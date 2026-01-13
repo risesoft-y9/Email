@@ -2,7 +2,7 @@
  * @Author:  shidaobang
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-19 15:59:49
+ * @LastEditTime: 2025-12-23 17:15:08
  * @Description: 文件夹
 -->
 <template>
@@ -117,13 +117,12 @@
 </template>
 
 <script lang="ts" setup>
-    import { defineProps, h, inject, onMounted, reactive, ref, toRefs, watch } from 'vue';
+    import { h, inject, onMounted, reactive, ref, toRefs, watch } from 'vue';
     import router from '@/router';
     import { deleteEmail, emailList, flagEmail, moveToEmail, readEmail, searchEmail } from '@/api/email/index';
     import { useI18n } from 'vue-i18n';
     import { useSettingStore } from '@/store/modules/settingStore';
     import { useFolderStore } from '@/store/modules/folderStore';
-    import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
     // 注入 字体对象
     const fontSizeObj: any = inject('sizeObjInfo') || {};
     const { t } = useI18n();

@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-19 12:20:08
+ * @LastEditTime: 2025-12-23 17:16:00
  * @Description: 上传历史邮件信息
 -->
 <template>
@@ -47,7 +47,6 @@
     import { useI18n } from 'vue-i18n';
     import { inject, onMounted, reactive, ref, toRefs } from 'vue';
     import type { UploadInstance } from 'element-plus';
-    import { ElNotification } from 'element-plus';
     import { importEml } from '@/api/importEml/index';
     import settings from '@/settings';
     import y9_storage from '@/utils/storage';

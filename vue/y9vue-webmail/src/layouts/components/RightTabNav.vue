@@ -360,7 +360,7 @@ menu: {
     homeRouteItemPath.value = settings.homeRouteItem.path;
 </script>
 <style lang="scss" scoped>
-    // @import '../../assets/css/global.scss';
+    //@import  '../../assets/css/global.scss';
     .indexlayout-top-tab-nav {
         height: ($headerTabNavHeight - 4px);
         padding-top: 4px;

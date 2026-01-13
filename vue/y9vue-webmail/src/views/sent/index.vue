@@ -2,7 +2,7 @@
  * @Author:  shidaobang
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-19 16:30:48
+ * @LastEditTime: 2025-12-23 17:17:21
  * @Description: 发件箱
 -->
 <template>
@@ -124,7 +124,7 @@
     import { useSettingStore } from '@/store/modules/settingStore';
     import { deleteEmail, emailList, flagEmail, moveToEmail, readEmail, searchEmail } from '@/api/email/index';
     import { useFolderStore } from '@/store/modules/folderStore';
-    import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
+
     // 注入 字体对象
     const fontSizeObj: any = inject('sizeObjInfo') || {};
     const { t } = useI18n();

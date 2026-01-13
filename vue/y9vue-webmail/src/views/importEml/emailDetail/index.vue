@@ -2,7 +2,7 @@
  * @Author: error: git config user.name && git config user.email & please set dead value or install git
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-14 15:57:52
+ * @LastEditTime: 2025-12-23 17:16:17
  * @Description: 导入邮件详情
 -->
 <template>
@@ -215,7 +215,6 @@
 <script lang="ts" setup>
     import { inject, onMounted, reactive, toRefs, watch } from 'vue';
     import { useI18n } from 'vue-i18n';
-    import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
     import settings from '@/settings';
     import y9_storage from '@/utils/storage';
     import { deleteEml, emlDetail } from '@/api/importEml/index';

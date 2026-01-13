@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2022-05-05 09:43:05
- * @LastEditTime: 2024-08-22 11:29:09
- * @LastEditors: chensiwen cikl777@163.com
+ * @LastEditTime: 2025-12-23 17:17:07
+ * @LastEditors: mengjuhua
  * @Description: 邮件查询
 -->
 <template>
@@ -68,7 +68,7 @@
     import { useI18n } from 'vue-i18n';
     import { flagEmail, searchEmail } from '@/api/email';
     import { useFolderStore } from '@/store/modules/folderStore';
-    import { ElNotification } from 'element-plus';
+
     // 注入 字体对象
     const fontSizeObj: any = inject('sizeObjInfo') || {};
     const { t } = useI18n();

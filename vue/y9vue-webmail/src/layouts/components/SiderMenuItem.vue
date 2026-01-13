@@ -1,10 +1,10 @@
 <!--
  * @Author: your name
  * @Date: 2022-01-11 18:38:31
- * @LastEditTime: 2022-12-29 19:03:32
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2026-01-13 15:39:48
+ * @LastEditors: mengjuhua
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: /sz- team-frontend-9.6.x/y9vue-home/src/layouts/components/SiderMenuItem.vue
+ * @FilePath: \vue\y9vue-webmail\src\layouts\components\SiderMenuItem.vue
 -->
 <template>
     <template v-if="!item.hidden">
@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-    import { computed, ComputedRef, defineComponent, PropType, Ref, toRefs } from 'vue';
+    import { computed, ComputedRef, defineComponent, nextTick, PropType, ref, Ref, toRefs } from 'vue';
     import { getRouteBelongTopMenu, hasChildRoute, RoutesDataItem } from '@/utils/routes';
     import { useSettingStore } from '@/store/modules/settingStore';
     import ALink from '@/layouts/components/ALink/index.vue';

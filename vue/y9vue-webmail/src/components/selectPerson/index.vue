@@ -64,7 +64,7 @@
 
 <script lang="ts" setup>
     import { useSettingStore } from '@/store/modules/settingStore';
-    import { computed, defineEmits, defineProps, inject, onMounted, ref, watch } from 'vue';
+    import { computed, inject, onMounted, ref, watch } from 'vue';
     import y9_storage from '@/utils/storage';
     // 注入 字体对象
     const fontSizeObj: any = inject('sizeObjInfo') || {};
