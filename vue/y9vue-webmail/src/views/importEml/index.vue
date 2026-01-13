@@ -2,7 +2,7 @@
  * @Author:  mengjuhua
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-19 12:04:37
+ * @LastEditTime: 2025-12-23 17:16:29
  * @Description: 历史邮件
 -->
 <template>
@@ -58,7 +58,6 @@
     import { deleteEml, searchEml } from '@/api/importEml/index';
     import { useI18n } from 'vue-i18n';
     import { useSettingStore } from '@/store/modules/settingStore';
-    import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
     import { $deeploneObject } from '@/utils/object';
     import uploadEml from './dialogContent/uploadEml.vue';
     // 注入 字体对象

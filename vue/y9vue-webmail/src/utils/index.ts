@@ -56,22 +56,22 @@ export const randomString = (e) => {
  * @author Yehaifeng
  */
 export const __debounce = (fun: Function, wait: Number): Function => {
-	let timer,
-		count = 0; //维护全局纯净，借助闭包来实现
-	return function () {
-		if (!count) {
-			count++;
-			fun();
-		} else {
-			if (timer) {
-				clearTimeout(timer);
-			}
-			timer = setTimeout(function () {
-				//timer有值为真，这个事件已经触发了一次，重新开始计数
-				count = 0;
-			}, wait);
-		}
-	};
+    let timer,
+        count = 0; //维护全局纯净，借助闭包来实现
+    return function () {
+        if (!count) {
+            count++;
+            fun();
+        } else {
+            if (timer) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(function () {
+                //timer有值为真，这个事件已经触发了一次，重新开始计数
+                count = 0;
+            }, wait);
+        }
+    };
 };
 
 /**
@@ -82,25 +82,6 @@ export const __debounce = (fun: Function, wait: Number): Function => {
  * @author Yehaifeng
  */
 export const debounce__ = (fun: Function, wait: Number): Function => {
-	var timer; //维护全局纯净，借助闭包来实现
-	return function () {
-		if (timer) {
-			//timer有值为真，这个事件已经触发了一次，重新开始计数
-			clearTimeout(timer);
-		}
-		timer = setTimeout(function () {
-			fun();
-		}, wait);
-	};
-};
-
-/**
- * 防抖函数
- * 使用示例 debounce(fun,wait)  fun:事件处理函数， wait:延迟时间
- * @returns {String}
- * @author Yehaifeng
- */
-export const debounce = (fun: Function, wait: number): Function => {
     var timer; //维护全局纯净，借助闭包来实现
     return function () {
         if (timer) {
@@ -112,6 +93,58 @@ export const debounce = (fun: Function, wait: number): Function => {
         }, wait);
     };
 };
+
+/**
+ * 防抖函数
+ * 使用示例 debounce(fun,wait)  fun:事件处理函数， wait:延迟时间
+ * @returns {String}
+ * @author Yehaifeng
+ */
+export const debounce = (fun: Function, wait: Number): Function => {
+    var timer; //维护全局纯净，借助闭包来实现
+    return function () {
+        if (timer) {
+            //timer有值为真，这个事件已经触发了一次，重新开始计数
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+            fun();
+        }, wait);
+    };
+};
+
+/**
+ * 节流函数
+ * 使用示例 throttle(fn, threshhold)  fn:事件处理函数， threshhold:时间阀值
+ */
+export function throttle(fn: Function, threshhold: Number, scope) {
+    threshhold || (threshhold = 250); // 默认阈值为250毫秒
+    var last, timer;
+    return function () {
+        var context = scope || this;
+
+        var now = +new Date(),
+            args = arguments;
+        if (last && now < last + threshhold) {
+            // 如果距离上次执行的时间小于设定的阈值，则利用setTimeout延迟执行
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                last = now;
+                fn.apply(context, args);
+            }, threshhold);
+        } else {
+            last = now;
+            fn.apply(context, args);
+        }
+    };
+}
+/**
+ * 防抖函数&节流函数 使用示例
+ */
+// function updateScreen() {
+//     console.log('更新屏幕');
+// }
+// var throttledUpdateScreen = throttle(updateScreen, 1000);
 
 /**
  * 生成guid函数

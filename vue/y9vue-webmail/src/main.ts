@@ -1,10 +1,10 @@
 /*
  * @Author: your name
  * @Date: 2022-01-10 18:09:52
- * @LastEditTime: 2024-08-26 11:47:15
+ * @LastEditTime: 2025-12-23 16:49:33
  * @LastEditors: mengjuhua
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: /sz- team-frontend-9.6.x/y9vue-email/src/main.js
+ * @FilePath: \y9-vue\y9vue-webmail\src\main.ts
  */
 import router from '@/router/index';
 import { setupStore } from '@/store';
@@ -18,9 +18,10 @@ import './theme/global.scss';
 import i18n from './language';
 
 //有生云公共组件库
-import y9pluginComponents from 'y9plugin-components';
-import y9_zhCn from 'y9plugin-components/src/language/zh-cn'; //默认的y9组件插件中文包
-import y9_en from 'y9plugin-components/src/language/en'; //默认的y9组件插件英文包
+import y9pluginComponents from 'y9plugin-components-auto';
+import 'y9plugin-components-auto/dist/style.css';
+import y9_zhCn from 'y9plugin-components-auto/dist/locale/zh-cn.mjs'; //默认的y9组件插件中文包
+import y9_en from 'y9plugin-components-auto/dist/locale/en.mjs'; //默认的y9组件插件英文包
 import { useSettingStore } from '@/store/modules/settingStore';
 import customDirective from '@/utils/directive'; //自定义指令
 
@@ -45,7 +46,7 @@ app.use(sso, { env });
 
 setupStore(app);
 
-let opts = ref({}); //y9组件选项配置
+let opts = ref({} as any); //y9组件选项配置
 watch(
     () => useSettingStore().getWebLanguage, //监听语言变化，配置对应的语言包
     (newLang) => {

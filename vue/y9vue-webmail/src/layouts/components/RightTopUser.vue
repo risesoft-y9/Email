@@ -36,21 +36,15 @@
     // const personInfo = ref();
     // 获取当前登录用户信息
     const userInfo = y9_storage.getObjectItem('ssoUserInfo');
-    const initInfo = y9_storage.getObjectItem('cmsInitInfo');
     const dn = userInfo?.dn;
     let deptName = ref('');
 
     onMounted(() => {
-        if (initInfo) {
-            deptName.value = initInfo?.department?.name;
+        if (dn.indexOf(',ou=') != -1) {
+            deptName.value = dn.substring(dn.indexOf(',ou=') + 4);
+            deptName.value = deptName.value.substring(0, deptName.value.indexOf(','));
         } else {
-            if (dn.indexOf(',ou=') != -1) {
-                deptName.value = dn.substring(dn.indexOf(',ou=') + 4);
-                deptName.value = deptName.value.substring(0, deptName.value.indexOf(','));
-            } else {
-                deptName.value = dn.substring(dn.indexOf(',o=') + 3, dn.length);
-            }
-            // console.log(deptName.value);
+            deptName.value = dn.substring(dn.indexOf(',o=') + 3, dn.length);
         }
     });
 </script>

@@ -45,7 +45,7 @@
 
     //接下来定义编辑器所需要的插件数据
     import { reactive, ref } from 'vue';
-    import { defineEmits, onMounted, watch } from '@vue/runtime-core';
+    import { onMounted, watch } from '@vue/runtime-core';
     import { uploadFile } from '@/api/email/attachment';
     // import { updateImg } from '@/api/order/order'
     const emits = defineEmits(['getContent', 'getContentTxt']);

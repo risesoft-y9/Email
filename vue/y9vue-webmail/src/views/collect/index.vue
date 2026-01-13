@@ -2,7 +2,7 @@
  * @Author:  shidaobang
  * @Date: 2022-08-02 10:51:50
  * @LastEditors: mengjuhua
- * @LastEditTime: 2024-08-19 16:07:54
+ * @LastEditTime: 2025-12-23 17:14:38
  * @Description: 星标邮件
 -->
 <template>
@@ -62,7 +62,6 @@
     import { useI18n } from 'vue-i18n';
     import { useSettingStore } from '@/store/modules/settingStore';
     import { flagEmail, searchEmail } from '@/api/email/index';
-    import { ElNotification } from 'element-plus';
     // 注入 字体对象
     const fontSizeObj: any = inject('sizeObjInfo') || {};
     const { t } = useI18n();

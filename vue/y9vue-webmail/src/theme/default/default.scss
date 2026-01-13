@@ -35,16 +35,13 @@
         'disabled-base': #bbbccc
     ),
     $bg-color: ("":"#ffffff !default"),
-    $color-info: #ddd
-
-!default
-,
-$border-color: (
-  // 'light': #e4ee4e,
-  // 'lighter': #ebeebe,
-  // 'extra-light': #f2ff2f,
-  // 'dark': #d4dd4d,
-  // 'darker': #cddcdd,
-  // 'base': #dcddcd,
-))
-;
+    $color-info: #ddd !default,
+    $border-color: (
+        // 'light': #e4ee4e,
+        // 'lighter': #ebeebe,
+        // 'extra-light': #f2ff2f,
+        // 'dark': #d4dd4d,
+        // 'darker': #cddcdd,
+        // 'base': #dcddcd,
+    )
+);
