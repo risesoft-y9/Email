@@ -13,6 +13,7 @@
     <artifactId>y9-email</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
+    <name>y9-email</name>
     <description>RiseSoft/Email parent pom.xml file</description>
     <url>https://gitee.com/risesoft-y9/y9-email</url>
 
@@ -249,7 +250,7 @@
                         <artifactId>central-publishing-maven-plugin</artifactId>
                         <configuration>
                             <excludeArtifacts>
-                                <artifact>risenet-y9boot-webapp-webmail</artifact>
+                                <artifact>risenet-y9boot-server-webmail</artifact>
                             </excludeArtifacts>
                         </configuration>
                     </plugin>
