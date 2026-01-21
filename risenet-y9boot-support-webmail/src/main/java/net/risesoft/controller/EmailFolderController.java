@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import net.risesoft.controller.dto.EmailFolderDTO;
+import net.risesoft.log.OperationTypeEnum;
+import net.risesoft.log.annotation.RiseLog;
 import net.risesoft.pojo.Y9Result;
 import net.risesoft.service.EmailFolderService;
 
@@ -31,6 +33,7 @@ public class EmailFolderController {
      * @param newFolderName 新文件夹名称
      * @return {@code Y9Result<Object>}
      */
+    @RiseLog(operationName = "新增或修改文件夹", operationType = OperationTypeEnum.MODIFY)
     @PostMapping
     public Y9Result<Object> save(String originFolderName, String newFolderName) {
         emailFolderService.save(originFolderName, newFolderName);
@@ -43,6 +46,7 @@ public class EmailFolderController {
      * @param folder 文件夹
      * @return {@code Y9Result<Object>}
      */
+    @RiseLog(operationName = "删除文件夹", operationType = OperationTypeEnum.DELETE)
     @PostMapping(value = "/delete")
     public Y9Result<Object> delete(String folder) {
         emailFolderService.delete(folder);
@@ -54,6 +58,7 @@ public class EmailFolderController {
      * 
      * @return {@code Y9Result<List<}{@link EmailFolderDTO}{@code >>}
      */
+    @RiseLog(operationName = "获取默认文件夹列表")
     @GetMapping(value = "/defaultList")
     public Y9Result<List<EmailFolderDTO>> defaultList() {
         List<EmailFolderDTO> emailFolderList = emailFolderService.getDefaultFolderList();
@@ -66,6 +71,7 @@ public class EmailFolderController {
      * @return {@code Y9Result<List<}{@link EmailFolderDTO}{@code >>}
      * @throws MessagingException 通讯异常
      */
+    @RiseLog(operationName = "获取自定义文件夹列表")
     @GetMapping(value = "/customList")
     public Y9Result<List<EmailFolderDTO>> customList() throws MessagingException {
         List<EmailFolderDTO> emailFolderList = emailFolderService.list();
@@ -78,6 +84,7 @@ public class EmailFolderController {
      * @return {@code Y9Result<Map<String, Object>>}
      * @throws MessagingException 通讯异常
      */
+    @RiseLog(operationName = "获取所有文件夹列表")
     @GetMapping(value = "/allList")
     public Y9Result<Map<String, Object>> list() throws MessagingException {
         List<EmailFolderDTO> customFolderList = emailFolderService.list();

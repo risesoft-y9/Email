@@ -95,7 +95,7 @@ public class ImportEmlController {
      * @return {@code Y9Result<Object>}
      */
 
-    @RiseLog(moduleName = "电子邮件", operationName = "批量删除导入信息")
+    @RiseLog(operationName = "批量删除导入信息")
     @PostMapping(value = "/deleteEml")
     public Y9Result<Object> deleteEml(@RequestParam @NotBlank List<String> ids) {
         importEmlService.delete(ids);
@@ -107,10 +107,10 @@ public class ImportEmlController {
      *
      * @param attId 附件id
      * @param response 响应
-     * @param request 请求
      */
+    @RiseLog(operationName = "下载附件", operationType = OperationTypeEnum.DOWNLOAD)
     @RequestMapping(value = "/download")
-    public void download(String attId, HttpServletResponse response, HttpServletRequest request) {
+    public void download(String attId, HttpServletResponse response) {
         ImportEmlAttchMents attachment = importEmlAttchMentsService.getById(attId);
         if (attachment == null) {
             LOGGER.warn("该附件不存在！");
@@ -128,12 +128,13 @@ public class ImportEmlController {
     }
 
     /**
-     * 附件下载
+     * 批量下载附件
      *
      * @param importEmlId 导入邮件id
      * @param response 响应
      * @param request 请求
      */
+    @RiseLog(operationName = "批量下载附件", operationType = OperationTypeEnum.DOWNLOAD)
     @RequestMapping(value = "/batchDownload")
     public void download4Batch(String importEmlId, HttpServletResponse response, HttpServletRequest request) {
         List<ImportEmlAttchMents> attachmentList = importEmlAttchMentsService.listByImportEmlId(importEmlId);
@@ -172,7 +173,7 @@ public class ImportEmlController {
      * @param id 部门id
      * @return {@code Y9Result<ImportEmlVO>}
      */
-    @RiseLog(moduleName = "电子邮件", operationName = "根据导入id，获取详细信息")
+    @RiseLog(operationName = "根据导入id，获取详细信息")
     @GetMapping(value = "/getById")
     public Y9Result<ImportEmlVO> getById(@RequestParam @NotBlank String id) {
         ImportEml eml = importEmlService.getById(id);
@@ -216,7 +217,7 @@ public class ImportEmlController {
      * @param file EML文件
      * @return {@code Y9Result<Object>}
      */
-    @RiseLog(moduleName = "电子邮件", operationName = "上传邮件EML文件", operationType = OperationTypeEnum.ADD)
+    @RiseLog(operationName = "上传邮件EML文件", operationType = OperationTypeEnum.ADD)
     @PostMapping(value = "/importEml")
     public Y9Result<Object> importOrgTreeXls(@RequestParam MultipartFile file) {
         try (InputStream dataStream = file.getInputStream()) {
@@ -238,7 +239,7 @@ public class ImportEmlController {
      * @param pageQuery 分页信息
      * @return {@code Y9Page<ImportEml>}
      */
-    @RiseLog(moduleName = "电子邮件", operationName = "分页获取邮件信息")
+    @RiseLog(operationName = "分页获取邮件信息")
     @GetMapping("/page")
     public Y9Page<ImportEml> page(String subject, String text, Y9PageQuery pageQuery) {
         Page<ImportEml> pageList =

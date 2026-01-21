@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 
 import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.james.service.JamesUserService;
+import net.risesoft.log.OperationTypeEnum;
+import net.risesoft.log.annotation.RiseLog;
 import net.risesoft.model.platform.org.Person;
 import net.risesoft.pojo.Y9Result;
 import net.risesoft.y9.Y9LoginUserHolder;
@@ -27,6 +29,7 @@ public class SyncController {
      * 
      * @return {@code Y9Result<String>}
      */
+    @RiseLog(operationName = "同步人员信息", operationType = OperationTypeEnum.EVENT)
     @RequestMapping(value = "/syncUsers")
     public Y9Result<String> syncUsers() {
         String tenantId = Y9LoginUserHolder.getTenantId();

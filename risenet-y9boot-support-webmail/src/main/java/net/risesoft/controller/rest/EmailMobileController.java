@@ -39,6 +39,8 @@ import net.risesoft.enums.platform.org.OrgTypeEnum;
 import net.risesoft.james.entity.JamesAddressBook;
 import net.risesoft.james.service.JamesAddressBookService;
 import net.risesoft.james.service.JamesUserService;
+import net.risesoft.log.OperationTypeEnum;
+import net.risesoft.log.annotation.RiseLog;
 import net.risesoft.model.platform.org.OrgUnit;
 import net.risesoft.model.platform.org.Organization;
 import net.risesoft.model.platform.org.Person;
@@ -80,6 +82,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<Object>}
      * @throws MessagingException 通讯异常
      */
+    @RiseLog(operationName = "删除邮件", operationType = OperationTypeEnum.DELETE)
     @DeleteMapping(value = "/email")
     public Y9Result<Object> delete(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @RequestParam(value = "uids") long[] uids, String folder)
@@ -128,6 +131,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<}{@link EmailDetailDTO}{@code >}
      * @throws Exception 异常
      */
+    @RiseLog(operationName = "邮件详情")
     @GetMapping(value = "/{folder}/{uid}")
     public Y9Result<EmailDetailDTO> detail(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, @PathVariable String folder, @PathVariable long uid)
@@ -370,6 +374,7 @@ public class EmailMobileController {
      * @return {@code Y9Result<String>}
      * @throws Exception 异常
      */
+    @RiseLog(operationName = "保存邮件", operationType = OperationTypeEnum.ADD)
     @PostMapping(value = "/save")
     public Y9Result<String> save(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, EmailDTO email) throws Exception {

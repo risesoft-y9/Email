@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import net.risesoft.api.platform.org.CustomGroupApi;
 import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.enums.platform.org.OrgTypeEnum;
+import net.risesoft.log.annotation.RiseLog;
 import net.risesoft.model.platform.org.CustomGroup;
 import net.risesoft.model.platform.org.CustomGroupMember;
 import net.risesoft.model.platform.org.Person;
@@ -34,6 +35,7 @@ public class GroupController {
      * 
      * @return {@code Y9Result<List<}{@link CustomGroup}{@code >>}
      */
+    @RiseLog(operationName = "获取所有群组")
     @RequestMapping(value = "/getAllGroups")
     public Y9Result<List<CustomGroup>> getAllGroups() {
         String tenantId = Y9LoginUserHolder.getTenantId();
@@ -48,6 +50,7 @@ public class GroupController {
      * @param groupId 用户组id
      * @return {@code Y9Result<List<}{@link CustomGroupMember}{@code >>}
      */
+    @RiseLog(operationName = "获取群组成员")
     @ResponseBody
     @RequestMapping(value = "/getGroupMembers4Email")
     public Y9Result<List<CustomGroupMember>> getEmailGroupMembers(String groupId) {
@@ -66,6 +69,7 @@ public class GroupController {
      * @param groupId 用户组id
      * @return {@code Y9Result<List<}{@link CustomGroupMember}{@code >>}
      */
+    @RiseLog(operationName = "获取群组成员")
     @RequestMapping(value = "/getGroupMembers")
     public Y9Result<List<CustomGroupMember>> getGroupMembers(String groupId) {
         String tenantId = Y9LoginUserHolder.getTenantId();
@@ -89,10 +93,11 @@ public class GroupController {
     }
 
     /**
-     * 获取邮件相关群组 1
+     * 获取邮件相关群组
      * 
      * @return {@code Y9Result<List<}{@link CustomGroup}{@code >>}
      */
+    @RiseLog(operationName = "获取邮件相关群组")
     @RequestMapping(value = "/getGroups4Email")
     public Y9Result<List<CustomGroup>> getGroups4Email() {
         String tenantId = Y9LoginUserHolder.getTenantId();

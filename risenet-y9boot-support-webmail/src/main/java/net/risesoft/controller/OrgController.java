@@ -16,6 +16,7 @@ import net.risesoft.api.platform.org.OrganizationApi;
 import net.risesoft.enums.platform.org.OrgTreeTypeEnum;
 import net.risesoft.enums.platform.org.OrgTypeEnum;
 import net.risesoft.james.service.JamesUserService;
+import net.risesoft.log.annotation.RiseLog;
 import net.risesoft.model.platform.org.OrgUnit;
 import net.risesoft.model.platform.org.Organization;
 import net.risesoft.model.platform.org.Person;
@@ -36,6 +37,7 @@ public class OrgController {
      * 
      * @return {@code Y9Result<List<}{@link Organization}{@code >>}
      */
+    @RiseLog(operationName = "获取组织列表")
     @GetMapping(value = "/getOrganization")
     public Y9Result<List<Organization>> getOrganization() {
         String tenantId = Y9LoginUserHolder.getTenantId();
@@ -51,6 +53,7 @@ public class OrgController {
      * @param name 名字
      * @return {@code Y9Result<List<}{@link OrgUnit}{@code >>}
      */
+    @RiseLog(operationName = "获取组织树")
     @RequestMapping("/getOrgTree")
     public Y9Result<List<OrgUnit>> getOrgTree(@RequestParam(required = false) String id,
         @RequestParam(required = false) OrgTreeTypeEnum treeType, @RequestParam(required = false) String name) {
