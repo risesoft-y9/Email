@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import net.risesoft.james.service.JamesUserService;
+import net.risesoft.log.OperationTypeEnum;
+import net.risesoft.log.annotation.RiseLog;
 import net.risesoft.pojo.Y9Result;
 
 @RestController(value = "standardJamesUserController")
@@ -25,6 +27,7 @@ public class JamesUserController {
      * @param orgUnitIdList 格式 orgType:orgUnitId
      * @return {@code Y9Result<List<String>>}
      */
+    @RiseLog(operationName = "获取组织架构下所有人的邮箱地址")
     @GetMapping(value = "/addressList")
     public Y9Result<List<String>>
         getEmailAddressListByOrgUnitId(@RequestParam(name = "orgUnitIds") List<String> orgUnitIdList) {
@@ -39,6 +42,7 @@ public class JamesUserController {
      * @param plainText 密码
      * @return {@code Y9Result<Object>}
      */
+    @RiseLog(operationName = "修改用户密码", operationType = OperationTypeEnum.MODIFY)
     @RequestMapping(value = "/modifyPassWord")
     public Y9Result<Object> modifyPassWord(String id, String plainText) {
         jamesUserService.modifyPassword(id, plainText);

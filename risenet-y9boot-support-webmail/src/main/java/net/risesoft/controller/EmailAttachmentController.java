@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 
 import net.risesoft.controller.dto.EmailAttachmentDTO;
+import net.risesoft.log.OperationTypeEnum;
+import net.risesoft.log.annotation.RiseLog;
 import net.risesoft.pojo.Y9Result;
 import net.risesoft.service.EmailAttachmentService;
 import net.risesoft.y9.Y9Context;
@@ -30,6 +32,7 @@ public class EmailAttachmentController {
 
     private final Y9Properties y9Properties;
 
+    @RiseLog(operationName = "添加附件", operationType = OperationTypeEnum.ADD)
     @PostMapping
     public Y9Result<EmailAttachmentDTO> addAttachment(String folder, String messageId, MultipartFile file)
         throws Exception {
@@ -45,6 +48,7 @@ public class EmailAttachmentController {
      * @param request 请求
      * @param response 响应
      */
+    @RiseLog(operationName = "批量下载附件", operationType = OperationTypeEnum.DOWNLOAD)
     @RequestMapping(value = "/batchDownload")
     public void batchDownload(String folder, String messageId, HttpServletRequest request,
         HttpServletResponse response) {
@@ -60,6 +64,7 @@ public class EmailAttachmentController {
      * @return {@code Y9Result<Object>}
      * @throws Exception 异常
      */
+    @RiseLog(operationName = "删除附件", operationType = OperationTypeEnum.DELETE)
     @PostMapping(value = "/delete")
     public Y9Result<Object> deleteAttachment(String folder, String messageId, String fileName) throws Exception {
         emailAttachmentService.removeAttachment(folder, messageId, fileName);
@@ -75,6 +80,7 @@ public class EmailAttachmentController {
      * @param response 响应
      * @param request 请求
      */
+    @RiseLog(operationName = "下载附件", operationType = OperationTypeEnum.DOWNLOAD)
     @RequestMapping(value = "/download")
     public void download(String folder, String messageId, String fileName, HttpServletResponse response,
         HttpServletRequest request) {
@@ -92,6 +98,7 @@ public class EmailAttachmentController {
      * @return {@code Y9Result<String>}
      * @throws Exception 异常
      */
+    @RiseLog(operationName = "上传文件", operationType = OperationTypeEnum.UPLOAD)
     @PostMapping("/uploadFile")
     public Y9Result<String> uploadFile(MultipartFile file) throws Exception {
         String originalFilename = file.getOriginalFilename();

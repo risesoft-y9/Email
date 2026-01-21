@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 
 import net.risesoft.james.entity.JamesAddressBook;
 import net.risesoft.james.service.JamesAddressBookService;
+import net.risesoft.log.OperationTypeEnum;
+import net.risesoft.log.annotation.RiseLog;
 import net.risesoft.pojo.Y9Result;
 
 @RestController(value = "standardJamesAddressBookController")
@@ -25,6 +27,7 @@ public class JamesAddressBookController {
      * @return {@code Y9Result<Object>}
      * @throws Exception 异常
      */
+    @RiseLog(operationName = "个人通讯录保存/修改", operationType = OperationTypeEnum.MODIFY)
     @PostMapping
     public Y9Result<Object> save(JamesAddressBook jamesAddressBook) throws Exception {
         return Y9Result.success(jamesAddressBookService.saveOrUpdate(jamesAddressBook), "保存成功");
@@ -36,6 +39,7 @@ public class JamesAddressBookController {
      * @param search 搜索条件
      * @return {@code Y9Result<Object>}
      */
+    @RiseLog(operationName = "个人通讯录查询")
     @GetMapping(value = "/search")
     public Y9Result<Object> search(String search) {
         return Y9Result.success(jamesAddressBookService.findSearch(search));
@@ -47,6 +51,7 @@ public class JamesAddressBookController {
      * @param id 通讯录id
      * @return {@code Y9Result<Object>}
      */
+    @RiseLog(operationName = "通讯录详情")
     @GetMapping(value = "/addressBook")
     public Y9Result<Object> addressBookList(String id) {
         return Y9Result.success(jamesAddressBookService.findOne(id));
@@ -57,6 +62,7 @@ public class JamesAddressBookController {
      *
      * @return {@code Y9Result<Object>}
      */
+    @RiseLog(operationName = "获取个人通讯录")
     @GetMapping(value = "/addressBookList")
     public Y9Result<Object> addressBookList() {
         return Y9Result.success(jamesAddressBookService.findAll());
@@ -68,6 +74,7 @@ public class JamesAddressBookController {
      * @param id 通讯录id
      * @return {@code Y9Result<Object>}
      */
+    @RiseLog(operationName = "删除个人通讯录", operationType = OperationTypeEnum.DELETE)
     @PostMapping(value = "/delete")
     public Y9Result<Object> delete(String id) {
         jamesAddressBookService.delete(id);
