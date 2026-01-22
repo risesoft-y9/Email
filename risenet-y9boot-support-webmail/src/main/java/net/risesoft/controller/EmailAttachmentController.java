@@ -104,7 +104,7 @@ public class EmailAttachmentController {
         String originalFilename = file.getOriginalFilename();
         String fileName = FilenameUtils.getName(originalFilename);
         String fullPath = Y9FileStore.buildPath(Y9Context.getSystemName());
-        Y9FileStore y9FileStore = y9FileStoreService.uploadFile(file, fullPath, fileName);
+        Y9FileStore y9FileStore = y9FileStoreService.uploadFile(file.getInputStream(), fullPath, fileName);
         String webmailBaseUrl = y9Properties.getCommon().getWebmailBaseUrl();
         return Y9Result.success(webmailBaseUrl + "/s/" + y9FileStore.getRealFileName());
     }
