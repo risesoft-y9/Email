@@ -1,11 +1,12 @@
 management:
-    endpoint:
-        health:
-            show-details: always
     endpoints:
         web:
             exposure:
                 include: health,info
+    endpoint:
+        health:
+            probes:
+                enabled: true
     metrics:
         tags:
             application: 'webmail'
@@ -13,6 +14,7 @@ management:
         metrics:
             export:
                 enabled: true
+
 server:
     port: 8080
     servlet:
