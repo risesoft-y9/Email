@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.mail.Folder;
 import javax.mail.MessagingException;
+import javax.mail.Store;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,6 @@ import net.risesoft.james.service.JamesUserService;
 import net.risesoft.service.EmailFolderService;
 import net.risesoft.support.DefaultFolder;
 import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
-
-import jodd.mail.ReceiveMailSession;
 
 @Service
 public class EmailFolderServiceImpl extends MailHelper implements EmailFolderService {
@@ -34,10 +33,9 @@ public class EmailFolderServiceImpl extends MailHelper implements EmailFolderSer
     public List<EmailFolderDTO> list() throws MessagingException {
         List<EmailFolderDTO> emailFolderList = new ArrayList<>();
 
-        ReceiveMailSession session = createReceiveMailSession();
-        session.open();
+        Store store = createReceiveMailSession();
         try {
-            Folder myFolder = session.getFolder(DefaultFolder.MY_FOLDER.getName());
+            Folder myFolder = store.getFolder(DefaultFolder.MY_FOLDER.getName());
             if (myFolder.exists()) {
                 Folder[] folders = myFolder.list();
                 for (Folder folder : folders) {
@@ -49,21 +47,20 @@ public class EmailFolderServiceImpl extends MailHelper implements EmailFolderSer
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-        session.close();
+        store.close();
         return emailFolderList;
     }
 
     @Override
-    public List<EmailFolderDTO> getDefaultFolderList() {
-        ReceiveMailSession session = createReceiveMailSession();
-        session.open();
+    public List<EmailFolderDTO> getDefaultFolderList() throws MessagingException {
+        Store store = createReceiveMailSession();
 
         List<EmailFolderDTO> emailFolderDTOList = new ArrayList<>();
         List<DefaultFolder> defaultFolderList = Arrays.stream(DefaultFolder.values())
             .filter(defaultFolder -> !defaultFolder.isExistSubFolder())
             .collect(Collectors.toList());
         for (DefaultFolder folder : defaultFolderList) {
-            Folder mailFolder = session.getFolder(folder.getName());
+            Folder mailFolder = store.getFolder(folder.getName());
             try {
                 if (!mailFolder.exists()) {
                     mailFolder.create(Folder.HOLDS_MESSAGES);
@@ -74,17 +71,16 @@ public class EmailFolderServiceImpl extends MailHelper implements EmailFolderSer
             emailFolderDTOList.add(new EmailFolderDTO(folder.getName(), folder.getName(), folder.getcName()));
         }
 
-        session.close();
+        store.close();
 
         return emailFolderDTOList;
     }
 
     @Override
-    public void save(String originFolderName, String newFolderName) {
-        ReceiveMailSession session = createReceiveMailSession();
-        session.open();
+    public void save(String originFolderName, String newFolderName) throws MessagingException {
+        Store store = createReceiveMailSession();
         try {
-            Folder myFolder = session.getFolder(DefaultFolder.MY_FOLDER.getName());
+            Folder myFolder = store.getFolder(DefaultFolder.MY_FOLDER.getName());
             Folder newFolder = myFolder.getFolder(newFolderName);
             if (StringUtils.isNotBlank(originFolderName)) {
                 Folder originFolder = myFolder.getFolder(originFolderName);
@@ -95,19 +91,18 @@ public class EmailFolderServiceImpl extends MailHelper implements EmailFolderSer
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-        session.close();
+        store.close();
     }
 
     @Override
-    public void delete(String folderName) {
-        ReceiveMailSession session = createReceiveMailSession();
-        session.open();
+    public void delete(String folderName) throws MessagingException {
+        Store store = createReceiveMailSession();
         try {
-            Folder myFolder = session.getFolder(DefaultFolder.MY_FOLDER.getName());
+            Folder myFolder = store.getFolder(DefaultFolder.MY_FOLDER.getName());
             myFolder.getFolder(folderName).delete(true);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-        session.close();
+        store.close();
     }
 }

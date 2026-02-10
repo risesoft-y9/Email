@@ -444,7 +444,6 @@ public class MimeMessageParser {
     protected String getDataSourceName(final Part part, final DataSource dataSource)
         throws MessagingException, UnsupportedEncodingException {
         String result = dataSource.getName();
-
         if (result == null || result.length() == 0) {
             result = part.getFileName();
         }

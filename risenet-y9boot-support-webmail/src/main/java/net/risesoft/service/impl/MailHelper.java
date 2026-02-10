@@ -3,11 +3,16 @@ package net.risesoft.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.activation.DataSource;
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -35,12 +40,6 @@ import net.risesoft.y9.Y9LoginUserHolder;
 import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 import net.risesoft.y9.util.signing.Y9MessageDigestUtil;
 
-import jodd.mail.ImapServer;
-import jodd.mail.MailServer;
-import jodd.mail.ReceiveMailSession;
-import jodd.mail.SendMailSession;
-import jodd.mail.SmtpServer;
-
 @RequiredArgsConstructor
 public class MailHelper {
 
@@ -62,34 +61,48 @@ public class MailHelper {
         return emailAttachmentDTO;
     }
 
-    public ReceiveMailSession createReceiveMailSession() {
+    public Store createReceiveMailSession() throws MessagingException {
+        // todo 密码
         // String plainText = properties.getCommon().getDefaultPassword();
         String plainText = jamesUserService.getPlainTextByPersonId(Y9LoginUserHolder.getUserInfo().getPersonId());
         String email = EmailThreadLocalHolder.getEmailAddress();
 
-        // todo 密码
-        ImapServer imapServer = MailServer.create()
-            .host(y9WebMailProperties.getImapHost())
-            // 3.7.x james 无 authorizationid 时用户密码存在@符号会有问题
-            // 具体可跟踪源码 org.apache.james.imap.processor.AuthenticateProcessor#parseDelegationAttempt
-            .property("mail.imap.sasl.authorizationid", email)
-            .port(y9WebMailProperties.getImapPort())
-            .auth(email, plainText)
-            .buildImapMailServer();
-        return imapServer.createSession();
+        Properties props = new Properties();
+        props.put("mail.store.protocol", "imap");
+        // 3.7.x james 无 authorizationid 时用户密码存在@符号会有问题
+        // 具体可跟踪源码 org.apache.james.imap.processor.AuthenticateProcessor#parseDelegationAttempt
+        props.put("mail.imap.sasl.authorizationid", email);
+        props.put("mail.imap.host", y9WebMailProperties.getImapHost());
+        props.put("mail.imap.port", y9WebMailProperties.getImapPort());
+        props.put("mail.imap.auth", "true");
+
+        Session session = Session.getInstance(props);
+        // session.setDebug(true);
+
+        Store store = session.getStore();
+        store.connect(email, plainText);
+
+        return store;
     }
 
-    public SendMailSession createSendMailSession() {
+    public Session createSendMailSession() {
         // String plainText = properties.getCommon().getDefaultPassword();
         String plainText = jamesUserService.getPlainTextByPersonId(Y9LoginUserHolder.getUserInfo().getPersonId());
         String email = EmailThreadLocalHolder.getEmailAddress();
 
-        SmtpServer smtpServer = MailServer.create()
-            .host(y9WebMailProperties.getSmtpHost())
-            .port(y9WebMailProperties.getSmtpPort())
-            .auth(email, plainText)
-            .buildSmtpMailServer();
-        return smtpServer.createSession();
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", y9WebMailProperties.getSmtpHost());
+        prop.put("mail.smtp.port", y9WebMailProperties.getSmtpPort());
+        prop.put("mail.smtp.auth", "true");
+
+        Session session = Session.getInstance(prop, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(email, plainText);
+            }
+        });
+        // session.setDebug(true);
+        return session;
     }
 
     public Message getMessage(IMAPFolder folder, String messageId) throws MessagingException {
@@ -121,24 +134,22 @@ public class MailHelper {
                     .stream()
                     .map(address -> ((InternetAddress)address).getAddress())
                     .collect(Collectors.toList());
-                if (emailAddressList != null && emailAddressList.size() != 0) {
-                    List<ToDTO> toDTOList = new ArrayList<ToDTO>();
-                    for (String emailAddress : emailAddressList) {
-                        if (emailAddress.indexOf("@youshengyun.com") == -1)
-                            break;
-                        ToDTO toDTO = new ToDTO();
-                        toDTO.setTo(emailAddress);
-                        JamesUser = jamesUserService.findByEmailAddress(emailAddress);
-                        if (JamesUser != null) {
-                            person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
-                            toDTO.setToName(person.getName());
-                            toDTO.setToAvator(person.getAvator());
-                        }
-                        toDTOList.add(toDTO);
+                List<ToDTO> toDTOList = new ArrayList<>();
+                for (String emailAddress : emailAddressList) {
+                    if (!emailAddress.contains("@youshengyun.com"))
+                        break;
+                    ToDTO toDTO = new ToDTO();
+                    toDTO.setTo(emailAddress);
+                    JamesUser = jamesUserService.findByEmailAddress(emailAddress);
+                    if (JamesUser != null) {
+                        person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
+                        toDTO.setToName(person.getName());
+                        toDTO.setToAvator(person.getAvator());
                     }
-                    emailListDTO.setToDTOList(toDTOList);
+                    toDTOList.add(toDTO);
                 }
-                if (parser.getFrom().indexOf("@youshengyun.com") != -1) {
+                emailListDTO.setToDTOList(toDTOList);
+                if (parser.getFrom().contains("@youshengyun.com")) {
                     emailListDTO.setFrom(parser.getFrom());
                     JamesUser = jamesUserService.findByEmailAddress(emailListDTO.getFrom());
                     if (JamesUser != null) {
@@ -168,30 +179,28 @@ public class MailHelper {
                     .stream()
                     .map(address -> ((InternetAddress)address).getAddress())
                     .collect(Collectors.toList());
-                if (emailAddressList != null && emailAddressList.size() != 0) {
-                    for (String emailAddress : emailAddressList) {
-                        if (emailAddress.equals(email))
-                            continue;
-                        boolean exists = contactDTOList.stream()
-                            .anyMatch(param -> param.getContactPerson() instanceof String
-                                && param.getContactPerson().equalsIgnoreCase(emailAddress));
-                        if (exists)
-                            continue;
-                        EmailContactDTO contactDTO = new EmailContactDTO();
-                        contactDTO.setContactPerson(emailAddress);
-                        if (emailAddress.indexOf("@youshengyun.com") != -1) {
-                            JamesUser = jamesUserService.findByEmailAddress(emailAddress);
-                            if (JamesUser != null) {
-                                person =
-                                    personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
-                                contactDTO.setContactPersonId(person.getId());
-                                contactDTO.setContactPersonName(person.getName());
-                                contactDTO.setContactPersonAvator(person.getAvator());
-                            }
+                for (String emailAddress : emailAddressList) {
+                    if (emailAddress.equals(email))
+                        continue;
+                    boolean exists = contactDTOList.stream()
+                        .anyMatch(param -> param.getContactPerson() instanceof String
+                            && param.getContactPerson().equalsIgnoreCase(emailAddress));
+                    if (exists)
+                        continue;
+                    EmailContactDTO contactDTO = new EmailContactDTO();
+                    contactDTO.setContactPerson(emailAddress);
+                    if (emailAddress.contains("@youshengyun.com")) {
+                        JamesUser = jamesUserService.findByEmailAddress(emailAddress);
+                        if (JamesUser != null) {
+                            person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
+                            contactDTO.setContactPersonId(person.getId());
+                            contactDTO.setContactPersonName(person.getName());
+                            contactDTO.setContactPersonAvator(person.getAvator());
                         }
-                        contactDTOList.add(contactDTO);
                     }
+                    contactDTOList.add(contactDTO);
                 }
+
                 String from = parser.getFrom();
                 if (StringUtils.isNotBlank(from) && !from.equals(email)) {
                     boolean exists = contactDTOList.stream()
@@ -201,7 +210,7 @@ public class MailHelper {
                         continue;
                     EmailContactDTO contactDTO = new EmailContactDTO();
                     contactDTO.setContactPerson(parser.getFrom());
-                    if (parser.getFrom().indexOf("@youshengyun.com") != -1) {
+                    if (parser.getFrom().contains("@youshengyun.com")) {
                         JamesUser = jamesUserService.findByEmailAddress(parser.getFrom());
                         if (JamesUser != null) {
                             person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();

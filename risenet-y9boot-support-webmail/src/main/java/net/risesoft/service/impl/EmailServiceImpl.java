@@ -27,6 +27,7 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.InternetAddress;
@@ -88,13 +89,10 @@ import net.risesoft.y9.Y9Context;
 import net.risesoft.y9.Y9LoginUserHolder;
 import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 import net.risesoft.y9.exception.Y9BusinessException;
+import net.risesoft.y9.util.base64.Y9Base64Util;
 import net.risesoft.y9.util.mime.ContentDispositionUtil;
 import net.risesoft.y9public.entity.Y9FileStore;
 import net.risesoft.y9public.service.Y9FileStoreService;
-
-import jodd.mail.ReceiveMailSession;
-import jodd.mail.SendMailSession;
-import jodd.util.Base64;
 
 @Service
 public class EmailServiceImpl extends MailHelper implements EmailService {
@@ -252,24 +250,22 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Override
     public void deletePermanently(String folderName, long[] uids) throws MessagingException {
-        ReceiveMailSession sendMailSession = createReceiveMailSession();
-        sendMailSession.open();
-        IMAPFolder folder = (IMAPFolder)sendMailSession.getFolder(folderName);
+        Store store = createReceiveMailSession();
+        IMAPFolder folder = (IMAPFolder)store.getFolder(folderName);
         folder.open(Folder.READ_WRITE);
         Message[] messages = folder.getMessagesByUID(uids);
         folder.setFlags(messages, new Flags(Flags.Flag.DELETED), true);
         folder.close(true);
-        sendMailSession.close();
+        store.close();
     }
 
     @Override
     public EmailDetailDTO detail(String folderName, long uid) throws Exception {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
+        Store store = createReceiveMailSession();
         EmailDetailDTO email = null;
-        receiveMailSession.open();
-        IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(folderName);
+        IMAPFolder folder = (IMAPFolder)store.getFolder(folderName);
         if (!folder.exists()) {
-            folder = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(folderName);
+            folder = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(folderName);
         }
         if (folder.exists()) {
             folder.open(Folder.READ_WRITE);
@@ -292,15 +288,15 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
             folder.close(true);
         }
+        store.close();
         return email;
     }
 
     @Override
     public void exportEml(String folderName, long uid, HttpServletResponse response, HttpServletRequest request)
         throws IOException, MessagingException {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
-        IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(folderName);
+        Store store = createReceiveMailSession();
+        IMAPFolder folder = (IMAPFolder)store.getFolder(folderName);
         folder.open(Folder.READ_ONLY);
         Message message = getMessageByUID(folder, uid);
         String filename = message.getSubject() + ".eml";
@@ -314,16 +310,16 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         message.writeTo(out);
         out.flush();
         out.close();
+        store.close();
     }
 
     @Override
     public EmailDTO findByFolderAndUid(String folderName, long uid) throws Exception {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
+        Store store = createReceiveMailSession();
         EmailDTO email = null;
-        receiveMailSession.open();
-        IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(folderName);
+        IMAPFolder folder = (IMAPFolder)store.getFolder(folderName);
         if (!folder.exists()) {
-            folder = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(folderName);
+            folder = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(folderName);
         }
         if (folder.exists()) {
             folder.open(Folder.READ_ONLY);
@@ -333,6 +329,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
             folder.close();
         }
+        store.close();
         return email;
     }
 
@@ -347,9 +344,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Override
     public void flag(String folderName, long[] uids, boolean flagged) throws MessagingException {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
-        IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(folderName);
+        Store store = createReceiveMailSession();
+        IMAPFolder folder = (IMAPFolder)store.getFolder(folderName);
 
         if (folder.exists()) {
             folder.open(Folder.READ_WRITE);
@@ -358,7 +354,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             folder.close(true);
         }
 
-        receiveMailSession.close();
+        store.close();
     }
 
     @Override
@@ -379,9 +375,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     public int getCountByFolder(String folderName, boolean unRead) throws MessagingException {
         int receiveImapCount = 0;
 
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
-        IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(folderName);
+        Store store = createReceiveMailSession();
+        IMAPFolder folder = (IMAPFolder)store.getFolder(folderName);
         if (!folder.exists()) {
             folder.create(Folder.HOLDS_MESSAGES);
         }
@@ -392,7 +387,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             receiveImapCount = folder.getMessageCount();
         }
         folder.close();
-        receiveMailSession.close();
+        store.close();
 
         return receiveImapCount;
     }
@@ -425,14 +420,13 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     @Override
     public Y9Page<EmailListDTO> listByFolder(String folderName, int page, int rows)
         throws MessagingException, IOException {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
+        Store store = createReceiveMailSession();
 
         List<EmailListDTO> emailReceiverDTOList = new ArrayList<>();
 
-        IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(folderName);
+        IMAPFolder folder = (IMAPFolder)store.getFolder(folderName);
         if (!folder.exists()) {
-            folder = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(folderName);
+            folder = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(folderName);
         }
         int totalCount = 0;
         int totalPage = 0;
@@ -469,20 +463,18 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         }
         getPersonData(folder, emailReceiverDTOList);
         folder.close(true);
-        receiveMailSession.close();
+        store.close();
         return Y9Page.success(page, totalPage, totalCount, emailReceiverDTOList);
     }
 
     @Override
     public void move(long[] uids, String originFolderName, String toFolderName) throws MessagingException {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
-        IMAPFolder originFolder = (IMAPFolder)receiveMailSession.getFolder(originFolderName);
+        Store store = createReceiveMailSession();
+        IMAPFolder originFolder = (IMAPFolder)store.getFolder(originFolderName);
         if (!originFolder.exists()) {
-            originFolder =
-                (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(originFolderName);
+            originFolder = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(originFolderName);
         }
-        IMAPFolder toFolder = (IMAPFolder)receiveMailSession.getFolder(toFolderName);
+        IMAPFolder toFolder = (IMAPFolder)store.getFolder(toFolderName);
         if (!toFolder.exists()) {
             toFolder.create(Folder.HOLDS_MESSAGES);
         }
@@ -493,7 +485,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         originFolder.setFlags(messages, new Flags(Flags.Flag.DELETED), true);
         originFolder.close(true);
         toFolder.close(true);
-        receiveMailSession.close();
+        store.close();
     }
 
     @Override
@@ -507,9 +499,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Override
     public void read(String folderName, long[] uids, Boolean isRead) throws Exception {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
-        IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(folderName);
+        Store store = createReceiveMailSession();
+        IMAPFolder folder = (IMAPFolder)store.getFolder(folderName);
 
         if (folder.exists()) {
             folder.open(Folder.READ_WRITE);
@@ -518,7 +509,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             folder.close(true);
         }
 
-        receiveMailSession.close();
+        store.close();
     }
 
     @Override
@@ -547,11 +538,9 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Override
     public String save(EmailDTO email) throws Exception {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
-        Session session = receiveMailSession.getSession();
+        Store store = createReceiveMailSession();
 
-        IMAPFolder draftsFolder = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.DRAFTS.getName());
+        IMAPFolder draftsFolder = (IMAPFolder)store.getFolder(DefaultFolder.DRAFTS.getName());
         draftsFolder.open(Folder.READ_WRITE);
 
         IMAPFolder folder = null;
@@ -559,10 +548,9 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         MimeMessage mimeMessage;
         if (StringUtils.isNotBlank(email.getReplyMessageId())) {
             // 新建的回复邮件
-            folder = (IMAPFolder)receiveMailSession.getFolder(email.getFolder());
+            folder = (IMAPFolder)store.getFolder(email.getFolder());
             if (!folder.exists()) {
-                folder = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName())
-                    .getFolder(email.getFolder());
+                folder = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(email.getFolder());
             }
             folder.open(Folder.READ_WRITE);
 
@@ -572,10 +560,9 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             setBody(mimeMessage, email);
         } else if (StringUtils.isNotBlank(email.getForwardMessageId())) {
             // 新建的转发邮件
-            folder = (IMAPFolder)receiveMailSession.getFolder(email.getFolder());
+            folder = (IMAPFolder)store.getFolder(email.getFolder());
             if (!folder.exists()) {
-                folder = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName())
-                    .getFolder(email.getFolder());
+                folder = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(email.getFolder());
             }
             folder.open(Folder.READ_WRITE);
 
@@ -601,7 +588,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             draftsFolder.setFlags(new Message[] {originMessage}, new Flags(Flags.Flag.DELETED), true);
         } else {
             // 普通新建
-            mimeMessage = new MimeMessage(session) {
+            mimeMessage = new MimeMessage(createSendMailSession()) {
                 @Override
                 protected void updateMessageID() throws MessagingException {
                     super.setHeader(EmailConst.HEADER_MESSAGE_ID, generateUniqueMessageId());
@@ -626,15 +613,14 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             folder.close();
         }
 
-        receiveMailSession.close();
+        store.close();
         return mimeMessage.getMessageID();
     }
 
     @Override
     public Y9Page<EmailListDTO> search(EmailSearchDTO searchDTO, int page, int size)
         throws MessagingException, IOException {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
+        Store store = createReceiveMailSession();
         List<EmailListDTO> emailListDTOList = new ArrayList<>();
 
         SearchTerm searchTerm = buildSearchTerm(searchDTO);
@@ -642,7 +628,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         int totalCount = 0;
         int totalPage = 0;
         if (StringUtils.isNotBlank(searchDTO.getFolder())) {
-            IMAPFolder folder = (IMAPFolder)receiveMailSession.getFolder(searchDTO.getFolder());
+            IMAPFolder folder = (IMAPFolder)store.getFolder(searchDTO.getFolder());
             if (folder.exists()) {
                 folder.open(Folder.READ_WRITE);
                 Message[] messages = folder.search(searchTerm);
@@ -659,7 +645,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             }
 
         } else {
-            IMAPFolder[] folders = (IMAPFolder[])receiveMailSession.getService().getDefaultFolder().list("*");
+            IMAPFolder[] folders = (IMAPFolder[])store.getDefaultFolder().list("*");
             for (IMAPFolder folder : folders) {
                 if ((folder.getType() & Folder.HOLDS_MESSAGES) != 0) {
                     folder.open(Folder.READ_ONLY);
@@ -688,17 +674,15 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         emailListDTOList = emailListDTOList.stream().sorted(EmailListDTO.getComparator()).collect(Collectors.toList());
         emailListDTOList = emailListDTOList.subList(start, end);
 
-        receiveMailSession.close();
+        store.close();
 
         return Y9Page.success(page, totalPage, totalCount, emailListDTOList);
     }
 
     @Override
-    public int todoCount(String folder) {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
-        IMAPFolder folder1 = (IMAPFolder)receiveMailSession.getFolder(folder);
-        List<EmailListDTO> emailListDTOList = new ArrayList<>();
+    public int todoCount(String folder) throws MessagingException {
+        Store store = createReceiveMailSession();
+        IMAPFolder folder1 = (IMAPFolder)store.getFolder(folder);
         EmailSearchDTO searchDTO = new EmailSearchDTO();
         searchDTO.setRead(false);
         searchDTO.setFolder(folder);
@@ -712,7 +696,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-
+        store.close();
         return 0;
     }
 
@@ -778,12 +762,10 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     @Override
     public void send(String messageId) throws MessagingException, IOException {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
-        SendMailSession sendMailSession = createSendMailSession();
-        sendMailSession.open();
+        Store store = createReceiveMailSession();
+        Session session = createSendMailSession();
 
-        IMAPFolder draftsFolder = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.DRAFTS.getName());
+        IMAPFolder draftsFolder = (IMAPFolder)store.getFolder(DefaultFolder.DRAFTS.getName());
         draftsFolder.open(Folder.READ_WRITE);
 
         MimeMessage originMessage = (MimeMessage)getMessage(draftsFolder, messageId);
@@ -802,26 +784,26 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         addPictures((MimeMultipart)message.getContent(), cidList);
         message.saveChanges();
 
-        Transport transport = sendMailSession.getService();
+        Transport transport = session.getTransport("smtp");
+        transport.connect();
         transport.sendMessage(message, message.getAllRecipients());
 
         draftsFolder.setFlags(new Message[] {originMessage}, new Flags(Flags.Flag.DELETED), true);
 
-        sendMailSession.close();
         draftsFolder.close(true);
-        receiveMailSession.close();
+        transport.close();
+        store.close();
     }
 
     @Override
     public List<EmailContactDTO> contactPerson() throws MessagingException, IOException {
-        ReceiveMailSession receiveMailSession = createReceiveMailSession();
-        receiveMailSession.open();
+        Store store = createReceiveMailSession();
         List<EmailContactDTO> contactDTOList = new ArrayList<EmailContactDTO>();
         List<EmailListDTO> emailReceiverDTOList = new ArrayList<>();
 
-        IMAPFolder folderSent = (IMAPFolder)receiveMailSession.getFolder("Sent");
+        IMAPFolder folderSent = (IMAPFolder)store.getFolder("Sent");
         if (!folderSent.exists())
-            folderSent = (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("Sent");
+            folderSent = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("Sent");
         if (folderSent.exists()) {
             folderSent.open(Folder.READ_ONLY);
             Message[] messagesSent =
@@ -837,10 +819,9 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         getEmailContactDTOList(folderSent, emailReceiverDTOList, contactDTOList);
         folderSent.close(true);
         emailReceiverDTOList = new ArrayList<>();
-        IMAPFolder folderINBOX = (IMAPFolder)receiveMailSession.getFolder("INBOX");
+        IMAPFolder folderINBOX = (IMAPFolder)store.getFolder("INBOX");
         if (!folderINBOX.exists())
-            folderINBOX =
-                (IMAPFolder)receiveMailSession.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("INBOX");
+            folderINBOX = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("INBOX");
         if (folderINBOX.exists()) {
             folderINBOX.open(Folder.READ_ONLY);
             Message[] messagesINBOX =
@@ -855,7 +836,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         }
         getEmailContactDTOList(folderINBOX, emailReceiverDTOList, contactDTOList);
         folderINBOX.close(true);
-        receiveMailSession.close();
+        store.close();
         return contactDTOList;
     }
 
@@ -892,7 +873,11 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     private String getFromString(Message message) throws MessagingException {
-        InternetAddress internetAddress = (InternetAddress)message.getFrom()[0];
+        Address[] from = message.getFrom();
+        if (null == from) {
+            return "";
+        }
+        InternetAddress internetAddress = (InternetAddress)from[0];
         return internetAddress.getAddress().split("@")[0];
     }
 
@@ -930,7 +915,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             DataSource dataSource = parser.findInlineByCid(inlineImageContentId);
             // DataSource dataSource = parser.findInlineImageByCid(inlineImageContentId);
             byte[] bytes = IOUtils.toByteArray(dataSource.getInputStream());
-            String imageContent = "data:image/png;base64," + Base64.encodeToString(bytes);
+            String imageContent = "data:image/png;base64," + Y9Base64Util.encode(bytes);
             htmlContent = htmlContent.replace("cid:" + inlineImageContentId, imageContent);
         }
         return htmlContent;
