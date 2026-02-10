@@ -1,6 +1,7 @@
 package net.risesoft.controller.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,11 +58,11 @@ public class EmailDTO implements Serializable {
      */
     private boolean separated;
 
-    private List<String> toEmailAddressList;
-    private List<String> ccEmailAddressList;
-    private List<String> bccEmailAddressList;
+    private List<String> toEmailAddressList = new ArrayList<>();
+    private List<String> ccEmailAddressList = new ArrayList<>();
+    private List<String> bccEmailAddressList = new ArrayList<>();
 
-    private List<EmailAttachmentDTO> emailAttachmentDTOList;
+    private List<EmailAttachmentDTO> emailAttachmentDTOList = new ArrayList<>();
 
     public enum Type {
         NORMAL(1),

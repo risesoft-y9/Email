@@ -75,4 +75,20 @@ public class EmailUtil {
         Y9WebMailProperties y9WebMailProperties = Y9Context.getBean(Y9WebMailProperties.class);
         return ConvertPinYin.getPinyin(loginName) + "@" + y9WebMailProperties.getHost();
     }
+
+    public static void main(String[] args) throws Exception {
+        // Properties props = new Properties();
+        // Session session = Session.getDefaultInstance(props, null);
+        //
+        // // 2. 打开 eml 文件
+        // File emlFile = new File("/Users/tobin/Downloads/测试发送附件.eml");
+        // InputStream is = new FileInputStream(emlFile);
+        //
+        // // 3. 用 InputStream 构造 MimeMessage
+        // MimeMessage mimeMessage = new MimeMessage(session, is);
+        // MimeMessageParser parser = new MimeMessageParser(mimeMessage).parse();
+        // List<EmailAttachmentDTO> emailAttachmentDTOS = parseEmailAttachmentList(parser.getAttachmentList());
+        // System.out.println(emailAttachmentDTOS);
+    }
+
 }

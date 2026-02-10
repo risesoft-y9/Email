@@ -10,9 +10,9 @@ public interface EmailFolderService {
 
     List<EmailFolderDTO> list() throws MessagingException;
 
-    List<EmailFolderDTO> getDefaultFolderList();
+    List<EmailFolderDTO> getDefaultFolderList() throws MessagingException;
 
-    void save(String originFolderName, String newFolderName);
+    void save(String originFolderName, String newFolderName) throws MessagingException;
 
-    void delete(String id);
+    void delete(String id) throws MessagingException;
 }

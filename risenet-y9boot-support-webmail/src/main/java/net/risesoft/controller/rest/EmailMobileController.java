@@ -567,7 +567,7 @@ public class EmailMobileController {
      */
     @PostMapping(value = "/folder")
     public Y9Result<Object> save(@RequestHeader(value = "auth-tenantId") String tenantId,
-        @RequestHeader(value = "auth-userId") String userId, String originFolderName, String newFolderName) {
+        @RequestHeader(value = "auth-userId") String userId, String originFolderName, String newFolderName) throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
         UserInfo userInfo = userApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(userInfo);
@@ -588,7 +588,7 @@ public class EmailMobileController {
      */
     @DeleteMapping(value = "/folder")
     public Y9Result<Object> delete(@RequestHeader(value = "auth-tenantId") String tenantId,
-        @RequestHeader(value = "auth-userId") String userId, String folder) {
+        @RequestHeader(value = "auth-userId") String userId, String folder) throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
         UserInfo userInfo = userApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(userInfo);
@@ -883,8 +883,8 @@ public class EmailMobileController {
 
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
-        int conunt = emailService.todoCount("INBOX");
-        return Y9Result.success(conunt);
+        int count = emailService.todoCount("INBOX");
+        return Y9Result.success(count);
     }
 
 }

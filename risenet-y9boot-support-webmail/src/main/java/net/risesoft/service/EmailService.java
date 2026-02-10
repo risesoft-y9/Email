@@ -52,7 +52,7 @@ public interface EmailService {
 
     Y9Page<EmailListDTO> search(EmailSearchDTO searchDTO, int page, int size) throws MessagingException, IOException;
 
-    int todoCount(String folder);
+    int todoCount(String folder) throws MessagingException;
 
     void send(String messageId) throws MessagingException, IOException;
 

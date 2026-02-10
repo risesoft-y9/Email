@@ -35,7 +35,7 @@ public class EmailFolderController {
      */
     @RiseLog(operationName = "新增或修改文件夹", operationType = OperationTypeEnum.MODIFY)
     @PostMapping
-    public Y9Result<Object> save(String originFolderName, String newFolderName) {
+    public Y9Result<Object> save(String originFolderName, String newFolderName) throws MessagingException {
         emailFolderService.save(originFolderName, newFolderName);
         return Y9Result.success();
     }
@@ -48,7 +48,7 @@ public class EmailFolderController {
      */
     @RiseLog(operationName = "删除文件夹", operationType = OperationTypeEnum.DELETE)
     @PostMapping(value = "/delete")
-    public Y9Result<Object> delete(String folder) {
+    public Y9Result<Object> delete(String folder) throws MessagingException {
         emailFolderService.delete(folder);
         return Y9Result.success();
     }
@@ -60,7 +60,7 @@ public class EmailFolderController {
      */
     @RiseLog(operationName = "获取默认文件夹列表")
     @GetMapping(value = "/defaultList")
-    public Y9Result<List<EmailFolderDTO>> defaultList() {
+    public Y9Result<List<EmailFolderDTO>> defaultList() throws MessagingException {
         List<EmailFolderDTO> emailFolderList = emailFolderService.getDefaultFolderList();
         return Y9Result.success(emailFolderList);
     }
