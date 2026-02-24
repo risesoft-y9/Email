@@ -22,7 +22,6 @@ dependencies {
     api("org.apache.commons:commons-lang3")
     api(libs.jakarta.mail.jakarta.mail.api)
     api(libs.com.sun.mail.jakarta.mail)
-    api(libs.jodd.mail)
     api(libs.commons.text)
     api(libs.james.apache.mime4j.dom)
     api(libs.james.apache.mime4j.mbox.iterator)
