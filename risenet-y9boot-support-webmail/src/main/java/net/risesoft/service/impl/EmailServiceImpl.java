@@ -418,8 +418,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     @Override
-    public Y9Page<EmailListDTO> listByFolder(String folderName, int page, int rows)
-        throws MessagingException, IOException {
+    public Y9Page<EmailListDTO> listByFolder(String folderName, int page, int rows) throws Exception {
         Store store = createReceiveMailSession();
 
         List<EmailListDTO> emailReceiverDTOList = new ArrayList<>();
@@ -434,7 +433,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             folder.open(Folder.READ_ONLY);
 
             totalCount = folder.getMessageCount();
-            totalPage = totalCount / rows + 1;
+            totalPage = (totalCount + rows - 1) / rows;
             int end = totalCount - (page - 1) * rows;
             int start = totalCount - page * rows + 1;
             if (start < 1) {
@@ -447,7 +446,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 for (int i = messages.length - 1; i >= 0; i--) {
                     IMAPMessage imapMessage = (IMAPMessage)messages[i];
                     long uid = folder.getUID(imapMessage);
-                    EmailListDTO eDTO = messageToEmailListDTO(messages[i], uid);
+                    EmailListDTO eDTO = messageToEmailListDTO(messages[i], uid, true);
                     if (eDTO.getCreateTime() == null) {
                         eDTO.setCreateTime(messages[i].getReceivedDate());
                     }
@@ -618,8 +617,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     @Override
-    public Y9Page<EmailListDTO> search(EmailSearchDTO searchDTO, int page, int size)
-        throws MessagingException, IOException {
+    public Y9Page<EmailListDTO> search(EmailSearchDTO searchDTO, int page, int size) throws Exception {
         Store store = createReceiveMailSession();
         List<EmailListDTO> emailListDTOList = new ArrayList<>();
 
@@ -634,7 +632,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 Message[] messages = folder.search(searchTerm);
                 for (Message message : messages) {
                     long uid = folder.getUID(message);
-                    EmailListDTO eDTO = messageToEmailListDTO(message, uid);
+                    EmailListDTO eDTO = messageToEmailListDTO(message, uid, true);
                     if (eDTO.getCreateTime() == null) {
                         eDTO.setCreateTime(message.getReceivedDate());
                     }
@@ -652,7 +650,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     Message[] messages = folder.search(searchTerm);
                     for (Message message : messages) {
                         long uid = folder.getUID(message);
-                        EmailListDTO eDTO = messageToEmailListDTO(message, uid);
+                        EmailListDTO eDTO = messageToEmailListDTO(message, uid, true);
                         if (eDTO.getCreateTime() == null) {
                             eDTO.setCreateTime(message.getReceivedDate());
                         }
@@ -796,7 +794,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     @Override
-    public List<EmailContactDTO> contactPerson() throws MessagingException, IOException {
+    public List<EmailContactDTO> contactPerson() throws Exception {
         Store store = createReceiveMailSession();
         List<EmailContactDTO> contactDTOList = new ArrayList<EmailContactDTO>();
         List<EmailListDTO> emailReceiverDTOList = new ArrayList<>();
@@ -812,7 +810,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 for (int i = messagesSent.length - 1; i >= 0; i--) {
                     IMAPMessage imapMessage = (IMAPMessage)messagesSent[i];
                     long uid = folderSent.getUID(imapMessage);
-                    emailReceiverDTOList.add(messageToEmailListDTO(messagesSent[i], uid));
+                    emailReceiverDTOList.add(messageToEmailListDTO(messagesSent[i], uid, false));
                 }
             }
         }
@@ -830,7 +828,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 for (int i = messagesINBOX.length - 1; i >= 0; i--) {
                     IMAPMessage imapMessage = (IMAPMessage)messagesINBOX[i];
                     long uid = folderINBOX.getUID(imapMessage);
-                    emailReceiverDTOList.add(messageToEmailListDTO(messagesINBOX[i], uid));
+                    emailReceiverDTOList.add(messageToEmailListDTO(messagesINBOX[i], uid, false));
                 }
             }
         }
@@ -840,7 +838,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         return contactDTOList;
     }
 
-    private EmailListDTO messageToEmailListDTO(Message message, Long uid) throws IOException, MessagingException {
+    private EmailListDTO messageToEmailListDTO(Message message, Long uid, boolean fillMobileRequired) throws Exception {
         EmailListDTO emailListDTO = new EmailListDTO();
         emailListDTO.setUid(uid);
         emailListDTO.setCreateTime(message.getSentDate());
@@ -854,14 +852,11 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         emailListDTO.setAttachment(isHasAttachment(message));
         emailListDTO.setAttachmentSize(getAttachmentSize(message));
         emailListDTO.setToPersonNames(getToString(message.getAllRecipients()));
-        try {
+
+        if (fillMobileRequired) {
             MimeMessage mm = (MimeMessage)message;
-            MimeMessageParser parser = null;
-            parser = new MimeMessageParser(mm).parse();
-            if (parser != null)
-                emailListDTO.setText(parser.getPlainContent());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            MimeMessageParser parser = new MimeMessageParser(mm).parse();
+            emailListDTO.setText(parser.getPlainContent());
         }
         return emailListDTO;
     }

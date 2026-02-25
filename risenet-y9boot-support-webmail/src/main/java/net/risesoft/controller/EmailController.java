@@ -159,7 +159,7 @@ public class EmailController {
      */
     @GetMapping(value = "/list")
     public Y9Page<EmailListDTO> list(int page, @RequestParam int size, @RequestParam(required = false) String folder)
-        throws IOException, MessagingException {
+            throws Exception {
         return emailService.listByFolder(folder, page, size);
     }
 
@@ -267,7 +267,7 @@ public class EmailController {
      */
     @RiseLog(operationName = "搜索邮件")
     @GetMapping(value = "/search")
-    public Y9Page<EmailListDTO> search(EmailSearchDTO searchDTO) throws MessagingException, IOException {
+    public Y9Page<EmailListDTO> search(EmailSearchDTO searchDTO) throws Exception {
         return emailService.search(searchDTO, searchDTO.getPage(), searchDTO.getSize());
     }
 
@@ -309,7 +309,7 @@ public class EmailController {
     @RiseLog(operationName = "获取最近联系人列表")
     @ResponseBody
     @RequestMapping(value = "/contact")
-    public Y9Result<Object> contactPerson() throws MessagingException, IOException {
+    public Y9Result<Object> contactPerson() throws Exception {
         List<EmailContactDTO> contactPerson = emailService.contactPerson();
         return Y9Result.success(contactPerson);
     }

@@ -234,7 +234,7 @@ public class EmailMobileController {
     @GetMapping(value = "/list")
     public Y9Page<EmailListDTO> list(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, int page, @RequestParam int size,
-        @RequestParam(required = false) String folder) throws IOException, MessagingException {
+        @RequestParam(required = false) String folder) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
         UserInfo userInfo = userApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(userInfo);
@@ -401,7 +401,7 @@ public class EmailMobileController {
     @GetMapping(value = "/search")
     public Y9Page<EmailListDTO> search(@RequestHeader(value = "auth-tenantId") String tenantId,
         @RequestHeader(value = "auth-userId") String userId, EmailSearchDTO searchDTO)
-        throws MessagingException, IOException {
+            throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
         UserInfo userInfo = userApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(userInfo);
@@ -733,7 +733,7 @@ public class EmailMobileController {
      */
     @GetMapping(value = "/contact")
     public Y9Result<Object> contact(@RequestHeader(value = "auth-tenantId") String tenantId,
-        @RequestHeader(value = "auth-userId") String userId) throws MessagingException, IOException {
+        @RequestHeader(value = "auth-userId") String userId) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
         UserInfo userInfo = userApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(userInfo);

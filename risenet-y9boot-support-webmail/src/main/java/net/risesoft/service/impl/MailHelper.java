@@ -136,7 +136,8 @@ public class MailHelper {
                     .collect(Collectors.toList());
                 List<ToDTO> toDTOList = new ArrayList<>();
                 for (String emailAddress : emailAddressList) {
-                    if (!emailAddress.contains("@youshengyun.com"))
+                    // FIXME 多个收件人且非当前域名邮箱时，移动端的收件人展示会有问题
+                    if (!emailAddress.contains(y9WebMailProperties.getHost()))
                         break;
                     ToDTO toDTO = new ToDTO();
                     toDTO.setTo(emailAddress);
@@ -149,7 +150,7 @@ public class MailHelper {
                     toDTOList.add(toDTO);
                 }
                 emailListDTO.setToDTOList(toDTOList);
-                if (parser.getFrom().contains("@youshengyun.com")) {
+                if (parser.getFrom().contains(y9WebMailProperties.getHost())) {
                     emailListDTO.setFrom(parser.getFrom());
                     JamesUser = jamesUserService.findByEmailAddress(emailListDTO.getFrom());
                     if (JamesUser != null) {
@@ -189,7 +190,7 @@ public class MailHelper {
                         continue;
                     EmailContactDTO contactDTO = new EmailContactDTO();
                     contactDTO.setContactPerson(emailAddress);
-                    if (emailAddress.contains("@youshengyun.com")) {
+                    if (emailAddress.contains(y9WebMailProperties.getHost())) {
                         JamesUser = jamesUserService.findByEmailAddress(emailAddress);
                         if (JamesUser != null) {
                             person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
@@ -210,7 +211,7 @@ public class MailHelper {
                         continue;
                     EmailContactDTO contactDTO = new EmailContactDTO();
                     contactDTO.setContactPerson(parser.getFrom());
-                    if (parser.getFrom().contains("@youshengyun.com")) {
+                    if (parser.getFrom().contains(y9WebMailProperties.getHost())) {
                         JamesUser = jamesUserService.findByEmailAddress(parser.getFrom());
                         if (JamesUser != null) {
                             person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
