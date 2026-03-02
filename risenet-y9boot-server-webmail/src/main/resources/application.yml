@@ -2,19 +2,19 @@ management:
     endpoints:
         web:
             exposure:
-                include: health,info
+                include: health
     endpoint:
         health:
             probes:
                 enabled: true
+            show-details: always
     metrics:
         tags:
-            application: 'webmail'
+            application: ${spring.application.name}
     prometheus:
         metrics:
             export:
                 enabled: true
-
 server:
     port: 8080
     servlet:
