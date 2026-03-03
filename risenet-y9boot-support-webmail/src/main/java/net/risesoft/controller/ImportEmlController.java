@@ -13,6 +13,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import org.apache.james.mime4j.dom.Message;
 import org.apache.james.mime4j.stream.MimeConfig;
@@ -97,7 +98,7 @@ public class ImportEmlController {
 
     @RiseLog(operationName = "批量删除导入信息")
     @PostMapping(value = "/deleteEml")
-    public Y9Result<Object> deleteEml(@RequestParam @NotBlank List<String> ids) {
+    public Y9Result<Object> deleteEml(@RequestParam @NotEmpty List<String> ids) {
         importEmlService.delete(ids);
         return Y9Result.successMsg("删除邮件EML详细信息成功");
     }
