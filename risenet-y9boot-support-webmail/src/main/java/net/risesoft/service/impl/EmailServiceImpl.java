@@ -1064,7 +1064,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         Map<String, Object> map = new HashMap<String, Object>();
         String tenantId = Y9LoginUserHolder.getTenantId();
         // 从组织架构获取
-        List<OrgUnit> orgUnitList = orgUnitApi.treeSearch(tenantId, search, OrgTreeTypeEnum.TREE_TYPE_PERSON).getData();
+        List<OrgUnit> orgUnitList =
+            orgUnitApi.treeSearch(tenantId, null, search, OrgTreeTypeEnum.TREE_TYPE_PERSON).getData();
         List<OrgUnit> orgUnits = new ArrayList<OrgUnit>();
         for (OrgUnit ou : orgUnitList) {
             if (OrgTypeEnum.PERSON.getEnName().equals(ou.getOrgType().getEnName())) {

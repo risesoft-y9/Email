@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 
 import net.risesoft.api.platform.org.OrgUnitApi;
-import net.risesoft.api.platform.org.OrganizationApi;
 import net.risesoft.api.platform.org.PersonApi;
 import net.risesoft.api.platform.user.UserApi;
 import net.risesoft.controller.dto.EmailAttachmentDTO;
@@ -69,7 +68,6 @@ public class EmailMobileController {
 
     private final PersonApi personApi;
     private final OrgUnitApi orgUnitApi;
-    private final OrganizationApi organizationApi;
     private final UserApi userApi;
 
     /**
@@ -400,8 +398,7 @@ public class EmailMobileController {
      */
     @GetMapping(value = "/search")
     public Y9Page<EmailListDTO> search(@RequestHeader(value = "auth-tenantId") String tenantId,
-        @RequestHeader(value = "auth-userId") String userId, EmailSearchDTO searchDTO)
-            throws Exception {
+        @RequestHeader(value = "auth-userId") String userId, EmailSearchDTO searchDTO) throws Exception {
         Y9LoginUserHolder.setTenantId(tenantId);
         UserInfo userInfo = userApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(userInfo);
@@ -567,7 +564,8 @@ public class EmailMobileController {
      */
     @PostMapping(value = "/folder")
     public Y9Result<Object> save(@RequestHeader(value = "auth-tenantId") String tenantId,
-        @RequestHeader(value = "auth-userId") String userId, String originFolderName, String newFolderName) throws MessagingException {
+        @RequestHeader(value = "auth-userId") String userId, String originFolderName, String newFolderName)
+        throws MessagingException {
         Y9LoginUserHolder.setTenantId(tenantId);
         UserInfo userInfo = userApi.get(tenantId, userId).getData();
         Y9LoginUserHolder.setUserInfo(userInfo);
@@ -665,15 +663,15 @@ public class EmailMobileController {
 
         String emailAddress = jamesUserService.getEmailAddressByPersonId(userId);
         EmailThreadLocalHolder.setEmailAddress(emailAddress);
+
+        Organization organization = orgUnitApi.getOrgUnitOrganization(tenantId, userId).getData();
+
         if (StringUtils.isBlank(id)) {
-            List<Organization> organizationList = organizationApi.list(tenantId).getData();
-            if (organizationList != null && organizationList.size() > 0) {
-                id = organizationList.get(0).getId();
-            }
+            id = organization.getId();
         }
         List<OrgUnit> orgUnitList;
         if (StringUtils.isNotBlank(name)) {
-            orgUnitList = orgUnitApi.treeSearch(tenantId, name, treeType).getData();
+            orgUnitList = orgUnitApi.treeSearch(tenantId, organization.getId(), name, treeType).getData();
             orgUnitList = mapEmailAddress(orgUnitList);
         } else {
             orgUnitList = orgUnitApi.getSubTree(tenantId, id, treeType).getData();
