@@ -58,15 +58,10 @@ public class OrgController {
     public Y9Result<List<OrgUnit>> getOrgTree(@RequestParam(required = false) String id,
         @RequestParam(required = false) OrgTreeTypeEnum treeType, @RequestParam(required = false) String name) {
         String tenantId = Y9LoginUserHolder.getTenantId();
-        if (StringUtils.isBlank(id)) {
-            List<Organization> organizationList = organizationApi.list(tenantId).getData();
-            if (organizationList != null && !organizationList.isEmpty()) {
-                id = organizationList.get(0).getId();
-            }
-        }
+
         List<OrgUnit> orgUnitList;
         if (StringUtils.isNotBlank(name)) {
-            orgUnitList = orgUnitApi.treeSearch(tenantId, name, treeType).getData();
+            orgUnitList = orgUnitApi.treeSearch(tenantId, null, name, treeType).getData();
             orgUnitList = mapEmailAddress(orgUnitList);
         } else {
             orgUnitList = orgUnitApi.getSubTree(tenantId, id, treeType).getData();
