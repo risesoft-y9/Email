@@ -2,9 +2,14 @@ package net.risesoft.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.activation.DataSource;
 import javax.mail.Authenticator;
@@ -33,6 +38,7 @@ import net.risesoft.controller.dto.ToDTO;
 import net.risesoft.james.entity.JamesUser;
 import net.risesoft.james.entity.term.MyMessageIDTerm;
 import net.risesoft.james.service.JamesUserService;
+import net.risesoft.model.platform.org.OrgUnit;
 import net.risesoft.model.platform.org.Person;
 import net.risesoft.support.EmailThreadLocalHolder;
 import net.risesoft.util.MimeMessageParser;
@@ -121,47 +127,57 @@ public class MailHelper {
         return emailAttachmentDTOList;
     }
 
-    public void getPersonData(IMAPFolder folder, List<EmailListDTO> emailReceiverDTOList) {
-        JamesUser JamesUser = null;
-        Person person = null;
-        try {
-            for (EmailListDTO emailListDTO : emailReceiverDTOList) {
-                Message message = folder.getMessageByUID(emailListDTO.getUid());
-                if (message == null)
-                    continue;
-                MimeMessageParser parser = new MimeMessageParser((MimeMessage)message).parse();
-                List<String> emailAddressList = parser.getTo()
-                    .stream()
-                    .map(address -> ((InternetAddress)address).getAddress())
-                    .collect(Collectors.toList());
-                List<ToDTO> toDTOList = new ArrayList<>();
-                for (String emailAddress : emailAddressList) {
-                    // FIXME 多个收件人且非当前域名邮箱时，移动端的收件人展示会有问题
-                    if (!emailAddress.contains(y9WebMailProperties.getHost()))
-                        break;
-                    ToDTO toDTO = new ToDTO();
-                    toDTO.setTo(emailAddress);
-                    JamesUser = jamesUserService.findByEmailAddress(emailAddress);
-                    if (JamesUser != null) {
-                        person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
-                        toDTO.setToName(person.getName());
-                        toDTO.setToAvator(person.getAvator());
-                    }
-                    toDTOList.add(toDTO);
+    /**
+     * 填充人员数据
+     * @param emailReceiverDTOList
+     */
+    public void populatePersonData(List<EmailListDTO> emailReceiverDTOList) {
+        // 获取邮件列表所有邮件的发件人、收件人的邮箱，后面直接批量获取数据
+        List<String> emailAddressList = emailReceiverDTOList.stream().flatMap(emailListDTO -> {
+            Stream<String> fromStream = Stream.ofNullable(emailListDTO.getFrom());
+
+            Stream<String> toStream = Optional.ofNullable(emailListDTO.getToDTOList())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(ToDTO::getTo);
+
+            return Stream.concat(fromStream, toStream);
+        })
+            .filter(Objects::nonNull)
+            .filter(emailAddress -> emailAddress.contains(y9WebMailProperties.getHost()))
+            .collect(Collectors.toList());
+
+        Map<String,
+            String> emailAddressAndPersonIdMap = jamesUserService.findByEmailAddressIn(emailAddressList)
+                .stream()
+                .collect(Collectors.toMap(JamesUser::getEmailAddress, JamesUser::getPersonId));
+
+        List<String> personIdList = new ArrayList<>(emailAddressAndPersonIdMap.values());
+        Map<String,
+            Person> idPersonMap = personApi.listByIds(Y9LoginUserHolder.getTenantId(), personIdList)
+                .getData()
+                .stream()
+                .collect(Collectors.toMap(OrgUnit::getId, person -> person));
+
+        for (EmailListDTO emailListDTO : emailReceiverDTOList) {
+            String personId = emailAddressAndPersonIdMap.get(emailListDTO.getFrom());
+            if (StringUtils.isNotBlank(personId)) {
+                Person fromPerson = idPersonMap.get(personId);
+                if (fromPerson != null) {
+                    emailListDTO.setFromName(fromPerson.getName());
+                    emailListDTO.setFromAvator(fromPerson.getAvator());
                 }
-                emailListDTO.setToDTOList(toDTOList);
-                if (parser.getFrom().contains(y9WebMailProperties.getHost())) {
-                    emailListDTO.setFrom(parser.getFrom());
-                    JamesUser = jamesUserService.findByEmailAddress(emailListDTO.getFrom());
-                    if (JamesUser != null) {
-                        person = personApi.get(Y9LoginUserHolder.getTenantId(), JamesUser.getPersonId()).getData();
-                        emailListDTO.setFromName(person.getName());
-                        emailListDTO.setFromAvator(person.getAvator());
+            }
+            for (ToDTO toDTO : emailListDTO.getToDTOList()) {
+                String toPersonId = emailAddressAndPersonIdMap.get(toDTO.getTo());
+                if (StringUtils.isNotBlank(toPersonId)) {
+                    Person toPerson = idPersonMap.get(toPersonId);
+                    if (toPerson != null) {
+                        toDTO.setToName(toPerson.getName());
+                        toDTO.setToAvator(toPerson.getAvator());
                     }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

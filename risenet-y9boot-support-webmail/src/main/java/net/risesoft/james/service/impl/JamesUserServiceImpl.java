@@ -74,6 +74,11 @@ public class JamesUserServiceImpl implements JamesUserService {
     }
 
     @Override
+    public List<JamesUser> findByEmailAddressIn(List<String> emailAddressList) {
+        return jamesUserRepository.findByEmailAddressIn(emailAddressList);
+    }
+
+    @Override
     public List<String> getEmailAddressListByOrgUnitId(List<String> orgUnitIdList) {
         List<String> emailAddressList = new ArrayList<>();
         for (String orgUnitId : orgUnitIdList) {

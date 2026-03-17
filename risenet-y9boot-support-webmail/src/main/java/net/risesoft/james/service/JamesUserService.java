@@ -23,6 +23,8 @@ public interface JamesUserService {
      */
     JamesUser findByEmailAddress(String emailAddress);
 
+    List<JamesUser> findByEmailAddressIn(List<String> emailAddressList);
+
     /**
      * 添加
      *

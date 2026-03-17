@@ -92,22 +92,22 @@ public class EmailListDTO implements Serializable {
     private Integer emailType;
 
     /**
-     * 发件人(仅包含.@youshengyun.com的发送人)
+     * 发件人(仅用于移动端)
      */
     private String from;
 
     /**
-     * 发件人姓名(仅包含.@youshengyun.com的发送人)
+     * 发件人姓名(仅用于移动端)
      */
     private String fromName;
 
     /**
-     * 发件人头像(仅包含.@youshengyun.com的发送人)
+     * 发件人头像(仅用于移动端)
      */
     private String fromAvator;
 
     /**
-     * 收件人信息列表(仅包含.@youshengyun.com的发送人)
+     * 收件人信息列表(仅用于移动端)
      */
     private List<ToDTO> ToDTOList;
 
