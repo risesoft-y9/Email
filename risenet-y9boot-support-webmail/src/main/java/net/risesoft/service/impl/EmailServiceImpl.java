@@ -20,6 +20,7 @@ import jakarta.activation.DataSource;
 import jakarta.activation.MimetypesFileTypeMap;
 import jakarta.mail.Address;
 import jakarta.mail.BodyPart;
+import jakarta.mail.FetchProfile;
 import jakarta.mail.Flags;
 import jakarta.mail.Folder;
 import jakarta.mail.Message;
@@ -50,6 +51,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 
 import com.sun.mail.imap.IMAPFolder;
@@ -62,6 +64,7 @@ import net.risesoft.controller.dto.EmailDTO;
 import net.risesoft.controller.dto.EmailDetailDTO;
 import net.risesoft.controller.dto.EmailListDTO;
 import net.risesoft.controller.dto.EmailSearchDTO;
+import net.risesoft.controller.dto.ToDTO;
 import net.risesoft.enums.platform.org.OrgTreeTypeEnum;
 import net.risesoft.enums.platform.org.OrgTypeEnum;
 import net.risesoft.id.Y9IdGenerator;
@@ -118,129 +121,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         this.orgUnitApi = orgUnitApi;
         this.jamesAddressBookService = jamesAddressBookService;
         this.jamesUserService = jamesUserService1;
-    }
-
-    private static void setMailer(MimeMessage mimeMessage) throws MessagingException {
-        mimeMessage.setHeader(EmailConst.HEADER_MAILER, "risesoft webmail");
-    }
-
-    private static EmailDTO buildReplyEmail(String folderName, EmailDTO email) {
-        EmailDTO replyEmail = new EmailDTO();
-        replyEmail.setFolder(folderName);
-        replyEmail.setReplyMessageId(email.getMessageId());
-        replyEmail.setRichText(EmailUtil.getReplyOrForwardContent(email)
-            + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
-        replyEmail.setSubject("回复：" + email.getSubject());
-        return replyEmail;
-    }
-
-    public static boolean isHasAttachment(Message message) throws IOException, MessagingException {
-        boolean hasAttachment = false;
-        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
-            MimeMultipart mmp = (MimeMultipart)message.getContent();
-            int count = mmp.getCount();
-            for (int j = 0; j < count; j++) {
-                BodyPart bodyPart = mmp.getBodyPart(j);
-                String disposition = bodyPart.getDisposition();
-                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
-                    hasAttachment = true;
-                }
-            }
-        }
-        return hasAttachment;
-    }
-
-    private static String getAttachmentSize(Message message) throws IOException, MessagingException {
-        long attachmentSize = 0L;
-        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
-            MimeMultipart mmp = (MimeMultipart)message.getContent();
-            int count = mmp.getCount();
-            for (int j = 0; j < count; j++) {
-                BodyPart bodyPart = mmp.getBodyPart(j);
-                String disposition = bodyPart.getDisposition();
-                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
-                    InputStream inputStream = bodyPart.getInputStream();
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[4096];
-                    int bytesRead = -1;
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-                    attachmentSize += outputStream.toByteArray().length;
-                    outputStream.close();
-                }
-            }
-        }
-        return (attachmentSize >> 10) + " KB";
-    }
-
-    private void addHtml(MimeMultipart mimeMultipart, String richText) throws MessagingException {
-        MimeBodyPart bodyPart = new MimeBodyPart();
-        bodyPart.setContent(richText, "text/html;charset=UTF-8");
-        mimeMultipart.addBodyPart(bodyPart);
-    }
-
-    private List<String> addHtmlTextReplaceCID(MimeMultipart alternativeMultipart, String richText)
-        throws MessagingException {
-        List<String> inlineIdList = new ArrayList<>();
-
-        String patternStr = "<img\\s*([^>]*)\\s*src=\\\"(.*?)\\\"\\s*([^>]*)>";
-        Pattern pattern = Pattern.compile(patternStr, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(richText);
-        String result = richText;
-        while (matcher.find()) {
-            String src = matcher.group(2);
-            int index = src.indexOf(Y9Context.getSystemName());
-            if (index != -1) {
-                try {
-                    String fileName = src.substring(src.lastIndexOf("/") + 1);
-                    String fileId = FilenameUtils.getBaseName(fileName);
-                    String replaceSrc = "cid:" + fileId;
-                    if (StringUtils.isNotBlank(replaceSrc)) {
-                        result = result.replaceAll(src, replaceSrc);
-                    }
-                    inlineIdList.add(fileId);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
-
-        MimeBodyPart htmlBodyPart = new MimeBodyPart();
-        htmlBodyPart.setContent(result, "text/html;charset=UTF-8");
-        alternativeMultipart.addBodyPart(htmlBodyPart);
-
-        return inlineIdList;
-    }
-
-    private void addPictures(MimeMultipart mimeMultipart, List<String> cidList) throws MessagingException {
-        if (cidList != null) {
-            for (String fileId : cidList) {
-                try {
-                    MimeBodyPart mimeBodyPart = new MimeBodyPart();
-                    byte[] bytes = y9FileStoreService.downloadFileToBytes(fileId);
-                    Y9FileStore y9FileStore = y9FileStoreService.getById(fileId);
-                    DataSource dataSource = new ByteArrayDataSource(bytes,
-                        new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
-                    DataHandler dataHandler = new DataHandler(dataSource);
-                    mimeBodyPart.setDataHandler(dataHandler);
-                    mimeBodyPart.setContentID("<" + fileId + ">");
-                    mimeMultipart.addBodyPart(mimeBodyPart);
-
-                    // 附件临时存入 y9FileStore 里，上传到邮件中后删除
-                    y9FileStoreService.deleteFile(fileId);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void addText(MimeMultipart alternativeMultipart, String text) throws MessagingException {
-        MimeBodyPart mimeBodyPart = new MimeBodyPart();
-        mimeBodyPart.setContent(text, "text/plain;charset=UTF-8");
-        alternativeMultipart.addBodyPart(mimeBodyPart);
     }
 
     @Override
@@ -331,15 +211,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         }
         store.close();
         return email;
-    }
-
-    private Message getMessageByUID(IMAPFolder folder, long uid) throws MessagingException {
-        Message message = folder.getMessageByUID(uid);
-        if (message == null) {
-            throw new Y9BusinessException(EmailErrorCodeEnum.EMAIL_NOT_EXIST.getCode(),
-                EmailErrorCodeEnum.EMAIL_NOT_EXIST.getDescription());
-        }
-        return message;
     }
 
     @Override
@@ -440,6 +311,12 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 start = 1;
             }
             Message[] messages = folder.getMessages(start, end);
+
+            FetchProfile fp = new FetchProfile();
+            fp.add(FetchProfile.Item.ENVELOPE); // 获取发件人、主题等
+            fp.add(FetchProfile.Item.CONTENT_INFO); // 获取 Content-Type, 结构等信息
+            folder.fetch(messages, fp);
+
             if (messages != null && messages.length > 0) {
 
                 // 按照接收时间倒序排
@@ -453,16 +330,16 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     emailReceiverDTOList.add(eDTO);
                 }
                 // 未读置顶
-                if (!"Sent".equals(folderName)) {
+                if (!DefaultFolder.SENT.getName().equals(folderName)) {
                     emailReceiverDTOList = emailReceiverDTOList.stream()
                         .sorted(EmailListDTO.getComparator())
                         .collect(java.util.stream.Collectors.toList());
                 }
             }
         }
-        getPersonData(folder, emailReceiverDTOList);
         folder.close(true);
         store.close();
+        populatePersonData(emailReceiverDTOList);
         return Y9Page.success(page, totalPage, totalCount, emailReceiverDTOList);
     }
 
@@ -630,6 +507,12 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
             if (folder.exists()) {
                 folder.open(Folder.READ_WRITE);
                 Message[] messages = folder.search(searchTerm);
+
+                FetchProfile fp = new FetchProfile();
+                fp.add(FetchProfile.Item.ENVELOPE); // 获取发件人、主题等
+                fp.add(FetchProfile.Item.CONTENT_INFO); // 获取 Content-Type, 结构等信息
+                folder.fetch(messages, fp);
+
                 for (Message message : messages) {
                     long uid = folder.getUID(message);
                     EmailListDTO eDTO = messageToEmailListDTO(message, uid, true);
@@ -638,7 +521,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                     }
                     emailListDTOList.add(eDTO);
                 }
-                getPersonData(folder, emailListDTOList);
+                populatePersonData(emailListDTOList);
                 folder.close(true);
             }
 
@@ -648,6 +531,12 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 if ((folder.getType() & Folder.HOLDS_MESSAGES) != 0) {
                     folder.open(Folder.READ_ONLY);
                     Message[] messages = folder.search(searchTerm);
+
+                    FetchProfile fp = new FetchProfile();
+                    fp.add(FetchProfile.Item.ENVELOPE); // 获取发件人、主题等
+                    fp.add(FetchProfile.Item.CONTENT_INFO); // 获取 Content-Type, 结构等信息
+                    folder.fetch(messages, fp);
+
                     for (Message message : messages) {
                         long uid = folder.getUID(message);
                         EmailListDTO eDTO = messageToEmailListDTO(message, uid, true);
@@ -656,7 +545,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                         }
                         emailListDTOList.add(eDTO);
                     }
-                    getPersonData(folder, emailListDTOList);
+                    populatePersonData(emailListDTOList);
                     folder.close(true);
                 }
             }
@@ -698,66 +587,6 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         return 0;
     }
 
-    private SearchTerm buildSearchTerm(EmailSearchDTO searchDTO) {
-        List<SearchTerm> searchTermList = new ArrayList<>();
-
-        // 主题搜索
-        if (StringUtils.isNotBlank(searchDTO.getSubject())) {
-            searchTermList.add(new MySubjectTerm(searchDTO.getSubject()));
-        } else {
-            // 为空 查所有
-            searchTermList.add(new MySubjectTerm(""));
-        }
-
-        // 正文搜索
-        if (StringUtils.isNotBlank(searchDTO.getText())) {
-            searchTermList.add(new MyBodyTerm(searchDTO.getText()));
-        }
-
-        // 发件人搜索
-        if (StringUtils.isNotBlank(searchDTO.getFrom())) {
-            searchTermList.add(new MyFormTerm(searchDTO.getFrom()));
-        }
-
-        // 收件人搜索
-        if (StringUtils.isNotBlank(searchDTO.getTo())) {
-            searchTermList.add(new MyReceiverTerm(searchDTO.getTo()));
-        }
-
-        // 发送/接收时间搜索（开始时间）
-        if (searchDTO.getStartDate() != null) {
-            OrTerm startDateTerm =
-                new OrTerm(new SearchTerm[] {new SentDateTerm(ComparisonTerm.GE, searchDTO.getStartDate()),
-                    new ReceivedDateTerm(ComparisonTerm.GE, searchDTO.getStartDate())});
-            searchTermList.add(startDateTerm);
-        }
-
-        // 发送/接收时间搜索（结束时间）
-        if (searchDTO.getEndDate() != null) {
-            OrTerm endDateTerm =
-                new OrTerm(new SearchTerm[] {new SentDateTerm(ComparisonTerm.LE, searchDTO.getEndDate()),
-                    new ReceivedDateTerm(ComparisonTerm.LE, searchDTO.getEndDate())});
-            searchTermList.add(endDateTerm);
-        }
-
-        // 是否有附件搜索
-        if (searchDTO.getAttachment() != null) {
-            searchTermList.add(new MyAttachmentTerm("", searchDTO.getAttachment()));
-        }
-
-        // 是否已读搜索
-        if (searchDTO.getRead() != null) {
-            searchTermList.add(new MyFlagTerm(new Flags(Flags.Flag.SEEN), searchDTO.getRead()));
-        }
-
-        // 是否标记
-        if (searchDTO.getFlagged() != null) {
-            searchTermList.add(new MyFlagTerm(new Flags(Flags.Flag.FLAGGED), searchDTO.getFlagged()));
-        }
-
-        return new AndTerm(searchTermList.toArray(new SearchTerm[searchTermList.size()]));
-    }
-
     @Override
     public void send(String messageId) throws MessagingException, IOException {
         Store store = createReceiveMailSession();
@@ -796,12 +625,12 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     @Override
     public List<EmailContactDTO> contactPerson() throws Exception {
         Store store = createReceiveMailSession();
-        List<EmailContactDTO> contactDTOList = new ArrayList<EmailContactDTO>();
+        List<EmailContactDTO> contactDTOList = new ArrayList<>();
         List<EmailListDTO> emailReceiverDTOList = new ArrayList<>();
 
-        IMAPFolder folderSent = (IMAPFolder)store.getFolder("Sent");
+        IMAPFolder folderSent = (IMAPFolder)store.getFolder(DefaultFolder.SENT.getName());
         if (!folderSent.exists())
-            folderSent = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("Sent");
+            folderSent = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(DefaultFolder.SENT.getName());
         if (folderSent.exists()) {
             folderSent.open(Folder.READ_ONLY);
             Message[] messagesSent =
@@ -817,9 +646,10 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         getEmailContactDTOList(folderSent, emailReceiverDTOList, contactDTOList);
         folderSent.close(true);
         emailReceiverDTOList = new ArrayList<>();
-        IMAPFolder folderINBOX = (IMAPFolder)store.getFolder("INBOX");
+        IMAPFolder folderINBOX = (IMAPFolder)store.getFolder(DefaultFolder.INBOX.getName());
         if (!folderINBOX.exists())
-            folderINBOX = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder("INBOX");
+            folderINBOX =
+                (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(DefaultFolder.INBOX.getName());
         if (folderINBOX.exists()) {
             folderINBOX.open(Folder.READ_ONLY);
             Message[] messagesINBOX =
@@ -838,6 +668,55 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         return contactDTOList;
     }
 
+    @Override
+    public Map<String, Object> addressRelevancy(String search) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        String tenantId = Y9LoginUserHolder.getTenantId();
+        // 从组织架构获取
+        List<OrgUnit> orgUnitList =
+            orgUnitApi.treeSearch(tenantId, null, search, OrgTreeTypeEnum.TREE_TYPE_PERSON).getData();
+        List<OrgUnit> orgUnits = new ArrayList<OrgUnit>();
+        for (OrgUnit ou : orgUnitList) {
+            if (OrgTypeEnum.PERSON.getEnName().equals(ou.getOrgType().getEnName())) {
+                Person person = (Person)ou;
+                String email = jamesUserService.getEmailAddressByPersonId(ou.getId());
+                if (StringUtils.isEmpty(email)) {
+                    email = "未注册邮箱";
+                } else {
+                    person.setEmail(email);
+                }
+                orgUnits.add(person);
+            }
+        }
+        map.put("business", orgUnits);
+        // 从个人通讯录获取
+        List<JamesAddressBook> jamesAddressBookList = jamesAddressBookService.findSearch(search);
+        map.put("personal", jamesAddressBookList);
+        // 从最近联系人获取
+        try {
+            List<EmailContactDTO> emailContactDTOList = this.contactPerson();
+            List<EmailContactDTO> emailContactDTOs = new ArrayList<>();
+            for (EmailContactDTO ec : emailContactDTOList) {
+                if ((StringUtils.isNotBlank(ec.getContactPerson()) && ec.getContactPerson().indexOf(search) != -1)
+                    || (StringUtils.isNotBlank(ec.getContactPersonName())
+                        && ec.getContactPersonName().indexOf(search) != -1)) {
+                    emailContactDTOs.add(ec);
+                }
+            }
+            map.put("recently", emailContactDTOs);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return map;
+    }
+
+    @Override
+    public EmailDTO newEmail() {
+        EmailDTO email = new EmailDTO();
+        email.setRichText(EmailUtil.getSignature());
+        return email;
+    }
+
     private EmailListDTO messageToEmailListDTO(Message message, Long uid, boolean fillMobileRequired) throws Exception {
         EmailListDTO emailListDTO = new EmailListDTO();
         emailListDTO.setUid(uid);
@@ -849,22 +728,88 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         emailListDTO.setFolder(message.getFolder().getName());
         emailListDTO.setFolderStr(getFolderString(message));
         emailListDTO.setFromPersonName(getFromString(message));
-        emailListDTO.setAttachment(isHasAttachment(message));
-        emailListDTO.setAttachmentSize(getAttachmentSize(message));
-        emailListDTO.setToPersonNames(getToString(message.getAllRecipients()));
+        // emailListDTO.setAttachment(isHasAttachment(message));
+        emailListDTO.setAttachment(hasAttachment(message));
+        // emailListDTO.setAttachmentSize(getAttachmentSize(message));
+        Address[] allRecipients = message.getAllRecipients();
+        emailListDTO.setToPersonNames(getToString(allRecipients));
 
         if (fillMobileRequired) {
-            MimeMessage mm = (MimeMessage)message;
-            MimeMessageParser parser = new MimeMessageParser(mm).parse();
-            emailListDTO.setText(parser.getPlainContent());
+            // MimeMessage mm = (MimeMessage)message;
+            // MimeMessageParser parser = new MimeMessageParser(mm).parse();
+            emailListDTO.setText(extractText(message));
+
+            List<String> emailAddressList = Arrays.stream(allRecipients == null ? new Address[] {} : allRecipients)
+                .map(address -> ((InternetAddress)address).getAddress())
+                .collect(Collectors.toList());
+            List<ToDTO> toDTOList = new ArrayList<>();
+            for (String emailAddress : emailAddressList) {
+                ToDTO toDTO = new ToDTO();
+                toDTO.setTo(emailAddress);
+                toDTO.setToName(emailAddress.split("@")[0]);
+                toDTOList.add(toDTO);
+            }
+            emailListDTO.setToDTOList(toDTOList);
+
+            Address[] from = message.getFrom();
+            emailListDTO.setFrom(from == null ? "" : ((InternetAddress)from[0]).getAddress());
+            emailListDTO.setFromName(getFromString(message));
         }
         return emailListDTO;
     }
 
+    /**
+     * 递归提取纯文本或 HTML 正文 这里的精髓在于：当碰到附件时，直接跳过，JavaMail 就不会去下载附件！
+     */
+    private static String extractText(Part part) throws Exception {
+        // 1. 如果是纯文本，直接返回
+        if (part.isMimeType("text/plain")) {
+            return (String)part.getContent(); // 触发网络请求：仅下载纯文本部分
+        }
+        // 2. 如果是 HTML，提取内容并剥离 HTML 标签
+        else if (part.isMimeType("text/html")) {
+            String html = (String)part.getContent(); // 触发网络请求：仅下载 HTML 部分
+            return Jsoup.parse(html).text();
+        }
+        // 3. 如果是 Multipart (复合邮件)，递归查找正文
+        else if (part.isMimeType("multipart/*")) {
+            Multipart multipart = (Multipart)part.getContent(); // 仅拉取结构
+            int count = multipart.getCount();
+
+            // 优先寻找 text/plain，其次寻找 text/html
+            String htmlContent = null;
+
+            for (int i = 0; i < count; i++) {
+                BodyPart bodyPart = multipart.getBodyPart(i);
+                String disposition = bodyPart.getDisposition();
+
+                // 【关键】跳过附件部分！绝不调用 attachmentPart.getContent()
+                if (disposition != null && disposition.equalsIgnoreCase(Part.ATTACHMENT)) {
+                    continue;
+                }
+
+                if (bodyPart.isMimeType("text/plain")) {
+                    return extractText(bodyPart); // 找到了纯文本，最理想，直接返回
+                } else if (bodyPart.isMimeType("text/html")) {
+                    // 先存起来，如果后面没有 text/plain，就用这个 HTML 降级处理
+                    htmlContent = extractText(bodyPart);
+                } else if (bodyPart.isMimeType("multipart/*")) {
+                    // 递归处理嵌套（比如 multipart/alternative）
+                    String nestedContent = extractText(bodyPart);
+                    if (nestedContent != null)
+                        return nestedContent;
+                }
+            }
+            // 如果没有纯文本，但有 HTML，则返回清理后的 HTML
+            return htmlContent;
+        }
+        return null;
+    }
+
     private String getFolderString(Message message) {
         String folder = message.getFolder().getName();
-        return "INBOX".equals(folder) ? "收件箱"
-            : "Sent".equals(folder) ? "已发送" : "Trash".equals(folder) ? "回收站" : "Drafts".equals(folder) ? "草稿箱" : folder;
+        DefaultFolder defaultFolder = DefaultFolder.getByName(folder);
+        return defaultFolder != null ? defaultFolder.getcName() : folder;
     }
 
     private String getFromString(Message message) throws MessagingException {
@@ -1059,52 +1004,221 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         mimeMessage.setSubject(subject);
     }
 
-    @Override
-    public Map<String, Object> addressRelevancy(String search) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        String tenantId = Y9LoginUserHolder.getTenantId();
-        // 从组织架构获取
-        List<OrgUnit> orgUnitList =
-            orgUnitApi.treeSearch(tenantId, null, search, OrgTreeTypeEnum.TREE_TYPE_PERSON).getData();
-        List<OrgUnit> orgUnits = new ArrayList<OrgUnit>();
-        for (OrgUnit ou : orgUnitList) {
-            if (OrgTypeEnum.PERSON.getEnName().equals(ou.getOrgType().getEnName())) {
-                Person person = (Person)ou;
-                String email = jamesUserService.getEmailAddressByPersonId(ou.getId());
-                if (StringUtils.isEmpty(email)) {
-                    email = "未注册邮箱";
-                } else {
-                    person.setEmail(email);
-                }
-                orgUnits.add(person);
-            }
-        }
-        map.put("business", orgUnits);
-        // 从个人通讯录获取
-        List<JamesAddressBook> jamesAddressBookList = jamesAddressBookService.findSearch(search);
-        map.put("personal", jamesAddressBookList);
-        // 从最近联系人获取
-        try {
-            List<EmailContactDTO> emailContactDTOList = this.contactPerson();
-            List<EmailContactDTO> emailContactDTOs = new ArrayList<>();
-            for (EmailContactDTO ec : emailContactDTOList) {
-                if ((StringUtils.isNotBlank(ec.getContactPerson()) && ec.getContactPerson().indexOf(search) != -1)
-                    || (StringUtils.isNotBlank(ec.getContactPersonName())
-                        && ec.getContactPersonName().indexOf(search) != -1)) {
-                    emailContactDTOs.add(ec);
-                }
-            }
-            map.put("recently", emailContactDTOs);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return map;
+    private static void setMailer(MimeMessage mimeMessage) throws MessagingException {
+        mimeMessage.setHeader(EmailConst.HEADER_MAILER, "risesoft webmail");
     }
 
-    @Override
-    public EmailDTO newEmail() {
-        EmailDTO email = new EmailDTO();
-        email.setRichText(EmailUtil.getSignature());
-        return email;
+    private static EmailDTO buildReplyEmail(String folderName, EmailDTO email) {
+        EmailDTO replyEmail = new EmailDTO();
+        replyEmail.setFolder(folderName);
+        replyEmail.setReplyMessageId(email.getMessageId());
+        replyEmail.setRichText(EmailUtil.getReplyOrForwardContent(email)
+            + (StringUtils.isNotBlank(email.getRichText()) ? email.getRichText() : ""));
+        replyEmail.setSubject("回复：" + email.getSubject());
+        return replyEmail;
     }
+
+    public static boolean hasAttachment(Part part) throws Exception {
+        if (part.isMimeType("multipart/*")) {
+            Multipart multipart = (Multipart)part.getContent();
+            for (int i = 0; i < multipart.getCount(); i++) {
+                BodyPart bodyPart = multipart.getBodyPart(i);
+
+                String disposition = bodyPart.getDisposition();
+
+                if (Part.ATTACHMENT.equalsIgnoreCase(disposition) || Part.INLINE.equalsIgnoreCase(disposition)) {
+                    return true;
+                }
+
+                if (bodyPart.getFileName() != null) {
+                    return true;
+                }
+
+                // 递归（嵌套结构）
+                if (hasAttachment(bodyPart)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isHasAttachment(Message message) throws IOException, MessagingException {
+        boolean hasAttachment = false;
+        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
+            MimeMultipart mmp = (MimeMultipart)message.getContent();
+            int count = mmp.getCount();
+            for (int j = 0; j < count; j++) {
+                BodyPart bodyPart = mmp.getBodyPart(j);
+                String disposition = bodyPart.getDisposition();
+                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
+                    hasAttachment = true;
+                }
+            }
+        }
+        return hasAttachment;
+    }
+
+    private static String getAttachmentSize(Message message) throws IOException, MessagingException {
+        long attachmentSize = 0L;
+        if (message.getContent().getClass().toString().trim().contains("MimeMultipart")) {
+            MimeMultipart mmp = (MimeMultipart)message.getContent();
+            int count = mmp.getCount();
+            for (int j = 0; j < count; j++) {
+                BodyPart bodyPart = mmp.getBodyPart(j);
+                String disposition = bodyPart.getDisposition();
+                if (null != disposition && disposition.equals(Part.ATTACHMENT)) {
+                    InputStream inputStream = bodyPart.getInputStream();
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead = -1;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    attachmentSize += outputStream.toByteArray().length;
+                    outputStream.close();
+                }
+            }
+        }
+        return (attachmentSize >> 10) + " KB";
+    }
+
+    private void addHtml(MimeMultipart mimeMultipart, String richText) throws MessagingException {
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setContent(richText, "text/html;charset=UTF-8");
+        mimeMultipart.addBodyPart(bodyPart);
+    }
+
+    private List<String> addHtmlTextReplaceCID(MimeMultipart alternativeMultipart, String richText)
+        throws MessagingException {
+        List<String> inlineIdList = new ArrayList<>();
+
+        String patternStr = "<img\\s*([^>]*)\\s*src=\\\"(.*?)\\\"\\s*([^>]*)>";
+        Pattern pattern = Pattern.compile(patternStr, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(richText);
+        String result = richText;
+        while (matcher.find()) {
+            String src = matcher.group(2);
+            int index = src.indexOf(Y9Context.getSystemName());
+            if (index != -1) {
+                try {
+                    String fileName = src.substring(src.lastIndexOf("/") + 1);
+                    String fileId = FilenameUtils.getBaseName(fileName);
+                    String replaceSrc = "cid:" + fileId;
+                    if (StringUtils.isNotBlank(replaceSrc)) {
+                        result = result.replaceAll(src, replaceSrc);
+                    }
+                    inlineIdList.add(fileId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        MimeBodyPart htmlBodyPart = new MimeBodyPart();
+        htmlBodyPart.setContent(result, "text/html;charset=UTF-8");
+        alternativeMultipart.addBodyPart(htmlBodyPart);
+
+        return inlineIdList;
+    }
+
+    private void addPictures(MimeMultipart mimeMultipart, List<String> cidList) throws MessagingException {
+        if (cidList != null) {
+            for (String fileId : cidList) {
+                try {
+                    MimeBodyPart mimeBodyPart = new MimeBodyPart();
+                    byte[] bytes = y9FileStoreService.downloadFileToBytes(fileId);
+                    Y9FileStore y9FileStore = y9FileStoreService.getById(fileId);
+                    DataSource dataSource = new ByteArrayDataSource(bytes,
+                        new MimetypesFileTypeMap().getContentType(y9FileStore.getFileName()));
+                    DataHandler dataHandler = new DataHandler(dataSource);
+                    mimeBodyPart.setDataHandler(dataHandler);
+                    mimeBodyPart.setContentID("<" + fileId + ">");
+                    mimeMultipart.addBodyPart(mimeBodyPart);
+
+                    // 附件临时存入 y9FileStore 里，上传到邮件中后删除
+                    y9FileStoreService.deleteFile(fileId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void addText(MimeMultipart alternativeMultipart, String text) throws MessagingException {
+        MimeBodyPart mimeBodyPart = new MimeBodyPart();
+        mimeBodyPart.setContent(text, "text/plain;charset=UTF-8");
+        alternativeMultipart.addBodyPart(mimeBodyPart);
+    }
+
+    private Message getMessageByUID(IMAPFolder folder, long uid) throws MessagingException {
+        Message message = folder.getMessageByUID(uid);
+        if (message == null) {
+            throw new Y9BusinessException(EmailErrorCodeEnum.EMAIL_NOT_EXIST.getCode(),
+                EmailErrorCodeEnum.EMAIL_NOT_EXIST.getDescription());
+        }
+        return message;
+    }
+
+    private SearchTerm buildSearchTerm(EmailSearchDTO searchDTO) {
+        List<SearchTerm> searchTermList = new ArrayList<>();
+
+        // 主题搜索
+        if (StringUtils.isNotBlank(searchDTO.getSubject())) {
+            searchTermList.add(new MySubjectTerm(searchDTO.getSubject()));
+        } else {
+            // 为空 查所有
+            searchTermList.add(new MySubjectTerm(""));
+        }
+
+        // 正文搜索
+        if (StringUtils.isNotBlank(searchDTO.getText())) {
+            searchTermList.add(new MyBodyTerm(searchDTO.getText()));
+        }
+
+        // 发件人搜索
+        if (StringUtils.isNotBlank(searchDTO.getFrom())) {
+            searchTermList.add(new MyFormTerm(searchDTO.getFrom()));
+        }
+
+        // 收件人搜索
+        if (StringUtils.isNotBlank(searchDTO.getTo())) {
+            searchTermList.add(new MyReceiverTerm(searchDTO.getTo()));
+        }
+
+        // 发送/接收时间搜索（开始时间）
+        if (searchDTO.getStartDate() != null) {
+            OrTerm startDateTerm =
+                new OrTerm(new SearchTerm[] {new SentDateTerm(ComparisonTerm.GE, searchDTO.getStartDate()),
+                    new ReceivedDateTerm(ComparisonTerm.GE, searchDTO.getStartDate())});
+            searchTermList.add(startDateTerm);
+        }
+
+        // 发送/接收时间搜索（结束时间）
+        if (searchDTO.getEndDate() != null) {
+            OrTerm endDateTerm =
+                new OrTerm(new SearchTerm[] {new SentDateTerm(ComparisonTerm.LE, searchDTO.getEndDate()),
+                    new ReceivedDateTerm(ComparisonTerm.LE, searchDTO.getEndDate())});
+            searchTermList.add(endDateTerm);
+        }
+
+        // 是否有附件搜索
+        if (searchDTO.getAttachment() != null) {
+            searchTermList.add(new MyAttachmentTerm("", searchDTO.getAttachment()));
+        }
+
+        // 是否已读搜索
+        if (searchDTO.getRead() != null) {
+            searchTermList.add(new MyFlagTerm(new Flags(Flags.Flag.SEEN), searchDTO.getRead()));
+        }
+
+        // 是否标记
+        if (searchDTO.getFlagged() != null) {
+            searchTermList.add(new MyFlagTerm(new Flags(Flags.Flag.FLAGGED), searchDTO.getFlagged()));
+        }
+
+        return new AndTerm(searchTermList.toArray(new SearchTerm[searchTermList.size()]));
+    }
+
 }

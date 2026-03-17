@@ -1,9 +1,5 @@
 package net.risesoft.support;
 
-import java.util.Arrays;
-
-import org.apache.commons.lang3.StringUtils;
-
 public enum DefaultFolder {
     INBOX("INBOX", "收件箱", false),
     DRAFTS("Drafts", "草稿箱", false),
@@ -28,11 +24,13 @@ public enum DefaultFolder {
         this.existSubFolder = existSubFolder;
     }
 
-    public static boolean is(String folderName) {
-        if (StringUtils.isBlank(folderName)) {
-            return false;
+    public static DefaultFolder getByName(String name) {
+        for (DefaultFolder folder : DefaultFolder.values()) {
+            if (folder.getName().equals(name)) {
+                return folder;
+            }
         }
-        return Arrays.stream(DefaultFolder.values()).anyMatch(folder -> folderName.equals(folder.getName()));
+        return null;
     }
 
     public String getName() {

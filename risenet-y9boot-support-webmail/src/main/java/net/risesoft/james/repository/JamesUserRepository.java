@@ -28,4 +28,6 @@ public interface JamesUserRepository extends JpaRepository<JamesUser, String>, J
     @Transactional(readOnly = false)
     @Modifying
     void deleteByPersonId(String personId);
+
+    List<JamesUser> findByEmailAddressIn(List<String> emailAddressList);
 }

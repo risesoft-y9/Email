@@ -38,7 +38,7 @@ public final class MyAttachmentTerm extends StringTerm {
     @Override
     public boolean match(Message msg) {
         try {
-            boolean isAttachment = EmailServiceImpl.isHasAttachment(msg);
+            boolean isAttachment = EmailServiceImpl.hasAttachment(msg);
             if (isAttachment) {
                 return hasAttachment;
             } else {
