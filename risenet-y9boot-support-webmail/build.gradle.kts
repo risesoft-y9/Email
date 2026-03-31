@@ -20,13 +20,14 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-validation")
     api("com.google.guava:guava")
     api("org.apache.commons:commons-lang3")
+    api(libs.commons.text)
     api(libs.jakarta.mail.jakarta.mail.api)
     api(libs.com.sun.mail.jakarta.mail)
-    api(libs.commons.text)
     api(libs.james.apache.mime4j.dom)
     api(libs.james.apache.mime4j.mbox.iterator)
     api(libs.james.apache.mime4j.storage)
     api(libs.pinyin4j)
+    api(libs.jsoup)
 
     compileOnly("jakarta.servlet:jakarta.servlet-api")
 
