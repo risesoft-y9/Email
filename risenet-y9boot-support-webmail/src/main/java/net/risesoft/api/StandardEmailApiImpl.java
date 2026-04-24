@@ -25,8 +25,6 @@ import net.risesoft.support.DefaultFolder;
 import net.risesoft.support.EmailThreadLocalHolder;
 import net.risesoft.y9.Y9LoginUserHolder;
 
-import y9.client.rest.platform.org.PersonApiClient;
-
 import dm.jdbc.util.StringUtil;
 
 @RestController(value = "Standard4EmailApiImpl")
@@ -36,8 +34,6 @@ import dm.jdbc.util.StringUtil;
 public class StandardEmailApiImpl implements StandardEmailApi {
 
     private final EmailService emailService;
-
-    private final PersonApiClient personManager;
 
     private final JamesUserService jamesUserService;
 
