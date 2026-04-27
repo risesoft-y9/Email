@@ -28,6 +28,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.sun.mail.imap.IMAPFolder;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import net.risesoft.api.platform.org.PersonApi;
@@ -46,14 +48,15 @@ import net.risesoft.y9.Y9LoginUserHolder;
 import net.risesoft.y9.configuration.app.y9webmail.Y9WebMailProperties;
 import net.risesoft.y9.util.signing.Y9MessageDigestUtil;
 
-@RequiredArgsConstructor
-public class MailHelper {
+@Getter(AccessLevel.PROTECTED)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+public abstract class MailHelper {
 
-    protected final Y9WebMailProperties y9WebMailProperties;
+    private final Y9WebMailProperties y9WebMailProperties;
 
-    protected final JamesUserService jamesUserService;
+    private final JamesUserService jamesUserService;
 
-    protected final PersonApi personApi;
+    private final PersonApi personApi;
 
     public static EmailAttachmentDTO parseEmailAttachment(DataSource dataSource) throws IOException {
         EmailAttachmentDTO emailAttachmentDTO = new EmailAttachmentDTO();
@@ -129,6 +132,7 @@ public class MailHelper {
 
     /**
      * 填充人员数据
+     * 
      * @param emailReceiverDTOList
      */
     public void populatePersonData(List<EmailListDTO> emailReceiverDTOList) {

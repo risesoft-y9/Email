@@ -106,21 +106,17 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
     private final JamesAddressBookService jamesAddressBookService;
 
-    private final JamesUserService jamesUserService;
-
     public EmailServiceImpl(
         Y9WebMailProperties y9WebMailProperties,
         JamesUserService jamesUserService,
         PersonApi personApi,
         Y9FileStoreService y9FileStoreService,
         OrgUnitApi orgUnitApi,
-        JamesAddressBookService jamesAddressBookService,
-        JamesUserService jamesUserService1) {
+        JamesAddressBookService jamesAddressBookService) {
         super(y9WebMailProperties, jamesUserService, personApi);
         this.y9FileStoreService = y9FileStoreService;
         this.orgUnitApi = orgUnitApi;
         this.jamesAddressBookService = jamesAddressBookService;
-        this.jamesUserService = jamesUserService1;
     }
 
     @Override
@@ -630,7 +626,8 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
 
         IMAPFolder folderSent = (IMAPFolder)store.getFolder(DefaultFolder.SENT.getName());
         if (!folderSent.exists())
-            folderSent = (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(DefaultFolder.SENT.getName());
+            folderSent =
+                (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(DefaultFolder.SENT.getName());
         if (folderSent.exists()) {
             folderSent.open(Folder.READ_ONLY);
             Message[] messagesSent =
@@ -679,7 +676,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         for (OrgUnit ou : orgUnitList) {
             if (OrgTypeEnum.PERSON.getEnName().equals(ou.getOrgType().getEnName())) {
                 Person person = (Person)ou;
-                String email = jamesUserService.getEmailAddressByPersonId(ou.getId());
+                String email = getJamesUserService().getEmailAddressByPersonId(ou.getId());
                 if (StringUtils.isEmpty(email)) {
                     email = "未注册邮箱";
                 } else {
@@ -882,7 +879,7 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
     }
 
     private String generateUniqueMessageId() {
-        return String.format("<%s@%s>", Y9IdGenerator.genId(), y9WebMailProperties.getHost());
+        return String.format("<%s@%s>", Y9IdGenerator.genId(), getY9WebMailProperties().getHost());
     }
 
     private MimeBodyPart getBaseBodyPart(final MimeMultipart mimeMultipart) throws MessagingException {

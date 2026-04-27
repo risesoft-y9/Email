@@ -159,7 +159,7 @@ public class EmailController {
      */
     @GetMapping(value = "/list")
     public Y9Page<EmailListDTO> list(int page, @RequestParam int size, @RequestParam(required = false) String folder)
-            throws Exception {
+        throws Exception {
         return emailService.listByFolder(folder, page, size);
     }
 
