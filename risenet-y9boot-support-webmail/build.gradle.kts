@@ -1,4 +1,4 @@
-plugins {
+﻿plugins {
     alias(libs.plugins.y9.conventions.java)
     alias(libs.plugins.y9.lombok)
     alias(libs.plugins.y9.smart.doc)
@@ -32,7 +32,6 @@ dependencies {
     compileOnly("jakarta.servlet:jakarta.servlet-api")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-
 }
 
 description = "risenet-y9boot-support-webmail"
