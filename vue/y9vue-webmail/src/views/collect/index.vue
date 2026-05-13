@@ -74,6 +74,7 @@
             //表格配置
             border: false,
             headerBackground: true,
+            rowKey: 'uid',
             columns: [
                 {
                     type: 'selection',

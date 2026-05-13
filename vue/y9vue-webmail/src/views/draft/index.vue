@@ -133,6 +133,7 @@
             //表格配置
             border: false,
             headerBackground: true,
+            rowKey: 'uid',
             load: false,
             columns: [
                 {

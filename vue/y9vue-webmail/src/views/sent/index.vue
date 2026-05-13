@@ -140,6 +140,7 @@
             border: false,
             headerBackground: true,
             loading: false,
+            rowKey: 'uid',
             columns: [
                 {
                     type: 'selection',
