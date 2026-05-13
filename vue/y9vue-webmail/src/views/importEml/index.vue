@@ -74,6 +74,7 @@
             border: false,
             headerBackground: true,
             openAutoComputedHeight: false,
+            rowKey: 'uid',
             columns: [
                 {
                     type: 'selection',
