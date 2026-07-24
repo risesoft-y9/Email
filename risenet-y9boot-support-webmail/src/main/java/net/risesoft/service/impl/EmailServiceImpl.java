@@ -625,9 +625,10 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         List<EmailListDTO> emailReceiverDTOList = new ArrayList<>();
 
         IMAPFolder folderSent = (IMAPFolder)store.getFolder(DefaultFolder.SENT.getName());
-        if (!folderSent.exists())
+        if (!folderSent.exists()) {
             folderSent =
                 (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(DefaultFolder.SENT.getName());
+        }
         if (folderSent.exists()) {
             folderSent.open(Folder.READ_ONLY);
             Message[] messagesSent =
@@ -644,9 +645,10 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
         folderSent.close(true);
         emailReceiverDTOList = new ArrayList<>();
         IMAPFolder folderINBOX = (IMAPFolder)store.getFolder(DefaultFolder.INBOX.getName());
-        if (!folderINBOX.exists())
+        if (!folderINBOX.exists()) {
             folderINBOX =
                 (IMAPFolder)store.getFolder(DefaultFolder.MY_FOLDER.getName()).getFolder(DefaultFolder.INBOX.getName());
+        }
         if (folderINBOX.exists()) {
             folderINBOX.open(Folder.READ_ONLY);
             Message[] messagesINBOX =
@@ -793,8 +795,9 @@ public class EmailServiceImpl extends MailHelper implements EmailService {
                 } else if (bodyPart.isMimeType("multipart/*")) {
                     // 递归处理嵌套（比如 multipart/alternative）
                     String nestedContent = extractText(bodyPart);
-                    if (nestedContent != null)
+                    if (nestedContent != null) {
                         return nestedContent;
+                    }
                 }
             }
             // 如果没有纯文本，但有 HTML，则返回清理后的 HTML
