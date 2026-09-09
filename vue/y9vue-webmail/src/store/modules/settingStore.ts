@@ -10,10 +10,11 @@ export const useSettingStore = defineStore('settingStore', {
             webLanguage: 'zh', // 语言
             fontSize: 'default', // 字号大小
             themeName: 'theme-default', // 主题
+            lightThemeName: 'theme-default', // 暗黑模式关闭后恢复的主题
             isDark: false, // 是否暗黑主题
             menuAnimation: 'rtl', // 菜单动画方向——仅mobile
             menuStyle: 'Light', // 菜单样式
-            menuWidth: '100%', // 菜单宽度（高度）
+            menuWidth: '25%', // 菜单宽度（高度）
             menuBg: '', // 菜单背景 new URL('../../assets/images/menu-bg1.png', import.meta.url).href
             showLabel: false, // 显示标签
             showLabelIcon: false, // 显示标签icon
