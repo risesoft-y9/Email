@@ -3,10 +3,8 @@
     import { useSettingStore } from '@/store/modules/settingStore';
     import y9_storage from '@/utils/storage';
     import { $y9_SSO } from '@/main';
-    import { ElMessage } from 'element-plus';
 
     import RightTopUser from '../components/RightTopUser.vue';
-    import UseDark from '../components/UseDark/index.vue';
 
     // 个人信息 —— 头像
     const userInfo = y9_storage.getObjectItem('ssoUserInfo');

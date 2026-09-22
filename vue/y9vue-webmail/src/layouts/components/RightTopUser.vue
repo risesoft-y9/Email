@@ -4,10 +4,9 @@
         <span>{{ deptName }}</span>
     </div>
     <div class="item">
-        <!-- <RightTopUser /> -->
-        <i class="ri-user-line"></i>
         <!-- show & if 的vue指令 仅用于适配移动端 -->
         <div v-show="settingStore.getWindowWidth > 425">
+            <i class="ri-user-line"></i>
             <span>{{ $t(`${userInfo.name}`) }}</span>
         </div>
         <el-avatar
@@ -18,6 +17,7 @@
                 'background-color': 'var(--el-color-primary)',
                 'margin-top': '8px'
             }"
+            :title="userInfo.name"
         >
             {{ userInfo.loginName }}
         </el-avatar>

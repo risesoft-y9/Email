@@ -18,7 +18,7 @@ const homeRouter = {
     children: [
         {
             path: '/home',
-            component: () => import('@/views/home/index.vue'),
+            component: () => import('@/views/Home/index.vue'),
             name: 'homeIndex',
             meta: {
                 title: '首页',

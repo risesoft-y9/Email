@@ -1,37 +1,40 @@
 <!--
  * @Author: your name
  * @Date: 2022-01-11 18:38:31
- * @LastEditTime: 2026-01-13 15:39:48
+ * @LastEditTime: 2026-09-21 16:36:30
  * @LastEditors: mengjuhua
- * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: \vue\y9vue-webmail\src\layouts\components\SiderMenuItem.vue
+ * @Description: 侧边栏菜单项组件
 -->
 <template>
     <template v-if="!item.hidden">
         <template
             v-if="
-                item.children &&
-                Array.isArray(item.children) &&
-                (item.meta?.isDynamic ? true : hasChildRoute(item.children))
+                item.children && Array.isArray(item.children) && (isDynamicParent ? true : hasChildRoute(item.children))
             "
         >
             <el-sub-menu :index="item.path" class="y9-el-sub-menu">
                 <template #title>
+                    <!-- 动态父菜单图标，点击新增文件夹 -->
                     <i
-                        v-if="item.meta.icon"
+                        v-if="item.meta?.icon"
                         :class="['icon', item.meta.icon]"
                         style="color: var(--el-color-primary)"
-                        title="点击添加自定义文件夹"
-                        @click.stop="onEditDynamicRoute(true)"
+                        :title="isDynamicParent ? '点击添加自定义文件夹' : ''"
+                        @click.stop="isDynamicParent ? onEditDynamicRoute(true) : null"
                     />
-                    <span>{{ $t(`${item.meta.title}`) }}</span>
+                    <span>{{ $t(`${item.meta?.title}`) }}</span>
                 </template>
+                <!-- 新增文件夹输入项 -->
                 <el-menu-item v-if="isEditRoute">
                     <i class="ri-folder-3-line"></i>
                     <el-input
                         ref="routeInputRef"
                         v-model="dynamicRouteTitle"
+                        placeholder="请输入文件夹名称"
                         @blur="onSaveDynamicRoute(true)"
+                        @keyup.esc="cancelEdit"
+                        @keyup.enter="onSaveDynamicRoute(true)"
+                        @click.stop
                     ></el-input>
                 </el-menu-item>
                 <sider-menu-item
@@ -40,27 +43,44 @@
                     :belong-top-menu="belongTopMenu"
                     :parent-route="item"
                     :route-item="item2"
+                    :open-sub-menu="openSubMenu"
                 >
                 </sider-menu-item>
             </el-sub-menu>
         </template>
+
         <template v-else>
-            <a-link :to="item.path">
+            <!-- 编辑状态下用 div 替代 a-link，避免点击输入框触发 router-link 导航 -->
+            <div v-if="isEditRoute">
                 <el-menu-item
                     :index="item.path"
                     @click="toggleCollapsedFunc"
                     @contextmenu.prevent="onMouseRightEvent(item, $event)"
                 >
-                    <!-- <Icon v-if="item.meta.icon" :type="item.meta.icon" class="icon" /> -->
-                    <i v-if="item.meta.icon" :class="['icon', item.meta.icon]" />
+                    <i v-if="item.meta?.icon" :class="['icon', item.meta.icon]" />
                     <template #title>
                         <el-input
                             v-if="isEditRoute"
                             ref="routeInputRef"
                             v-model="dynamicRouteTitle"
+                            placeholder="请输入文件夹名称"
                             @blur="onSaveDynamicRoute(false)"
+                            @keyup.esc="cancelEdit"
+                            @keyup.enter="onSaveDynamicRoute(false)"
+                            @click.stop
                         ></el-input>
-                        <span v-else>{{ $t(`${item.meta.title}`) }}</span>
+                    </template>
+                </el-menu-item>
+            </div>
+            <a-link v-else :to="item.path">
+                <el-menu-item
+                    :index="item.path"
+                    @click="toggleCollapsedFunc"
+                    @contextmenu.prevent="onMouseRightEvent(item, $event)"
+                >
+                    <i v-if="item.meta?.icon" :class="['icon', item.meta.icon]" />
+                    <template #title>
+                        <span>{{ $t(`${item.meta?.title}`) }}</span>
                     </template>
                 </el-menu-item>
             </a-link>
@@ -68,279 +88,292 @@
     </template>
 </template>
 
-<script lang="ts">
-    import { computed, ComputedRef, defineComponent, nextTick, PropType, ref, Ref, toRefs } from 'vue';
-    import { getRouteBelongTopMenu, hasChildRoute, RoutesDataItem } from '@/utils/routes';
+<script lang="ts" setup>
+    import { computed, inject, nextTick, onBeforeUnmount, onMounted, ref, toRefs } from 'vue';
+    import { hasChildRoute, RoutesDataItem } from '@/utils/routes';
     import { useSettingStore } from '@/store/modules/settingStore';
     import ALink from '@/layouts/components/ALink/index.vue';
-    import Icon from './Icon.vue';
-    import { ElMessage } from 'element-plus';
+    import { ElMessage, ElNotification, ElMessageBox, ElInput } from 'element-plus';
     import router from '@/router';
     import { deleteFolder, saveFolder } from '@/api/folder/index';
-    import { useFolderStore } from '@/store/modules/folderStore';
 
-    interface SiderMenuItemSetupData {
-        item: Ref;
-        topMenuPath: ComputedRef<string>;
-        hasChildRoute: (children: RoutesDataItem[]) => boolean;
-        toggleCollapsedFunc: () => void;
-        fontSizeObj: Object;
+    defineOptions({ name: 'SiderMenuItem' });
+
+    interface Props {
+        routeItem: RoutesDataItem;
+        belongTopMenu?: string;
+        openSubMenu?: (index: string) => void;
+        parentRoute?: RoutesDataItem;
     }
 
-    export default defineComponent({
-        name: 'SiderMenuItem',
-        props: {
-            routeItem: {
-                type: Object as PropType<RoutesDataItem>,
-                required: true
-            },
-            belongTopMenu: {
-                type: String,
-                default: ''
-            },
-            openSubMenu: {
-                //展开指定的 sub-menu,参数index: 需要打开的 sub-menu 的 index
-                type: Function
-            },
-            parentRoute: {
-                //父级路由对象
-                type: Object as PropType<RoutesDataItem>
+    const props = withDefaults(defineProps<Props>(), {
+        belongTopMenu: ''
+    });
+
+    const { routeItem: item } = toRefs(props);
+
+    const fontSizeObj = inject<{ largeFontSize: string; baseFontSize: string }>('sizeObjInfo', {
+        largeFontSize: '16px',
+        baseFontSize: '14px'
+    });
+
+    const settingStore = useSettingStore();
+    const { toggleCollapsed } = settingStore;
+    const toggleCollapsedFunc = (e?: Event) => {
+        // 编辑状态下阻止事件冒泡，避免触发 router-link 导航
+        if (isEditRoute.value) {
+            e?.stopPropagation();
+            e?.preventDefault();
+            return;
+        }
+        if (settingStore.getDevice === 'mobile') {
+            toggleCollapsed();
+        }
+    };
+
+    // 是否为动态文件夹
+    const isDynamicFolder = computed(() => {
+        const path = item.value.path || '';
+        const metaFlag = item.value.meta?.isDynamic;
+        return metaFlag || path.startsWith('/folder/');
+    });
+
+    // 是否为动态父菜单
+    const isDynamicParent = computed(() => {
+        if (item.value.meta?.isDynamic) return true;
+        if (item.value.children?.length) {
+            return item.value.children.some(
+                (child) => child.meta?.isDynamic || (child.path && child.path.startsWith('/folder/'))
+            );
+        }
+        return false;
+    });
+
+    // 动态路由状态
+    const dynamicRouteTitle = ref('');
+    const isEditRoute = ref(false);
+    // 保存锁，防止 @keyup.enter 和 @blur 同时触发导致重复保存
+    const isSaving = ref(false);
+    const routeInputRef = ref<InstanceType<typeof ElInput> | null>(null);
+
+    // 全局点击关闭右键菜单
+    const globalClickHandler = (e: MouseEvent) => {
+        const contextMenu = document.getElementById('globalContextMenu');
+        if (contextMenu && !contextMenu.contains(e.target as HTMLElement)) {
+            contextMenu.remove();
+        }
+    };
+
+    // 取消编辑
+    const cancelEdit = () => {
+        isEditRoute.value = false;
+        dynamicRouteTitle.value = '';
+    };
+
+    // 进入新增/编辑状态
+    const onEditDynamicRoute = (isAdd: boolean) => {
+        if (!isDynamicFolder.value && !isDynamicParent.value) return;
+
+        if (isAdd) {
+            props.openSubMenu?.(item.value.path);
+        }
+
+        dynamicRouteTitle.value = isAdd ? '' : item.value.meta?.title || '';
+        isEditRoute.value = true;
+        nextTick(() => {
+            routeInputRef.value?.focus();
+            if (!isAdd && dynamicRouteTitle.value) {
+                routeInputRef.value?.select();
             }
-        },
-        components: {
-            ALink,
-            Icon
-        },
-        setup(props): SiderMenuItemSetupData {
-            const { routeItem } = toRefs(props);
-            // 注入 字体变量
-            const fontSizeObj: any = inject('sizeObjInfo');
-            const topMenuPath = computed<string>(() => getRouteBelongTopMenu(routeItem.value as RoutesDataItem));
+        });
+    };
 
-            const settingStore = useSettingStore();
-            const { toggleCollapsed } = settingStore;
-            const toggleCollapsedFunc = () => {
-                if (settingStore.getDevice === 'mobile') {
-                    toggleCollapsed();
+    // 递归判断是否存在同名路由
+    const isSameName = (data: any[], targetName: string): boolean => {
+        const trimmedName = targetName.trim();
+        for (const route of data) {
+            if (route.name === trimmedName) return true;
+            if (route.children?.length) {
+                if (isSameName(route.children, trimmedName)) return true;
+            }
+        }
+        return false;
+    };
+
+    // 保存新增/重命名的文件夹
+    const onSaveDynamicRoute = async (isAdd: boolean) => {
+        if (isSaving.value) return;
+        isSaving.value = true;
+        try {
+            const trimmedTitle = dynamicRouteTitle.value.trim();
+            if (!trimmedTitle) {
+                cancelEdit();
+                return;
+            }
+            dynamicRouteTitle.value = trimmedTitle;
+
+            if (isAdd) {
+                if (isSameName(router.getRoutes(), trimmedTitle)) {
+                    ElNotification.error({
+                        title: '新增失败',
+                        message: '文件夹名称重复，请重试',
+                        offset: 100
+                    });
+                    nextTick(() => routeInputRef.value?.focus());
+                    return;
                 }
-            };
 
-            //动态路由名称
-            let dynamicRouteTitle = ref('');
-            //是否为编辑路由状态
-            let isEditRoute = ref(false);
-            //路由编辑input实例
-            let routeInputRef = ref();
-
-            //添加时编辑动态菜单
-            const onEditDynamicRoute = (isAdd) => {
-                if (isAdd) {
-                    props.openSubMenu && props.openSubMenu(routeItem.value.path); //展开菜单
+                const res = await saveFolder({ newFolderName: trimmedTitle });
+                if (res.code === 0 && res.success) {
+                    const newRoute = {
+                        path: '/folder/' + encodeURIComponent(trimmedTitle),
+                        component: () => import('@/views/dynamic/dynamic.vue'),
+                        name: trimmedTitle,
+                        meta: {
+                            title: trimmedTitle,
+                            icon: 'ri-folder-3-line',
+                            isDynamic: true,
+                            id: trimmedTitle
+                        },
+                        props: { folder: trimmedTitle }
+                    };
+                    item.value.children?.unshift(newRoute);
+                    if (item.value.name) {
+                        router.addRoute(item.value.name as string, newRoute);
+                    }
+                    router.push({ path: newRoute.path });
+                }
+            } else {
+                const oldTitle = item.value.meta?.title;
+                // 标题未改则保持编辑状态
+                if (oldTitle === trimmedTitle) {
+                    return;
                 }
 
-                if (routeItem.value.meta.isDynamic) {
-                    dynamicRouteTitle.value = isAdd ? '' : routeItem.value.meta.title;
+                if (isSameName(router.getRoutes(), trimmedTitle)) {
+                    ElNotification.error({
+                        title: '修改失败',
+                        message: '文件夹名称重复，请重试',
+                        offset: 100
+                    });
+                    nextTick(() => routeInputRef.value?.focus());
+                    return;
                 }
-                isEditRoute.value = true; //设为编辑状态
-                nextTick(() => {
-                    routeInputRef.value?.focus(); //聚焦编辑状态下的input
+
+                const res = await saveFolder({
+                    originFolderName: oldTitle,
+                    newFolderName: trimmedTitle
                 });
-            };
+                if (res.code === 0 && res.success && item.value.meta) {
+                    const oldPath = item.value.path;
+                    const newPath = `/folder/${encodeURIComponent(trimmedTitle)}`;
+                    // webmail 路径基于文件夹名，重命名后路径变化，需要先移除旧路由再注册新路由
+                    if (oldTitle) {
+                        router.removeRoute(oldTitle);
+                    }
+                    item.value.path = newPath;
+                    item.value.name = trimmedTitle;
+                    item.value.meta.title = trimmedTitle;
+                    item.value.meta.path = newPath;
+                    item.value.meta.id = trimmedTitle;
+                    if (item.value.props && typeof item.value.props === 'object') {
+                        item.value.props.folder = trimmedTitle;
+                    }
+                    // 重新注册为父路由的子路由
+                    if (props.parentRoute?.name) {
+                        router.addRoute(props.parentRoute.name, item.value);
+                    }
 
-            //判断是否存在同名路由
-            const isSameName = (data, targetName) => {
-                let flag = false;
-                for (let i = 0; i < data.length; i++) {
-                    const route = data[i];
-                    if (route.name === targetName) {
-                        flag = true;
-                        break;
-                    } else if (route.children && route.children.length > 0) {
-                        isSameName(route.children, targetName);
+                    if (router.currentRoute.value.path === oldPath) {
+                        router.replace(newPath);
                     }
                 }
-                return flag;
-            };
+            }
+            isEditRoute.value = false;
+        } finally {
+            isSaving.value = false;
+        }
+    };
 
-            //input失去焦点时，保存动态路由
-            const onSaveDynamicRoute = async (isAdd) => {
-                if (dynamicRouteTitle.value) {
-                    //判断输入框是否有值
-                    if (isAdd) {
-                        //新增
-                        if (isSameName(router.getRoutes(), dynamicRouteTitle.value)) {
-                            //判断是否存在同名路由
-                            ElNotification.error({
-                                title: '新增失败',
-                                message: '文件夹名称重复，请重试',
-                                offset: 100
-                            });
-                        } else {
-                            const res = await saveFolder({
-                                //保存新增文件夹
-                                newFolderName: dynamicRouteTitle.value
-                            });
+    // 右键菜单：重命名、删除
+    const onMouseRightEvent = (route: RoutesDataItem, event: MouseEvent) => {
+        const isDynamic = route.meta?.isDynamic || (route.path && route.path.startsWith('/folder/'));
+        if (!isDynamic) return;
 
-                            if (res.code === 0 && res.success) {
-                                //保存成功前端才做处理
-                                await useFolderStore().initAllFolders();
+        const globalContextMenu = document.getElementById('globalContextMenu');
+        globalContextMenu?.remove();
 
-                                let newRoute = {
-                                    path: '/folder/' + encodeURIComponent(dynamicRouteTitle.value),
-                                    //	path: "/folder" + res.data.id,
-                                    component: () => import('@/views/dynamic/dynamic.vue'),
-                                    name: dynamicRouteTitle.value,
-                                    meta: {
-                                        title: dynamicRouteTitle.value,
-                                        icon: 'ri-folder-3-line',
-                                        isDynamic: true,
-                                        id: dynamicRouteTitle.value
-                                    },
-                                    props: { folder: dynamicRouteTitle.value }
-                                };
-                                routeItem.value.children.unshift(newRoute);
-                                router.addRoute(routeItem.value.name, newRoute);
-                                // router.push({path: newRoute.path});
-                            }
-                        }
-                    } else {
-                        //编辑
-                        if (routeItem.value.meta.title !== dynamicRouteTitle.value) {
-                            //判断路由是否有改变
-                            if (isSameName(router.getRoutes(), dynamicRouteTitle.value)) {
-                                //判断是否存在同名路由
-                                ElNotification.error({
-                                    title: '修改失败',
-                                    message: '文件夹名称重复，请重试',
-                                    offset: 100
-                                });
-                            } else {
-                                const res = await saveFolder({
-                                    originFolderName: routeItem.value.meta.title,
-                                    newFolderName: dynamicRouteTitle.value
-                                });
-                                if (res.code === 0 && res.success) {
-                                    await useFolderStore().initAllFolders();
+        // 视口边界适配
+        const menuWidth = 120;
+        const menuHeight = 80;
+        const x = Math.min(event.clientX, window.innerWidth - menuWidth);
+        const y = Math.min(event.clientY, window.innerHeight - menuHeight);
 
-                                    // routeItem.value.path = '/'+ dynamicRouteTitle.value;
-                                    routeItem.value.path = '/folder/' + encodeURIComponent(routeItem.value.meta.title);
-                                    routeItem.value.name = dynamicRouteTitle.value;
-                                    routeItem.value.meta.title = dynamicRouteTitle.value;
-                                    routeItem.value.meta.path = '/folder' + routeItem.value.meta.title;
-                                    routeItem.value.props.folder = dynamicRouteTitle.value;
-                                    router.replace('/folder/' + encodeURIComponent(routeItem.value.meta.title));
+        const menuDom = document.createElement('div');
+        menuDom.className = 'global-context-menu';
+        menuDom.style.position = 'fixed';
+        menuDom.style.top = `${y}px`;
+        menuDom.style.left = `${x}px`;
+        menuDom.style.zIndex = '2000';
+        menuDom.setAttribute('id', 'globalContextMenu');
+
+        const menuList = ['重命名', '删除'];
+        menuList.forEach((menuText) => {
+            const menuItemDom = document.createElement('div');
+            menuItemDom.innerHTML = menuText;
+            menuItemDom.className = 'global-context-menu-item';
+            menuItemDom.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (menuText === '重命名') {
+                    onEditDynamicRoute(false);
+                } else if (menuText === '删除') {
+                    ElMessageBox.confirm(`是否删除文件夹"${route.meta?.title}"？`, {
+                        confirmButtonText: '删除',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    })
+                        .then(async () => {
+                            const delRes = await deleteFolder({ folder: route.meta?.title });
+                            if (delRes.code === 0 && delRes.success) {
+                                ElMessage.success(delRes.msg || '删除成功');
+                                if (route.name) {
+                                    router.removeRoute(route.name as string);
+                                }
+                                // 从父级路由的 children 中移除当前项
+                                if (props.parentRoute?.children) {
+                                    const targetIndex = props.parentRoute.children.indexOf(route);
+                                    if (targetIndex > -1) {
+                                        props.parentRoute.children.splice(targetIndex, 1);
+                                    }
+                                }
+                                // 跳转到第一个子项，没有则跳转到收件箱
+                                const parentChildren = props.parentRoute?.children || [];
+                                if (parentChildren.length > 0) {
+                                    router.replace(parentChildren[0].path);
+                                } else {
+                                    router.replace('/receive');
                                 }
                             }
-                        }
-                    }
+                        })
+                        .catch(() => {});
                 }
-
-                isEditRoute.value = false; //取消编辑状态
-            };
-
-            //鼠标右键点击事件
-            const onMouseRightEvent = (route, event) => {
-                if (route.meta.isDynamic) {
-                    //动态路由才出现右键菜单
-
-                    //判断是否存在右键菜单，存在先移除
-                    const globalContextMenu = document.getElementById('globalContextMenu');
-                    if (globalContextMenu) {
-                        globalContextMenu.remove();
-                    }
-
-                    //创建右键菜单dom节点
-                    const menuDom = document.createElement('div');
-                    menuDom.className = 'global-context-menu';
-                    menuDom.style.position = 'fixed';
-                    menuDom.style.top = event.y + 'px';
-                    menuDom.style.left = event.x + 'px';
-                    menuDom.style.zIndex = '2000';
-                    menuDom.setAttribute('id', 'globalContextMenu');
-
-                    let list = ['重命名', '删除'];
-                    list.forEach((item) => {
-                        const menuItemDom = document.createElement('div');
-                        menuItemDom.innerHTML = item;
-                        menuItemDom.className = 'global-context-menu-item';
-                        menuItemDom.addEventListener('click', (e) => {
-                            e.preventDefault(); //阻止捕获
-                            e.stopPropagation();
-
-                            if (e.target.innerHTML === '重命名') {
-                                onEditDynamicRoute(false);
-                            } else if (e.target.innerHTML === '删除') {
-                                ElMessageBox.confirm(`是否删除文件夹“${route.meta.title}”？`, {
-                                    confirmButtonText: '删除',
-                                    cancelButtonText: '取消',
-                                    center: true
-                                })
-                                    .then(() => {
-                                        //1.请求删除路由的接口
-                                        //2.请求成功之后进行以下操作：
-                                        deleteFolder({ folder: route.meta.title }).then((res) => {
-                                            if (res.success) {
-                                                ElMessage({
-                                                    type: 'success',
-                                                    message: res.msg
-                                                });
-                                            }
-                                        });
-                                        //删除路由
-                                        router.removeRoute(route.name);
-                                        if (props.parentRoute) {
-                                            for (let i = 0; i < props.parentRoute.children.length; i++) {
-                                                const route2 = props.parentRoute.children[i];
-                                                if (route2.name === route.name) {
-                                                    props.parentRoute.children.splice(i, 1);
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                        //如果还有动态路由就跳转到第一个动态路由，没有则跳转到/receive
-                                        if (props.parentRoute.children.length > 0) {
-                                            router.replace(props.parentRoute.children[0].path);
-                                        } else {
-                                            router.replace('/receive');
-                                        }
-                                    })
-                                    .catch((err) => {});
-                            }
-                            document.getElementById('globalContextMenu').remove();
-                        });
-                        menuDom.appendChild(menuItemDom);
-                    });
-
-                    event.target.appendChild(menuDom);
-                }
-            };
-
-            return {
-                item: routeItem,
-                topMenuPath: topMenuPath,
-                hasChildRoute,
-                toggleCollapsedFunc,
-                isEditRoute,
-                dynamicRouteTitle,
-                isSameName,
-                routeInputRef,
-                onEditDynamicRoute,
-                onSaveDynamicRoute,
-                onMouseRightEvent,
-                fontSizeObj
-            };
-        },
-
-        mounted() {
-            //id='globalContextMenu' 以外的dom元素添加点击事件，让id='globalContextMenu'气泡框消失
-            document.addEventListener('click', (e) => {
-                let div = document.getElementById('globalContextMenu');
-                if (div && !div.contains(e.target)) {
-                    div.remove();
-                }
+                document.getElementById('globalContextMenu')?.remove();
             });
-        }
+            menuDom.appendChild(menuItemDom);
+        });
+
+        // 挂载到 body 避免被 overflow:hidden 截断
+        document.body.appendChild(menuDom);
+    };
+
+    onMounted(() => {
+        document.addEventListener('click', globalClickHandler);
+    });
+
+    onBeforeUnmount(() => {
+        document.removeEventListener('click', globalClickHandler);
+        document.getElementById('globalContextMenu')?.remove();
     });
 </script>
 
@@ -348,12 +381,10 @@
     .y9-el-sub-menu {
         & > div {
             text-decoration: none;
-
             i {
                 font-size: v-bind('fontSizeObj.largeFontSize');
                 margin-right: 15px;
             }
-
             span {
                 font-size: v-bind('fontSizeObj.baseFontSize');
             }
@@ -362,13 +393,15 @@
 
     :deep(.el-menu-item) {
         font-size: v-bind('fontSizeObj.baseFontSize');
-
         .el-icon {
             font-size: v-bind('fontSizeObj.baseFontSize');
             color: inherit;
             margin-left: -3px;
             padding: 0;
             margin-right: 12px !important;
+        }
+        .el-input {
+            width: 100%;
         }
     }
 
@@ -378,7 +411,6 @@
             & > a {
                 text-decoration: none;
             }
-
             li.el-menu-item {
                 & > i {
                     font-size: v-bind('fontSizeObj.largeFontSize');
@@ -389,8 +421,7 @@
     }
 
     .el-menu {
-        background-color: none;
-
+        background-color: transparent;
         li.el-menu-item {
             & > i {
                 font-size: v-bind('fontSizeObj.largeFontSize');
@@ -403,5 +434,24 @@
 <style>
     .y9-el-sub-menu.el-sub-menu .el-menu {
         background: transparent;
+    }
+    .global-context-menu {
+        min-width: 100px;
+        background: #ffffff;
+        border-radius: 6px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+        padding: 4px 0;
+        user-select: none;
+    }
+    .global-context-menu-item {
+        padding: 8px 16px;
+        font-size: 14px;
+        color: #303133;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .global-context-menu-item:hover {
+        background-color: #f5f7fa;
+        color: #409eff;
     }
 </style>

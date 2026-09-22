@@ -8,11 +8,11 @@
  */
 import '@/assets/css/nprogress.css'; // progress bar style
 import router from '@/router';
-import {checkRole} from '@/router/checkRole';
-import {constantRoutes} from '@/router/index';
-import {useSettingStore} from '@/store/modules/settingStore';
+import { checkRole } from '@/router/checkRole';
+import { constantRoutes } from '@/router/index';
+import { useSettingStore } from '@/store/modules/settingStore';
 import NProgress from 'nprogress'; // progress bar
-import {$y9_SSO} from '../main';
+import { $y9_SSO } from '../main';
 import authRouter from './modules/authRouter';
 
 NProgress.configure({ showSpinner: false, easing: 'ease', speed: 1000 });
@@ -61,27 +61,11 @@ async function check() {
 
     // access_token 是否过期
     isTokenValid = await $y9_SSO.checkToken();
-    // console.log(`isTokenValid=${isTokenValid}`);
     if (!isTokenValid) {
         return false;
     }
 
     isRoleValid = (await checkRole(userRole)) ? true : false;
-    // 根据角色权限获取路由
-    // let isLoadRouter = sessionStorage.getItem('isLoadRouter');
-    // 是否加载过数据
-    // if (import.meta.env.VUE_APP_APPFEATURES === '1' && isLoadRouter !== '1') {
-    //     // 获取应用初始化数据，可选
-    //     let initInfo = await getLoginInfo();
-    //     y9_storage.setObjectItem('initInfo', initInfo.data);
-    // } else {
-    //     isRoleValid = true;
-    // }
-    // 每个工程都请求这个接口，当错误时，不再请求
-    if (sessionStorage.getItem('getLoginInfo') != 'true') {
-        // let initInfo = await getLoginInfo();
-        // y9_storage.setObjectItem('initInfo', initInfo.data);
-    }
 
     if (!isRoleValid) {
         return false;

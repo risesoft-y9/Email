@@ -36,71 +36,37 @@
     </div>
     <!-- <PersonInfo ref="personInfo"/> -->
 </template>
-<script lang="ts">
-    import { defineComponent } from 'vue';
-    import { useRouter } from 'vue-router';
-    import { useSettingStore } from '@/store/modules/settingStore';
-    import y9_storage from '@/utils/storage';
-    import IconSvg from './IconSvg';
+<script lang="ts" setup>
+    import { getLoginInfo } from '@/api/home';
 
-    // import PersonInfo from '@/views/personal/personInfo.vue';
-    interface RightTopUserSetupData {
-        userInfo: Object;
-        initInfo: Object;
-        departmentMapList: Object;
-        onMenuClick: (event: any) => Promise<void>;
-    }
+    defineOptions({ name: 'RightTopUser' });
 
-    export default defineComponent({
-        name: 'RightTopUser',
-        components: {
-            IconSvg
-            // PersonInfo
-        },
-        setup(): RightTopUserSetupData {
-            const settingStore = useSettingStore();
-
-            const router = useRouter();
-            // const personInfo = ref();
-            // 获取当前登录用户信息
-            const userInfo = y9_storage.getObjectItem('ssoUserInfo');
-            const initInfo = y9_storage.getObjectItem('cmsInitInfo');
-            const departmentMapList = y9_storage.getObjectItem('departmentMapList');
-            // 岗位列表
-            const positionList: any = JSON.parse(sessionStorage.getItem('positionList'));
-            // 所有岗位的待办消息
-            let totalCount = 0;
-            positionList?.map((item) => {
-                totalCount += item.todoCount;
-            });
-
-            // 点击菜单
-            const onMenuClick = async (command: string) => {
-                // console.log(command, '999');
-                // 设置positionId
-                sessionStorage.setItem('positionId', command?.positionId);
-                // 设置 positionName
-                sessionStorage.setItem('positionName', command?.positionName);
-                // 设置 deptName
-                sessionStorage.setItem('deptName', command?.parentName);
-                // 所有岗位的待办消息
-                positionList?.map((item) => {
-                    totalCount += item.todoCount;
-                });
-                window.location = window.location.origin + window.location.pathname;
-            };
-            return {
-                settingStore,
-                userInfo,
-                initInfo,
-                departmentMapList,
-                onMenuClick,
-                positionList,
-                totalCount
-                // personInfo
-            };
-        }
+    // 岗位列表
+    const positionList: any = JSON.parse(sessionStorage.getItem('positionList'));
+    // 所有岗位的待办消息
+    let totalCount = 0;
+    positionList?.map((item) => {
+        totalCount += item.todoCount;
     });
+
+    // 点击菜单
+    const onMenuClick = async (command: any) => {
+        // console.log(command, '999');
+        // 设置positionId
+        sessionStorage.setItem('positionId', command?.positionId);
+        // 设置 positionName
+        sessionStorage.setItem('positionName', command?.positionName);
+        // 设置 deptName
+        sessionStorage.setItem('deptName', command?.parentName);
+        let res = await getLoginInfo();
+        sessionStorage.setItem('positionList', JSON.stringify(res.data.positionList));
+        positionList.value = res.data.positionList;
+        // 所有岗位的待办消息
+        positionList?.map((item) => {
+            totalCount += item.todoCount;
+        });
+        window.location = window.location.origin + window.location.pathname;
+    };
 </script>
 <style lang="scss" scoped>
     @import '@/theme/global-vars.scss';
