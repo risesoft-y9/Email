@@ -1,8 +1,8 @@
 /*
  * @Author: hongzhew
  * @Date: 2022-03-31 18:01:58
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-21 11:00:22
+ * @LastEditors: mengjuhua
+ * @LastEditTime: 2026-09-17 15:59:35
  * @Description: 菜单路由
  */
 
@@ -22,7 +22,7 @@ const menuRouter = [
                 path: '/writing',
                 hidden: true,
                 component: () => import('@/views/write/index.vue'),
-                name: '/writing',
+                name: '/writingIndex',
                 meta: {
                     title: '写信',
                     icon: 'ri-edit-line',
@@ -143,7 +143,7 @@ const menuRouter = [
             {
                 path: '/garbage',
                 component: () => import('@/views/garbage/index.vue'),
-                name: 'garbage',
+                name: 'garbageIndex',
                 meta: {
                     title: '垃圾箱',
                     icon: 'ri-delete-bin-line',
@@ -165,7 +165,7 @@ const menuRouter = [
             {
                 path: '/flagged',
                 component: () => import('@/views/collect/index.vue'),
-                name: 'collect',
+                name: 'collectIndex',
                 meta: {
                     title: '星标邮件',
                     icon: 'ri-star-line',
@@ -187,7 +187,7 @@ const menuRouter = [
             {
                 path: '/search',
                 component: () => import('@/views/search/index.vue'),
-                name: 'search',
+                name: 'searchIndex',
                 meta: {
                     title: '邮件查询',
                     icon: 'ri-search-line',

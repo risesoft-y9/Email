@@ -27,37 +27,24 @@
     <!-- </div> -->
 </template>
 <script lang="ts" setup>
-    import { computed, ComputedRef, ref, toRefs } from 'vue';
+    import { computed, ref, toRefs } from 'vue';
     import { RoutesDataItem } from '@/utils/routes';
     import SiderMenuItem from './SiderMenuItem.vue';
 
-    interface SiderMenuSetupData {
-        newMenuData: ComputedRef<RoutesDataItem[]>;
+    interface Props {
+        menuCollapsed?: boolean;
+        menuMode?: string;
+        belongTopMenu?: string;
+        defaultActive?: string;
+        menuData?: RoutesDataItem[];
     }
 
-    const props = defineProps({
-        menuCollapsed: {
-            type: Boolean,
-            default: false
-        },
-        menuMode: {
-            type: String,
-            default: 'vertical'
-        },
-        belongTopMenu: {
-            type: String,
-            default: ''
-        },
-        defaultActive: {
-            type: String,
-            default: ''
-        },
-        menuData: {
-            type: Array,
-            default: () => {
-                return [];
-            }
-        }
+    const props = withDefaults(defineProps<Props>(), {
+        menuCollapsed: false,
+        menuMode: 'vertical',
+        belongTopMenu: '',
+        defaultActive: '',
+        menuData: () => []
     });
 
     const { menuData } = toRefs(props);
@@ -76,7 +63,7 @@
         return MenuItems;
     });
     // console.log(newMenuData.value);
-    let menuRef = ref();
+    const menuRef = ref();
     const openSubMenu = (index) => {
         menuRef.value && menuRef.value.open(index);
     };

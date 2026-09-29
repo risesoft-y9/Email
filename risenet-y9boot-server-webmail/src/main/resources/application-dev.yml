@@ -3,10 +3,10 @@ spring:
         nacos:
             config:
                 enabled: true
-                namespace: dev
+                namespace: ${NACOS_NAMESPACE:dev}
                 group: DEFAULT_GROUP
-                server-addr: https://dev.youshengyun.com:443
-                username: nacos
+                server-addr: ${NACOS_SERVER_ADDR:https://dev.youshengyun.com:443}
+                username: ${NACOS_USERNAME:nacos}
                 password: ${NACOS_PASSWORD:111111}
     config:
         import:

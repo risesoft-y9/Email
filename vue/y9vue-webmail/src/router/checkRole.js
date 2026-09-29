@@ -1,17 +1,14 @@
 /*
  * @Author: fanzhengyang
- */
-/*
- * @Author: your name
  * @Date: 2021-12-22 15:41:55
- * @LastEditTime: 2022-12-28 15:48:53
- * @LastEditors: Please set LastEditors
- * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: /sz-team-frontend-9.5.x/y9vue-email/src/router/checkRole.js
+ * @LastEditTime: 2026-09-21 16:05:06
+ * @LastEditors: mengjuhua
+ * @Description:  检查路由权限
+ * @FilePath: \y9-vue\y9vue-webmail\src\router\checkRole.js
  */
-import router, {asyncRoutes} from '@/router';
-import {useRouterStore} from '@/store/modules/routerStore';
-import {useFolderStore} from '@/store/modules/folderStore';
+import router, { asyncRoutes } from '@/router';
+import { useRouterStore } from '@/store/modules/routerStore';
+import { useFolderStore } from '@/store/modules/folderStore';
 
 /**
  * 根据 meta.role 判断当前用户是否有权限
@@ -54,36 +51,56 @@ function filterAsyncRoutes(routes, roles) {
 export async function getPermissionRoutes(rolesArr = ['systemAdmin']) {
     const routerStore = useRouterStore();
     let folderStore = useFolderStore();
-    //获取动态路由后把动态路由添加进文件夹
+    // 获取动态路由后把动态路由添加进文件夹
     await folderStore.initAllFolders();
     let customFolders = folderStore.getCustomFolders;
-    console.log(customFolders);
+
     asyncRoutes.forEach((item) => {
         if (item.meta?.isDynamic) {
-            const routeNames = item.children.map((item) => item.name); //获取原有的所有动态路由的名称
-            const dynamicRoutes = customFolders.map((dynamicItem, index) => {
-                //格式化动态路由
-                return {
-                    path: '/folder/' + encodeURIComponent(dynamicItem.name),
-                    component: () => import('../views/dynamic/dynamic.vue'), //() => import("@/views/dynamic/dynamic.vue"),
-                    name: dynamicItem.name,
-                    meta: { title: dynamicItem.name, icon: 'ri-folder-3-line', isDynamic: true, id: dynamicItem.name },
-                    props: { folder: dynamicItem.name }
-                };
+            // 后端返回的文件夹名称集合，用于清理已删除的文件夹
+            const backendNames = new Set(customFolders.map((f) => f.name));
+
+            // 清理后端已删除的动态路由
+            item.children = item.children.filter((child) => {
+                if (child.meta?.isDynamic && child.meta?.id != null && !backendNames.has(child.meta.id)) {
+                    return false;
+                }
+                return true;
             });
 
-            dynamicRoutes.reverse().forEach((dynamicItem) => {
-                //遍历动态路由
-                if (!routeNames.includes(dynamicItem.name)) {
-                    //如果路由不存在则添加。
-                    item.children.unshift(dynamicItem);
+            // 用 name 建立已有动态路由的映射，便于按 name 去重和同步更新
+            const routeMap = new Map();
+            item.children.forEach((child) => {
+                if (child.meta?.isDynamic && child.meta?.id != null) {
+                    routeMap.set(child.meta.id, child);
+                }
+            });
+
+            customFolders.forEach((dynamicItem) => {
+                const existing = routeMap.get(dynamicItem.name);
+                if (existing) {
+                    // 已存在则同步后端的最新名称
+                    existing.name = dynamicItem.name;
+                    existing.meta.title = dynamicItem.name;
+                    existing.path = '/folder/' + encodeURIComponent(dynamicItem.name);
+                    existing.props = { folder: dynamicItem.name };
+                } else {
+                    // 不存在则新增
+                    item.children.unshift({
+                        path: '/folder/' + encodeURIComponent(dynamicItem.name),
+                        component: () => import('../views/dynamic/dynamic.vue'),
+                        name: dynamicItem.name,
+                        meta: { title: dynamicItem.name, icon: 'ri-folder-3-line', isDynamic: true, id: dynamicItem.name },
+                        props: { folder: dynamicItem.name }
+                    });
                 }
             });
         }
     });
+
     const roles = rolesArr;
     const permissionRoutes = filterAsyncRoutes(asyncRoutes, roles);
-    // 项目存储中心 pinia - routerStore模块 存储有权限的所有路由源数据，permissionRoutes即包含项目所有可跳转的路由
+    // 项目存储中心 pinia - routerStore模块 存储有权限的所有路由源数据
     routerStore.$patch({
         PermissionRoutes: permissionRoutes
     });
